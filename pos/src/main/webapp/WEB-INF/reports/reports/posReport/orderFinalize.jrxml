@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="orderFinalize" pageWidth="288" pageHeight="1080" columnWidth="248" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="20">
+	<property name="ireport.zoom" value="2.3579476910000023"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="encOrderId" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select 1 from dual]]>
+	</queryString>
+	<field name="1" class="java.math.BigDecimal"/>
+	<variable name="totalPrice" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<title>
+		<band height="13" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="248" height="13"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Money Receipt]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="12" width="248" height="1"/>
+			</line>
+		</band>
+	</title>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<subreport isUsingCache="false">
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="248" height="10" isPrintWhenDetailOverflows="true"/>
+				<subreportParameter name="encOrderId">
+					<subreportParameterExpression><![CDATA[$P{encOrderId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "customerOrderFinalize.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="11">
+			<subreport isUsingCache="false">
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="248" height="11" isPrintWhenDetailOverflows="true"/>
+				<subreportParameter name="encOrderId">
+					<subreportParameterExpression><![CDATA[$P{encOrderId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "kitchenOrderFinalize.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="22">
+			<subreport isUsingCache="false">
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="8" width="248" height="11" isPrintWhenDetailOverflows="true"/>
+				<subreportParameter name="encOrderId">
+					<subreportParameterExpression><![CDATA[$P{encOrderId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "officeCopy.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+</jasperReport>

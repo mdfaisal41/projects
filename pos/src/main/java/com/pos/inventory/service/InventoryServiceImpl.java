@@ -1,0 +1,62 @@
+package com.pos.inventory.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.pos.inventory.dao.InventoryDao;
+import com.pos.inventory.model.Inventory;
+
+@Service("inventoryService")
+public class InventoryServiceImpl implements InventoryService{
+
+
+	@Autowired
+	private InventoryDao inventoryDao;
+
+	public Inventory saveIngredients(Inventory inventory) {
+		return inventoryDao.saveIngredients(inventory);
+	}
+
+	public List<Inventory> getProductList(Inventory inventory) throws Exception {
+		return inventoryDao.getProductList(inventory);
+	}
+
+	public Inventory saveStoreProduct(Inventory inventory) {
+		return inventoryDao.saveStoreProduct(inventory);
+	}
+
+	public List<Inventory> getInventoryList(Inventory inventory) {
+		return inventoryDao.getInventoryList(inventory);
+	}
+	
+	public List<Inventory> getInventoryListSupplier(Inventory inventory) {
+		return inventoryDao.getInventoryListSupplier(inventory);
+	}
+
+	public Inventory getPriceSum(Inventory inventory) {
+		return inventoryDao.getPriceSum(inventory);
+	}
+
+	public List<Inventory> getProductView(Inventory inventory)throws Exception {
+		return inventoryDao.getProductView(inventory);
+	}
+
+	public Inventory saveWastage(Inventory inventory) {
+		return inventoryDao.saveWastage(inventory);
+	}
+
+	public List<Inventory> getWastageView(Inventory inventory) throws Exception {
+		return inventoryDao.getWastageView(inventory);
+	}
+
+	public Inventory getWastageInfo(Inventory inventory) {
+		return inventoryDao.getWastageInfo(inventory);
+	}
+
+
+
+
+
+}
