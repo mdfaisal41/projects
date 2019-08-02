@@ -1,5 +1,8 @@
 package com.pos.membership.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -12,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.aes.protection.CipherUtils;
+import com.pos.accounts.model.EmployeeMonthlyConsumption;
 import com.pos.hr.model.EmployeeInformation;
 import com.pos.login.model.MenuInfo;
 import com.pos.login.service.LoginService;
@@ -158,6 +162,41 @@ public class MembershipController {
 		} else {
 			return new ModelAndView("login");
 		}
+	}
+	
+	
+	
+	@RequestMapping(value = "getMemberList", method = RequestMethod.POST)
+	public ModelAndView getMemberList(@ModelAttribute Membership membership, HttpSession session,
+			LookupModel lookupModel, final RedirectAttributes redirectAttributes) {
+		// System.out.println("hello");
+		ModelAndView mav = new ModelAndView();
+		
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+			try {
+				List<Membership> oMembershipList = new ArrayList<Membership>();
+
+				oMembershipList = membershipService.getMemberList(membership);
+				
+				 System.out.println("oMembershipList.size()  " + oMembershipList.size());
+				
+				if(oMembershipList.size() >0) {
+					mav.addObject("membershipList", oMembershipList);
+				} else {
+					mav.addObject("membershipListNotFound", "No Member Found !!");
+				}
+				
+				mav.setViewName("adminList");
+				return mav;
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				mav.addObject("membershipListNotFound", "Error Occured !!");
+			}
+		} else {
+			return new ModelAndView("login");
+		}
+		return mav;
 	}
 	
 	

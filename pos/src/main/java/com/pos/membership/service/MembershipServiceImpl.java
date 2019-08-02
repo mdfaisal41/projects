@@ -1,5 +1,7 @@
 package com.pos.membership.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.pos.membership.dao.MembershipDao;
@@ -14,4 +16,9 @@ public class MembershipServiceImpl implements MembershipService{
 	public Membership addMemberSave(Membership membership) {
 		return membershipDao.addMemberSave(membership);
 	}
+	
+	public List<Membership> getMemberList(Membership membership) {
+		return membershipDao.getMemberList(membership);
+	}
+	
 }

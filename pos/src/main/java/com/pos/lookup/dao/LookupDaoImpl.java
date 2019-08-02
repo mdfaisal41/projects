@@ -98,6 +98,7 @@ public class LookupDaoImpl implements LookupDao{
 
 		return oProductList;
 	}
+	
 
 	public List<LookupModel> employeeList(LookupModel lookupModel) {
 		jdbcTemplate = new JdbcTemplate(dataSource);
@@ -111,13 +112,18 @@ public class LookupDaoImpl implements LookupDao{
 			sBuilder.append("EMPLOYEE_ID,");
 			sBuilder.append("EMPLOYEE_NAME ");
 			sBuilder.append("FROM EMPLOYEE ");
-
-			// String sql = "SELECT BRANCH_ID, NAME FROM L_BRANCH " + "WHERE 1 =
-			// 1 ";
+			sBuilder.append("WHERE 1=1 ");
 
 			MapSqlParameterSource paramSource = new MapSqlParameterSource();
-
-			// System.out.println(sql);
+			
+			if(lookupModel.getId() !=null && lookupModel.getId().length() >0) {
+				sBuilder.append("AND DESIGNATION_ID = :id ");
+				paramSource.addValue("id", lookupModel.getId());
+			}
+			
+			 sBuilder.append("ORDER BY EMPLOYEE_NAME ");
+				
+			 //System.out.println("EMPLOYEE LIST : " + sBuilder);
 
 			List<Map<String, Object>> rows = npjt.queryForList(sBuilder.toString(), paramSource);
 
@@ -135,6 +141,8 @@ public class LookupDaoImpl implements LookupDao{
 
 		return oEmployeeList;
 	}
+	
+	
 
 	public List<LookupModel> inventoryTypeList(LookupModel lookupModel) {
 		jdbcTemplate = new JdbcTemplate(dataSource);

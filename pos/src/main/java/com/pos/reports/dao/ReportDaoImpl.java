@@ -270,14 +270,14 @@ public class ReportDaoImpl implements ReportDao{
 		File reportFile = new File(servletContext.getRealPath(fileName));
 		Connection conn = dataSource.getConnection();
 
-		//System.out.println("........conn......" + conn);
+		//System.out.println("........Coon......" + conn);
 
 		/*
 		 * Connection conn = DriverManager.getConnection(
 		 * "jdbc:oracle:thin:@192.168.78.79:1521:orcl", "btcl", "btcl");
 		 */
 
-		//System.out.println("parameters..................       " + parameters.size());
+		System.out.println("parameters..................       " + parameters.size());
 
 		byte[] bytes = JasperRunManager.runReportToPdf(reportFile.getPath(), parameters, conn);
 		if (bytes.length > 380) {

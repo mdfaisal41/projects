@@ -180,24 +180,25 @@ public class PointOfSaleDaoImpl implements PointOfSaleDao {
 		try {
 			Connection conn = jdbcTemplate.getDataSource().getConnection();
 
-			CallableStatement oCallStmt = conn.prepareCall("{call PRO_ORDER_INFO(?,?,?,?,?,?)}");
+			CallableStatement oCallStmt = conn.prepareCall("{call PRO_ORDER_INFO(?,?,?,?,?,?,?)}");
 			oCallStmt.setString(1, pointOfSale.getItemId());
 			oCallStmt.setString(2, pointOfSale.getQuantity());
 			oCallStmt.registerOutParameter(3, java.sql.Types.VARCHAR);
 			oCallStmt.registerOutParameter(4, java.sql.Types.VARCHAR);
-			//oCallStmt.registerOutParameter(5, java.sql.Types.VARCHAR);
 			oCallStmt.registerOutParameter(5, java.sql.Types.VARCHAR);
+			//oCallStmt.registerOutParameter(5, java.sql.Types.VARCHAR);
 			oCallStmt.registerOutParameter(6, java.sql.Types.VARCHAR);
+			oCallStmt.registerOutParameter(7, java.sql.Types.VARCHAR);
 
 			oCallStmt.execute();
+			
 
-			
-			oOrderInfo.setItemName(oCallStmt.getString(3));
-			oOrderInfo.setItemPrice(oCallStmt.getString(4));
+			oOrderInfo.setmCode(oCallStmt.getString(3));
+			oOrderInfo.setMessage(oCallStmt.getString(4));
+			oOrderInfo.setItemName(oCallStmt.getString(5));
+			oOrderInfo.setItemPrice(oCallStmt.getString(6));
+			oOrderInfo.setSubTotal(oCallStmt.getString(7));
 			//oOrderInfo.setSubTotal(oCallStmt.getString(5));
-			oOrderInfo.setmCode(oCallStmt.getString(5));
-			oOrderInfo.setMessage(oCallStmt.getString(6));
-			
 
 /*			System.out.println("3 " + oOrderInfo.getItemName());
 			System.out.println("4 " + oOrderInfo.getItemPrice());
@@ -259,10 +260,12 @@ public class PointOfSaleDaoImpl implements PointOfSaleDao {
 			if (orderList != null && orderList.size() > 0) {
 				for (OrderModel oOrderModel : orderList) {
 					if ((oOrderModel.getItemId() != null && oOrderModel.getItemId().length() > 0)
-							& (oOrderModel.getQuantity() != null && oOrderModel.getQuantity().length() > 0)
-							& (oOrderModel.getItemPrice() != null && oOrderModel.getItemPrice().length() > 0)
-							& (oOrderModel.getSubTotal() != null && oOrderModel.getSubTotal().length() > 0)) {
+							&& (oOrderModel.getQuantity() != null && oOrderModel.getQuantity().length() > 0)
+							&& (oOrderModel.getItemPrice() != null && oOrderModel.getItemPrice().length() > 0)
+							&& (oOrderModel.getSubTotal() != null && oOrderModel.getSubTotal().length() > 0)) {
 						orderArraySize = orderArraySize + 1;
+						
+						 System.out.println("getEncItemOrderId() DE :  "+ oCipherUtils.decrypt(oRemoveNull.nullRemove(oOrderModel.getEncItemOrderId())));
 					}
 				}
 			}
@@ -283,31 +286,28 @@ public class PointOfSaleDaoImpl implements PointOfSaleDao {
 
 			Object[] order_array_of_records = new Object[orderArraySize];
 
-			Object[] order_java_record_array = new Object[4];
+			Object[] order_java_record_array = new Object[5];
 			int i = 0;
 
 			if (null != orderList && orderList.size() > 0) {
 				for (OrderModel oOrderModel : orderList) {
 					if ((oOrderModel.getItemId() != null && oOrderModel.getItemId().length() > 0)
-							& (oOrderModel.getQuantity() != null && oOrderModel.getQuantity().length() > 0)
-							& (oOrderModel.getItemPrice() != null && oOrderModel.getItemPrice().length() > 0)
-							& (oOrderModel.getSubTotal() != null && oOrderModel.getSubTotal().length() > 0)) {
+							&& (oOrderModel.getQuantity() != null && oOrderModel.getQuantity().length() > 0)
+							&& (oOrderModel.getItemPrice() != null && oOrderModel.getItemPrice().length() > 0)
+							&& (oOrderModel.getSubTotal() != null && oOrderModel.getSubTotal().length() > 0)) {
+
+						// We create a record by filling an array and then casting it into an Oracle type
+						order_java_record_array[0] = oCipherUtils.decrypt(oRemoveNull.nullRemove(oOrderModel.getEncItemOrderId()));
+						order_java_record_array[1] = oOrderModel.getItemId();
+						order_java_record_array[2] = oOrderModel.getQuantity();
+						order_java_record_array[3] = oOrderModel.getItemPrice();
+						order_java_record_array[4] = oOrderModel.getSubTotal();
 						
-						// System.out.println("Person ID "
-						// +oCipherUtils.decrypt(oVehicleOwnerDetailsModel.getEncPersonId().toString()));
+						 System.out.println("oOrderModel.getEncItemOrderId() DECR :  "+ oCipherUtils.decrypt(oRemoveNull.nullRemove(oOrderModel.getEncItemOrderId())));
 
-						// We create a record by filling an array and then
-						// casting it into an Oracle type
-						order_java_record_array[0] = oOrderModel.getItemId();
-						order_java_record_array[1] = oOrderModel.getQuantity();
-						order_java_record_array[2] = oOrderModel.getItemPrice();
-						order_java_record_array[3] = oOrderModel.getSubTotal();
-
-						// cast the java arrays into the Oracle record type for
-						// the input record
+						// cast the java arrays into the Oracle record type for the input record
 						STRUCT oracle_record = new STRUCT(orderRecDescriptor, conn, order_java_record_array);
-						// store the oracle_record into the array of records
-						// which will be passed to the function
+						// store the oracle_record into the array of records which will be passed to the function
 						order_array_of_records[i] = oracle_record;
 						i = i + 1;
 						/*
@@ -338,17 +338,20 @@ public class PointOfSaleDaoImpl implements PointOfSaleDao {
 			ARRAY order_array = new ARRAY(orderArrayDescriptor, conn, order_array_of_records);
 
 			CallableStatement oCallStmt = dataSource.getConnection().prepareCall(
-					"{call PRO_ORDER_SAVE(?,?,?,?,?)}");
-			oCallStmt.setObject(1,order_array);
-			oCallStmt.setObject(2, pointOfSale.getTableNo());
-			oCallStmt.setObject(3, pointOfSale.getUpdateBy());
-			oCallStmt.registerOutParameter(4, java.sql.Types.CHAR);
-			oCallStmt.registerOutParameter(5, java.sql.Types.CHAR);
+					"{call PRO_ORDER_SAVE(?,?,?,?,?,?,?)}");
+			
+			oCallStmt.setObject(1, oCipherUtils.decrypt(oRemoveNull.nullRemove(pointOfSale.getEncOrderId())));
+			oCallStmt.setObject(2,order_array);
+			oCallStmt.setObject(3, pointOfSale.getTableNo());
+			oCallStmt.setObject(4, pointOfSale.getEmployeeId());
+			oCallStmt.setObject(5, pointOfSale.getUpdateBy());
+			oCallStmt.registerOutParameter(6, java.sql.Types.CHAR);
+			oCallStmt.registerOutParameter(7, java.sql.Types.CHAR);
 
 			oCallStmt.execute();
 
-			oPointOfSale.setmCode(oCallStmt.getString(4));
-			oPointOfSale.setMessage(oCallStmt.getString(5));
+			oPointOfSale.setmCode(oCallStmt.getString(6));
+			oPointOfSale.setMessage(oCallStmt.getString(7));
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -357,6 +360,8 @@ public class PointOfSaleDaoImpl implements PointOfSaleDao {
 		}
 		return oPointOfSale;
 	}
+	
+	
 
 	public PointOfSale getOrderPrice(PointOfSale pointOfSale) {
 		jdbcTemplate = new JdbcTemplate(dataSource);
@@ -591,19 +596,23 @@ public class PointOfSaleDaoImpl implements PointOfSaleDao {
 		
 		StringBuilder sBuilder = new StringBuilder();
 		sBuilder.append(" SELECT ORDER_ID, ");
+		sBuilder.append(" ORDER_NO, ");
 		sBuilder.append(" TABLE_NO, ");
+		sBuilder.append(" TO_CHAR(ORDER_DATE,'DD/MM/YYYY HH12:MI:SS AM') ORDER_DATE, ");
+		sBuilder.append(" WAITER_ID, ");
+		sBuilder.append(" (SELECT KNOWN_AS FROM EMPLOYEE WHERE EMPLOYEE_ID = OM.WAITER_ID) WAITER_NAME, ");
 		sBuilder.append(" FINALIZED_YN, ");
 		sBuilder.append(" COMPLETED_YN, ");
-		sBuilder.append(" TO_CHAR(UPDATE_DATE,'DD/MM/YYYY HH12:MI:SS AM') UPDATE_DATE, ");
 		sBuilder.append(" (SELECT KNOWN_AS FROM EMPLOYEE WHERE EMPLOYEE_ID = OM.UPDATE_BY) UPDATE_BY ");
 		sBuilder.append(" FROM ORDER_MANAGEMENT OM ");
-		sBuilder.append(" WHERE COMPLETED_YN = 'N' ");
-		sBuilder.append(" ORDER BY UPDATE_DATE ");
+		sBuilder.append(" WHERE  (COMPLETED_YN = 'N' OR COMPLETED_YN IS NULL) ");
+		sBuilder.append(" AND (ORDER_CANCELED_YN = 'N' OR ORDER_CANCELED_YN IS NULL) ");
+		sBuilder.append(" ORDER BY ORDER_DATE DESC ");
 		
 		
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
 
-		//System.out.println(sBuilder);
+		System.out.println("order list : " + sBuilder);
 		//System.out.println("productId " + inventory.getProductId());
 
 		List<Map<String, Object>> rows = npjt.queryForList(sBuilder.toString(), paramSource);
@@ -612,12 +621,14 @@ public class PointOfSaleDaoImpl implements PointOfSaleDao {
 		Map row : rows) {
 			PointOfSale oPointOfSale = new PointOfSale();
 			oPointOfSale.setEncOrderId(oRemoveNull.nullRemove(oCipherUtils.encrypt((String.valueOf(row.get("ORDER_ID"))))));
-			oPointOfSale.setOrderId(oRemoveNull.nullRemove((String.valueOf(row.get("ORDER_ID")))));
+			oPointOfSale.setOrderNo(oRemoveNull.nullRemove((String.valueOf(row.get("ORDER_NO")))));
 			oPointOfSale.setTableNo(oRemoveNull.nullRemove((String.valueOf(row.get("TABLE_NO")))));
-			oPointOfSale.setUpdateDate(oRemoveNull.nullRemove((String.valueOf(row.get("UPDATE_DATE")))));
-			oPointOfSale.setUpdateBy(oRemoveNull.nullRemove((String.valueOf(row.get("UPDATE_BY")))));
+			oPointOfSale.setOrderDate(oRemoveNull.nullRemove((String.valueOf(row.get("ORDER_DATE")))));
+			oPointOfSale.setEmployeeId(oRemoveNull.nullRemove((String.valueOf(row.get("WAITER_ID")))));
+			oPointOfSale.setEmployeeName(oRemoveNull.nullRemove((String.valueOf(row.get("WAITER_NAME")))));
 			oPointOfSale.setFinalizedYn(oRemoveNull.nullRemove((String.valueOf(row.get("FINALIZED_YN")))));
 			oPointOfSale.setCompletedYn(oRemoveNull.nullRemove((String.valueOf(row.get("COMPLETED_YN")))));
+			oPointOfSale.setUpdateBy(oRemoveNull.nullRemove((String.valueOf(row.get("UPDATE_BY")))));
 			oOrderList.add(oPointOfSale);
 		}
 		return oOrderList;
@@ -633,8 +644,6 @@ public class PointOfSaleDaoImpl implements PointOfSaleDao {
 			
 			sBuilder.append(" SELECT ITEM_ORDER_ID, ");
 			sBuilder.append(" ORDER_ID, ");
-			sBuilder.append(" ORDER_NO, ");
-			sBuilder.append(" TABLE_NO, ");
 			sBuilder.append(" ITEM_ID, ");
 			sBuilder.append(" (SELECT ITEM_NAME FROM L_ITEM WHERE ITEM_ID = IO.ITEM_ID) ITEM_NAME, ");
 			sBuilder.append(" QUANTITY, ");
@@ -677,9 +686,10 @@ public class PointOfSaleDaoImpl implements PointOfSaleDao {
 	public PointOfSale cancelOrder(PointOfSale pointOfSale) {
 		jdbcTemplate = new JdbcTemplate(dataSource);
 		PointOfSale oPointOfSale = new PointOfSale();
+		NamedParameterJdbcTemplate npjt = new NamedParameterJdbcTemplate(jdbcTemplate);
+		
 		try {
-			System.out.println("orderId " + oCipherUtils.decrypt(pointOfSale.getEncOrderId()));
-			simpleJdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("PRO_CANCEL_ORDER");
+		/*	simpleJdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("PRO_CANCEL_ORDER");
 			Map<String, Object> inParamMap = new HashMap<String, Object>();
 			inParamMap.put("P_ORDER_ID", oCipherUtils.decrypt(pointOfSale.getEncOrderId()));
 
@@ -690,8 +700,21 @@ public class PointOfSaleDaoImpl implements PointOfSaleDao {
 			oPointOfSale.setMessage((String) outParamMap.get("P_MESSAGE"));
 			oPointOfSale.setmCode((String) outParamMap.get("P_MESSAGE_CODE"));
 			// System.out.println("studentId " + oStudent.getStudentId());
-		} catch (Exception ex) {
-			oPointOfSale.setMessage("Error Deleting Record !!!");
+			 */
+			StringBuilder sBuilder = new StringBuilder();
+			sBuilder.append(" UPDATE ORDER_MANAGEMENT SET ORDER_CANCELED_YN = 'Y'  ");
+			sBuilder.append(" WHERE ORDER_ID = :orderId  ");
+			
+			MapSqlParameterSource paramSource = new MapSqlParameterSource();
+			paramSource.addValue("orderId", oCipherUtils.decrypt(oRemoveNull.nullRemove(pointOfSale.getEncOrderId())));
+			
+			npjt.update(sBuilder.toString(), paramSource);
+			
+			oPointOfSale.setMessage("Order Caceled Successfully");
+			oPointOfSale.setmCode("1111");
+				
+				} catch (Exception ex) {
+			oPointOfSale.setMessage("Error Canceling Record !!!");
 			oPointOfSale.setmCode("0000");
 			ex.printStackTrace();
 		}
@@ -707,8 +730,6 @@ public class PointOfSaleDaoImpl implements PointOfSaleDao {
 		try {
 			sBuilder.append(" SELECT ITEM_ORDER_ID, ");
 			sBuilder.append(" ORDER_ID, ");
-			sBuilder.append(" ORDER_NO, ");
-			sBuilder.append(" TABLE_NO, ");
 			sBuilder.append(" ITEM_ID, ");
 			sBuilder.append(" (SELECT ITEM_NAME FROM L_ITEM WHERE ITEM_ID = IO.ITEM_ID) ITEM_NAME, ");
 			sBuilder.append(" QUANTITY, ");
@@ -722,6 +743,7 @@ public class PointOfSaleDaoImpl implements PointOfSaleDao {
 			MapSqlParameterSource paramSource = new MapSqlParameterSource();
 			paramSource.addValue("encOrderId", oCipherUtils.decrypt(pointOfSale.getEncOrderId()));
 			// System.out.println(sBuilder);
+			sBuilder.append(" ORDER BY ITEM_ORDER_ID ASC ");
 
 			List<Map<String, Object>> rows = npjt.queryForList(sBuilder.toString(), paramSource);
 			
@@ -730,6 +752,7 @@ public class PointOfSaleDaoImpl implements PointOfSaleDao {
 			Map row : rows) {
 
 				PointOfSale oPointOfSale = new PointOfSale();
+				oPointOfSale.setEncItemOrderId(oCipherUtils.encrypt(String.valueOf(row.get("ITEM_ORDER_ID"))));
 				oPointOfSale.setEncOrderId(oCipherUtils.encrypt(String.valueOf(row.get("ORDER_ID"))));
 				oPointOfSale.setOrderId(oRemoveNull.nullRemove(String.valueOf(row.get("ORDER_ID"))));
 				oPointOfSale.setTableNo(oRemoveNull.nullRemove(String.valueOf(row.get("TABLE_NO"))));
@@ -777,14 +800,15 @@ public class PointOfSaleDaoImpl implements PointOfSaleDao {
 			simpleJdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("PRO_ORDER_FINALIZE");
 			Map<String, Object> inParamMap = new HashMap<String, Object>();
 
-			inParamMap.put("P_ORDER_TOTAL_AMOUNT", pointOfSale.getOrderTotalAmount());
+			inParamMap.put("P_ORDER_ID", oCipherUtils.decrypt(oRemoveNull.nullRemove(pointOfSale.getEncOrderId())));
+			inParamMap.put("P_PAYABLE_AMOUNT", pointOfSale.getOrderTotalAmount());
 			inParamMap.put("P_CASH_PAY_AMOUNT", pointOfSale.getCashPayAmount());
 			inParamMap.put("P_CARD_PAY_AMOUNT", pointOfSale.getCardPayAmount());
 			inParamMap.put("P_DISCOUNT_AMOUNT", pointOfSale.getDiscountAmount());
-			inParamMap.put("P_NET_PAYABLE_AMOUNT", pointOfSale.getNetPayableAmount());
+			inParamMap.put("P_NET_PAY_AMOUNT", pointOfSale.getNetPayableAmount());
 			inParamMap.put("P_UPDATE_BY", pointOfSale.getUpdateBy());
-
-			// inParamMap.put("P_UPDATE_DATE", student.getUpdateDate());
+			
+			System.out.println("ORDER iD : " + oCipherUtils.decrypt(oRemoveNull.nullRemove(pointOfSale.getEncOrderId())));
 
 			Map<String, Object> outParamMap = simpleJdbcCall.execute(new MapSqlParameterSource().addValues(inParamMap));
 

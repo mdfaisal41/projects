@@ -1,6 +1,8 @@
 package com.pos.membership.dao;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
@@ -8,6 +10,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
@@ -65,6 +68,45 @@ public class MembershipDaoImpl implements MembershipDao{
 			oAddMemberSave.setMessageCode("0000");
 		}
 		return oAddMemberSave;
+	}
+	
+	
+	
+	public List<Membership> getMemberList(Membership membership) {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+		List<Membership> oMembershipList = new ArrayList<Membership>();
+
+		NamedParameterJdbcTemplate npjt = new NamedParameterJdbcTemplate(jdbcTemplate);
+
+		StringBuilder sBuilder = new StringBuilder();
+		sBuilder.append("SELECT MEMBER_ID, ");
+		sBuilder.append("MEMBER_NAME, ");
+		sBuilder.append("KNOWN_AS, ");
+		sBuilder.append("MEMBER_NO, ");
+		sBuilder.append("CONTACT_NO, ");
+		sBuilder.append("PRESENT_ADDRESS ");
+		sBuilder.append("FROM MEMBERSHIP ");
+		sBuilder.append("WHERE ENABLED_YN = 'Y' ");
+		sBuilder.append("ORDER BY MEMBER_NO ");
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource();
+		 //System.out.println(sBuilder);
+
+		List<Map<String, Object>> rows = npjt.queryForList(sBuilder.toString(), paramSource);
+
+		for (@SuppressWarnings("rawtypes")
+		Map row : rows) {
+			Membership oMembership = new Membership();
+
+			oMembership.setEncMemberId(oCipherUtils.encrypt(oRemoveNull.nullRemove(String.valueOf(row.get("MEMBER_ID")))));
+			oMembership.setMemberName(oRemoveNull.nullRemove(String.valueOf(row.get("MEMBER_NAME"))));
+			oMembership.setKnownAs(oRemoveNull.nullRemove(String.valueOf(row.get("KNOWN_AS"))));
+			oMembership.setMemberNo(oRemoveNull.nullRemove(String.valueOf(row.get("MEMBER_NO"))));
+			oMembership.setContactNo(oRemoveNull.nullRemove(String.valueOf(row.get("CONTACT_NO"))));
+			oMembership.setAddress(oRemoveNull.nullRemove(String.valueOf(row.get("PRESENT_ADDRESS"))));
+			oMembershipList.add(oMembership);
+		}
+		return oMembershipList;
 	}
 	
 	

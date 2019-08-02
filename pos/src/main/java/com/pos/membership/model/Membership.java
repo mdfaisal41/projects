@@ -21,7 +21,8 @@ public class Membership {
 	private String messageCode;
 	private String updateBy;
 	
-	
+	private String memberNo;
+	private String address;
 	
 	
 	
@@ -132,6 +133,18 @@ public class Membership {
 	}
 	public void setEnabledYN(String enabledYN) {
 		this.enabledYN = enabledYN;
+	}
+	public String getMemberNo() {
+		return memberNo;
+	}
+	public void setMemberNo(String memberNo) {
+		this.memberNo = memberNo;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
 	}
 	
 	

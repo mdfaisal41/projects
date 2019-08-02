@@ -223,7 +223,7 @@ public class AdminDaoImpl implements AdminDao {
 			sBuilder.append(" AND M.MENU_ID IN (SELECT MENU_ID FROM ROLE_MENU_MAPPING WHERE ROLE_ID = :role) ");
 		}
 		
-		// System.out.println(sBuilder);
+		 System.out.println(sBuilder);
 
 		List<Map<String, Object>> rows = npjt.queryForList(sBuilder.toString(), paramSource);
 

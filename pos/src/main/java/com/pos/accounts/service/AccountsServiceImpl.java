@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.pos.accounts.dao.AccountsDao;
 import com.pos.accounts.model.EmployeeMonthlyConsumption;
+import com.pos.accounts.model.OwnerConsumptionInfo;
 import com.pos.accounts.model.SalaryProcessModel;
 import com.pos.accounts.model.SupplierInfo;
 
@@ -59,7 +60,19 @@ public class AccountsServiceImpl implements AccountsService {
 	public SupplierInfo getSupplierInfo(SupplierInfo supplierInfo) {
 		return accountsDao.getSupplierInfo(supplierInfo);
 	}
+	
+	public List<OwnerConsumptionInfo> getOwnerConsumptionList(OwnerConsumptionInfo ownerConsumptionInfo) {
+		return accountsDao.getOwnerConsumptionList(ownerConsumptionInfo);
+	}
+	
+	public OwnerConsumptionInfo ownerConsumptionSave(OwnerConsumptionInfo ownerConsumptionInfo) {
+		return accountsDao.ownerConsumptionSave(ownerConsumptionInfo);
+	}
 
+	public OwnerConsumptionInfo getOwnerConsumption(OwnerConsumptionInfo ownerConsumptionInfo) {
+		return accountsDao.getOwnerConsumption(ownerConsumptionInfo);
+	}
+	
 	
 
 }

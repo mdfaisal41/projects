@@ -394,7 +394,8 @@
 			<td>${list.issueDate}</td>
 			<td>${list.projectName}</td>
 			<td>${list.fullRecipientName}</td>
-			<td>${list.purposeName}</td>
+			<td>${list.purposeName} ${list.remarks}</td>
+			<td>${list.remarks}</td>
 			<td style="text-align: right">${list.receiptAmount}</td>
 			<td style="text-align: right">${list.paymentAmount}</td>
 			<c:if
@@ -420,6 +421,8 @@
 
 	<c:forEach items="${cashBookRegisterTotal}" var="total">
 		<tr style="cursor: pointer">
+			<td></td>
+			<td></td>
 			<td></td>
 			<td></td>
 			<td></td>
@@ -2150,7 +2153,100 @@
 </c:if>
 
 
+<%--  Owner Consumption info --%>
 
+
+<c:if test="${!empty ownerConsumptionInfoList}">
+	<%
+		int i = 1;
+	%>
+
+	<c:forEach items="${ownerConsumptionInfoList}" var="list">
+		<tr>
+			<td style="text-align: center;">
+				<%
+					out.print(i);
+				%>
+			</td>
+			
+			
+
+			<td style="text-align: left;">${list.consumeDate}</td>
+			<td style="text-align: left;">${list.itemName}</td>
+			<td style="text-align: center;">${list.quantity}</td>
+			<td style="text-align: left;">${list.remarks}</td>
+			<td style="text-align: left;">${list.employeeName}</td>
+			
+			<td>
+			<c:if test="${list.editable == 'Y'}">
+			<a href="#"
+				onclick="getOwnerConsumeInfo('${list.encConsumeId}')"><button
+						class="btn btn-xs btn-primary" type="button">
+						<i class="fa fa-pencil"></i>
+					</button></a>
+			</c:if>
+			</td>
+
+		</tr>
+		<%
+			i = i + 1;
+		%>
+
+	</c:forEach>
+
+</c:if>
+
+<c:if test="${! empty ownerConsumptionInfoListNotFound}">
+	<tr>
+		<td colspan="7" class="hiddenRow"><div>${ownerConsumptionInfoListNotFound}</div></td>
+		<td style="display:none;"> </td>
+		<td style="display:none;"> </td>
+		<td style="display:none;"> </td>
+		<td style="display:none;"> </td>
+		<td style="display:none;"> </td>
+		<td style="display:none;"> </td>
+	</tr>
+</c:if>
+
+
+
+
+<c:if test="${!empty membershipList}">
+	<%
+		int i = 1;
+	%>
+	<c:forEach items="${membershipList}" var="list">
+		<tr 
+		<%-- ondblclick="getEmployeeInfo('${list.encEmployeeId}','${list.employeeName}','${list.designationName}')" --%>
+			style="cursor: pointer">
+			<td>
+				<%
+					out.print(i);
+							i++;
+				%>
+			</td>
+			<td>${list.memberNo}</td>
+			<td>${list.memberName}</td>
+			<td>${list.knownAs}</td>
+			<td>${list.contactNo}</td>
+			<td>${list.address}</td>
+			<td>
+			<%-- <a href="#"
+				onclick="getEmployeeInfo('${list.encEmployeeId}','${list.employeeName}','${list.designationName}')"> --%>
+				<button
+						class="btn btn-xs btn-primary" type="button">
+						<i class="fa fa-pencil"></i>
+					</button></a>
+		</tr>
+	</c:forEach>
+
+</c:if>
+
+<c:if test="${! empty membershipListNotFound}">
+	<tr>
+		<td colspan="9"><p>${membershipListNotFound}</p></td>
+	</tr>
+</c:if>
 
 
 

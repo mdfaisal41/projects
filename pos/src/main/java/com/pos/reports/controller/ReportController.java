@@ -22,6 +22,7 @@ import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 import org.springframework.web.servlet.view.jasperreports.JasperReportsXlsView;
 
 import com.aes.protection.CipherUtils;
+import com.pos.accounts.model.SalaryProcessModel;
 import com.pos.lookup.model.LookupModel;
 import com.pos.lookup.service.LookupService;
 import com.pos.pointOfSale.model.PointOfSale;
@@ -117,6 +118,24 @@ public class ReportController {
 
 		}
 	}
+	
+	
+	@RequestMapping(value = "payrollReport", method = RequestMethod.GET)
+	public ModelAndView payrollReport(@ModelAttribute SalaryProcessModel salaryProcessModel, HttpSession session,
+			LookupModel lookupModel) {
+		// System.out.println("hello");
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+			ModelAndView mav = new ModelAndView();
+
+			mav.setViewName("payrollReport");
+			return mav;
+
+		} else {
+			return new ModelAndView("login");
+
+		}
+	}
+	
 
 	@RequestMapping(value = "cashReceipt", method = RequestMethod.GET)
 	public ModelAndView cashReceipt(ModelAndView modelAndView, @ModelAttribute("reportModel") ReportModel reportModel,
@@ -258,7 +277,25 @@ public class ReportController {
 			params.put("fromDate", reportModel.getFromDate());
 			params.put("toDate", reportModel.getToDate());
 			params.put("dataSource", dataSource);
-		} else {
+		}  else if (reportModel.getReportCode().equals("401")) {
+			
+			oReportDetails = reportService.searchReportDetails(reportModel);
+			String path = request.getSession().getServletContext().getRealPath("/WEB-INF/reports/payrollReport/");
+			String reportPath = path.replace("\\", "/");
+			
+			System.out.println("SUBREPORT_DIR " + reportPath + "/");
+			
+			//params.put("SUBREPORT_DIR", reportPath + "/");
+			
+			System.out.println("year  " + reportModel.getYear());
+			System.out.println("month  " + reportModel.getMonth());
+			
+			params.put("year", reportModel.getYear());
+			params.put("month", reportModel.getMonth());
+			
+			reportModel.setViewType("3");
+		}
+		else {
 			return null;
 		}
 

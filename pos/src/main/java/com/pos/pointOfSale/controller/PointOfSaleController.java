@@ -207,7 +207,7 @@ public class PointOfSaleController {
 	
 
 	@RequestMapping(value = "orderManagement", method = RequestMethod.GET)
-	public ModelAndView orderManagement(@ModelAttribute PointOfSale pointOfSale, HttpSession session,
+	public ModelAndView orderManagement(@ModelAttribute("pointOfSale") PointOfSale pointOfSale, HttpSession session,
 			LookupModel lookupModel, final RedirectAttributes redirectAttributes) {
 		
 		if (session.getAttribute("logonSuccessYN") == "Y") {
@@ -221,6 +221,11 @@ public class PointOfSaleController {
 			ModelAndView mav = new ModelAndView();
 
 			mav.setViewName("orderManagement");
+			
+			lookupModel.setId("17");
+			
+			mav.addObject("waiterList", lookupService.employeeList(lookupModel));
+			
 			mav.addObject("itemList", lookupService.itemList(lookupModel));
 			
 			List<PointOfSale> oPendingOrderList = pointOfSaleService.getPendingOrderList(pointOfSale);
@@ -237,7 +242,10 @@ public class PointOfSaleController {
 			//mav.addObject("employeeList", lookupService.employeeList(lookupModel));
 			//mav.addObject("inventoryTypeList", lookupService.inventoryTypeList(lookupModel));
 			
-			
+			 System.out.println("pointOfSale.getEmployeeId() " + pointOfSale.getEmployeeId());
+			 System.out.println("pointOfSale.getTableNo() " + pointOfSale.getTableNo());
+			 
+			mav.addObject("pointOfSale", pointOfSale);
 			
 			return mav;
 			
@@ -263,8 +271,7 @@ public class PointOfSaleController {
 
 			PointOfSale orderInfo = pointOfSaleService.getOrderInfo(pointOfSale);
 			// redirectAttributes.addFlashAttribute("receiptInfo", receiptInfo);
-			// System.out.println("receiptInfoSList "
-			// +receiptInfoSList.getReceiptList());
+			 System.out.println("orderInfo.getMessage() " + orderInfo.getMessage());
 
 			return orderInfo;
 		} else {
@@ -281,9 +288,11 @@ public class PointOfSaleController {
 			pointOfSale.setUpdateBy((String) session.getAttribute("employeeid"));
 
 			oPointOfSale = pointOfSaleService.saveOrder(pointOfSale);
+			
+			System.out.println("oPointOfSale.getMessage() " + oPointOfSale.getMessage());
 
-			// redirectAttributes.addFlashAttribute("registration",
-			// registration);
+			// redirectAttributes.addFlashAttribute("registration", registration);
+			
 			redirectAttributes.addFlashAttribute("message", oPointOfSale.getMessage());
 			redirectAttributes.addFlashAttribute("mCode", oPointOfSale.getmCode());
 
@@ -509,7 +518,16 @@ public class PointOfSaleController {
 			ModelAndView mav = new ModelAndView("orderInfoList");
 			List<PointOfSale> oPendingOrderInfoList = pointOfSaleService.getPendingOrderInfoList(pointOfSale);
 			if (oPendingOrderInfoList.size() > 0) {
+				
 				mav.addObject("pendingOrderInfoList", oPendingOrderInfoList);
+				
+				int sum_data = 0;
+				for(PointOfSale oPointOfSale : oPendingOrderInfoList) {
+					sum_data = sum_data + Integer.parseInt(oPointOfSale.getSubTotal());
+				}
+				
+				mav.addObject("sum_data", sum_data);
+				
 			} else {
 				mav.addObject("pendingOrderInfoListNotFound", "No Data Found!");
 			}
@@ -549,13 +567,13 @@ public class PointOfSaleController {
 	}
 	
 	@RequestMapping(value = "getOrderEditList", method = RequestMethod.GET)
-	public ModelAndView getOrderEditList(@ModelAttribute PointOfSale pointOfSale, LookupModel lookupModel,
+	public ModelAndView getOrderEditList(@ModelAttribute("pointOfSale") PointOfSale pointOfSale, LookupModel lookupModel,
 			HttpSession session, HttpServletRequest request, final RedirectAttributes redirectAttributes) throws Exception {
 		
 		if (session.getAttribute("logonSuccessYN") == "Y") {
 			//ModelAndView mav = new ModelAndView("orderInfoList");
 			List<PointOfSale> oOrderEditList = pointOfSaleService.getOrderEditList(pointOfSale);
-			System.out.println("list size " + oOrderEditList.size());
+			//System.out.println("list size " + oOrderEditList.size());
 			if (oOrderEditList.size() > 0) {
 				//mav.addObject("orderEditList", oOrderEditList);
 				redirectAttributes.addFlashAttribute("orderInfoList", oOrderEditList);

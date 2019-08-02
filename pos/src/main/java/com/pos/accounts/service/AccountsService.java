@@ -3,6 +3,7 @@ package com.pos.accounts.service;
 import java.util.List;
 
 import com.pos.accounts.model.EmployeeMonthlyConsumption;
+import com.pos.accounts.model.OwnerConsumptionInfo;
 import com.pos.accounts.model.SalaryProcessModel;
 import com.pos.accounts.model.SupplierInfo;
 
@@ -30,6 +31,13 @@ public interface AccountsService {
 	public SupplierInfo saveSupplier(SupplierInfo supplierInfo);
 	
 	public SupplierInfo getSupplierInfo(SupplierInfo supplierInfo);
+	
+	public List<OwnerConsumptionInfo> getOwnerConsumptionList(OwnerConsumptionInfo ownerConsumptionInfo);
+	
+	
+	public OwnerConsumptionInfo ownerConsumptionSave(OwnerConsumptionInfo ownerConsumptionInfo);
+
+	public OwnerConsumptionInfo getOwnerConsumption(OwnerConsumptionInfo ownerConsumptionInfo);
 	
 	
 }

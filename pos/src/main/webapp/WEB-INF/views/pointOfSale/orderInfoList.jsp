@@ -49,6 +49,19 @@
 	</c:forEach>
 
 </c:if>
+
+
+
+<c:if test="${! empty sum_data}">
+	<tr>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td><p>Net Total</p></td>
+		<td><p>${sum_data}</p></td>
+	</tr>
+</c:if>
+
 <c:if test="${! empty pendingOrderInfoListNotFound}">
 	<tr>
 		<td colspan="7"><p>${pendingOrderInfoListNotFound}</p></td>

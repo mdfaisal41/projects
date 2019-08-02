@@ -49,6 +49,12 @@ public class PointOfSale {
 	private String completedYn;
 	private String finalizedYn;
 	
+	private String employeeId;
+	private String employeeName;
+	private String orderNo;
+	private String orderDate;
+	
+	
 	
 	public String getCompletedYn() {
 		return completedYn;
@@ -285,6 +291,30 @@ public class PointOfSale {
 	}
 	public void setTableNo(String tableNo) {
 		this.tableNo = tableNo;
+	}
+	public String getEmployeeId() {
+		return employeeId;
+	}
+	public void setEmployeeId(String employeeId) {
+		this.employeeId = employeeId;
+	}
+	public String getOrderNo() {
+		return orderNo;
+	}
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
+	}
+	public String getOrderDate() {
+		return orderDate;
+	}
+	public void setOrderDate(String orderDate) {
+		this.orderDate = orderDate;
+	}
+	public String getEmployeeName() {
+		return employeeName;
+	}
+	public void setEmployeeName(String employeeName) {
+		this.employeeName = employeeName;
 	}
 	
 	

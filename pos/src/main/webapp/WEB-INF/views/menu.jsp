@@ -44,10 +44,9 @@
 
 				<li
 					class="nav-parent<%if (request.getAttribute("javax.servlet.forward.request_uri").equals("/pos/hr/employeeInfoView")
-						|| request.getAttribute("javax.servlet.forward.request_uri")
-								.equals("/pos/pointOfSale/orderView")
-						|| request.getAttribute("javax.servlet.forward.request_uri")
-								.equals("/pos/pointOfSale/orderFinalize")) {
+							|| request.getAttribute("javax.servlet.forward.request_uri").equals("/pos/hr/employeeInfo")
+							|| request.getAttribute("javax.servlet.forward.request_uri").equals("/pos/pointOfSale/orderView")
+						|| request.getAttribute("javax.servlet.forward.request_uri").equals("/pos/pointOfSale/orderFinalize")) {
 					out.print(" nav-expanded nav-active");
 				}%>">
 					<a> <i class="fa fa-users" aria-hidden="true"></i> <span>Employee
@@ -477,7 +476,9 @@
 						|| request.getAttribute("javax.servlet.forward.request_uri")
 								.equals("/pos/reports/employeeReport")
 								|| request.getAttribute("javax.servlet.forward.request_uri")
-								.equals("/pos/reports/costAnalysisReport")) {
+								.equals("/pos/reports/costAnalysisReport")
+								|| request.getAttribute("javax.servlet.forward.request_uri")
+								.equals("/pos/reports/payrollReport")) {
 					out.print(" nav-expanded nav-active");
 				}%>">
 					<a> <i class="fa fa-file-pdf-o" aria-hidden="true"></i> <span>Reports</span>
@@ -527,6 +528,8 @@
 					class="nav-parent<%if (request.getAttribute("javax.servlet.forward.request_uri").equals("/pos/accounts/empMonthlyConsumption")
 						|| request.getAttribute("javax.servlet.forward.request_uri")
 								.equals("/pos/accounts/salaryProcess")
+						|| request.getAttribute("javax.servlet.forward.request_uri")
+								.equals("/pos/accounts/ownerConsumptionInfo")
 						|| request.getAttribute("javax.servlet.forward.request_uri")
 								.equals("/pos/accounts/supplierInfo")
 						|| request.getAttribute("javax.servlet.forward.request_uri")

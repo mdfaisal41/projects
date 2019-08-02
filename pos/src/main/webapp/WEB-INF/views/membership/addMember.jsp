@@ -52,7 +52,7 @@
 	<!-- -----------------------------------tab code---------- -->
 	<div class="col-lg-12">
 		<form class="form-horizontal form-bordered form" method="post"
-			id="genForm" action="addMemberSave"
+			id="form" action="addMemberSave" autocomplete="off"
 			onkeypress="return event.keyCode != 13;">
 			<section class="panel panel-featured panel-featured-primary">
 
@@ -76,6 +76,7 @@
 											value="${membership.encMemberId}" /> <input
 											class="form-control mandatory" name="memberName" required
 											id="memberName" maxlength="50"
+											 onkeyup="this.value = this.value.toUpperCase();"
 											value="${membership.memberName}" /> <span
 											class="input-group-btn"> <a onclick="getProductList()"
 											class="btn btn-mg btn-primary modal-with-move-anim"
@@ -93,50 +94,23 @@
 								</label>
 								<div class="col-md-8">
 									<input class="form-control mandatory" name="knownAs" required
+									 onkeyup="this.value = this.value.toUpperCase();"
 										id="knownAs" onkeypress="goToNext(event,'fatherName')"
 										value="${membership.knownAs}" maxlength="50" />
 								</div>
 							</div>
 
 						</div>
-
-						<div class="form-group col-md-12">
-
-							<div class="col-sm-6 form-group">
-								<label class="col-md-4 col-sm-3 control-label">Contact
-									No <span class="required">*</span>
-								</label>
-								<div class="col-md-8">
-									<input type="text" class="form-control mandatory"
-										id="contactNo" maxlength="11" name="contactNo"
-										placeholder="01xxxxxxxxx"
-										onkeydown="return isNumberKey(event)"
-										value="${membership.contactNo}" />
-									<div id="errcontactNo"></div>
-								</div>
-							</div>
-
-							<div class="col-sm-6 form-group">
-								<label class="col-md-4 col-sm-3 control-label">Email <span
-									class="required">*</span></label>
-								<div class="col-md-8">
-									<input type="email" class="form-control mandatory"
-										id="emailAddress"
-										name="emailAddress"
-										value="${membership.emailAddress}" />
-								</div>
-							</div>
-
-						</div>
-
-						<div class="form-group col-md-12">
+						
+						
+							<div class="form-group col-md-12">
 
 							<div class="col-sm-6 form-group">
 								<label class="col-md-4 col-sm-3 control-label"> Gender <span
 									class="required">*</span>
 								</label>
 								<div class="col-md-8">
-									<select class="form-control mandatory" name="genderId"
+									<select class="form-control mandatory" name="genderId" required
 										id="genderId">
 										<option value="">Please Select One</option>
 										<c:forEach items="${genderList}" var="list">
@@ -153,7 +127,7 @@
 									<span class="required">*</span>
 								</label>
 								<div class="col-md-8">
-									<select class="form-control mandatory" name="religionId"
+									<select class="form-control mandatory" name="religionId" required
 										id="religionId">
 										<option value="">Please Select One</option>
 										<c:forEach items="${religionList}" var="list">
@@ -165,16 +139,46 @@
 								</div>
 							</div>
 
+						</div>
 
+						<div class="form-group col-md-12">
+
+							<div class="col-sm-6 form-group">
+								<label class="col-md-4 col-sm-3 control-label">Contact
+									No <span class="required">*</span>
+								</label>
+								<div class="col-md-8">
+									<input type="text" class="form-control mandatory"
+										id="contactNo" maxlength="11" name="contactNo" required
+										placeholder="01xxxxxxxxx"
+										onkeydown="return isNumberKey(event)"
+										value="${membership.contactNo}" />
+									<div id="errcontactNo"></div>
+								</div>
+							</div>
+
+							<div class="col-sm-6 form-group">
+								<label class="col-md-4 col-sm-3 control-label">Email 
+								</label>
+								<div class="col-md-8">
+									<input type="email" class="form-control"
+										id="emailAddress"
+										name="emailAddress"
+										value="${membership.emailAddress}" />
+								</div>
+							</div>
 
 						</div>
+
+					
 
 						<div class="form-group col-md-12">
 							<div class="col-sm-6 form-group">
 								<label class="col-md-4 col-sm-3 control-label"> Father
 									Name </label>
 								<div class="col-md-8">
-									<input class="form-control" name="fathersName" required
+									<input class="form-control" name="fathersName" 
+									 onkeyup="this.value = this.value.toUpperCase();"
 										id="fathersName"
 										value="${membership.fathersName}" maxlength="50" />
 								</div>
@@ -185,6 +189,7 @@
 									Name </label>
 								<div class="col-md-8">
 									<input class="form-control" name="mothersName" id="mothersName"
+									 onkeyup="this.value = this.value.toUpperCase();"
 										value="${membership.mothersName}" maxlength="50" />
 								</div>
 							</div>
@@ -203,6 +208,7 @@
 										</span> <input type="text" class="form-control" id="dateOfBirth"
 											name="dateOfBirth"
 											data-plugin-masked-input data-input-mask="99/99/9999"
+											data-plugin-datepicker
 											placeholder="dd/mm/yyyy"
 											value="${membership.dateOfBirth}" />
 
@@ -244,7 +250,7 @@
 						</div>
 						<div class="col-sm-6 form-group">
 							<label class="col-md-4 col-sm-3 control-label">Joining
-								Date </label>
+								Date <span class="required">*</span> </label>
 							<div class="col-md-8">
 								<div class="input-group">
 									<span class="input-group-addon"> <i
@@ -252,6 +258,7 @@
 									</span> <input type="text" class="form-control" id="joiningDate"
 										required
 										name="joiningDate" data-plugin-masked-input
+										data-plugin-datepicker
 										data-input-mask="99/99/9999" placeholder="dd/mm/yyyy"
 										value="${membership.joiningDate}" />
 								</div>
@@ -294,7 +301,7 @@
 					<div class="row">
 						<div class="col-sm-12 col-sm-offset-0"></div>
 						<div class="btn_div col-sm-offset-0 ">
-							<a href="employeeInfo"><button class="btn btn-default"
+							<a href="addMember"><button class="btn btn-default"
 									type="button" role="button">
 									<i class="fa fa-refresh"></i> Clear
 								</button></a>

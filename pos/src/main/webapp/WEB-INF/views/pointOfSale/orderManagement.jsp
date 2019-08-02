@@ -60,13 +60,6 @@
 		<form class="form-horizontal form-bordered" id="form"
 			autocomplete="off" action="/pos/pointOfSale/saveOrder" method="post">
 
-			<%-- <div class="form-group col-md-12">
-				<input type="hidden" name="${_csrf.parameterName}"
-					value="${_csrf.token}" /> <input type="hidden"
-					id="encEffortTrackingId" name="encEffortTrackingId"
-					value="${taskTrackingInfo.encEffortTrackingId}" />
-			</div> --%>
-
 			<!-- start: page -->
 			<section class="panel panel-featured panel-featured-primary">
 				<header class="panel-heading">
@@ -74,45 +67,32 @@
 				</header>
 				<div class="panel-body">
 					<br />
-
+					
+					
 					<div class="form-group col-md-12">
+					
 						<div class="col-sm-6 form-group">
-							<label class="control-label col-md-5 col-sm-5 col-xs-12">Item
-								Name</label>
-							<div class="col-md-7 col-sm-7 col-xs-12">
-								<select data-plugin-selectTwo class="form-control" id="itemId"
-									name="itemId" required>
-									<option value="">Select One</option>
-									<c:forEach items="${itemList}" var="list">
-										<option value="${list.itemId}">${list.itemName}</option>
-									</c:forEach>
-								</select>
-							</div>
+									<label class="col-md-5 col-sm-5 control-label"> Waiter
+										Name <span class="required">*</span>
+									</label>
+									<div class="col-md-7 col-sm-7 col-xs-12">
+										<select data-plugin-selectTwo class="form-control"
+											name="employeeId" required id="employeeId"
+											onkeypress="goToNext(event,'levelNo')">
+											<option value="">Please Select One</option>
+											<c:forEach items="${waiterList}" var="list">
+												<option
+													<c:if test="${list.employeeId == pointOfSale.employeeId}">selected = "selected" </c:if>
+													value="${list.employeeId}">${list.firstName}</option>
+											</c:forEach>
+										</select>
+									</div>
 						</div>
-
-						<div class="col-sm-6 form-group">
-							<label class="col-md-5 control-label" for="nationalityId">Quantity</label>
-							<div class="col-md-6">
-								<input type="text" required class="form-control mandatory"
-									onblur="orderAddList()" name="quantity" id="quantity"
-									onkeydown="return isNumberKey(event)"
-									value="${pointOfSale.quantity}">
-
-								<div id="errquantity"></div>
-
-							</div>
-
-						</div>
-
-					</div>
-
-
-					<div class="form-group col-md-12">
 
 						<div class="col-sm-6 form-group">
 							<label class="control-label col-md-5 col-sm-5 col-xs-12"
 								for="tableNo">Table No</label>
-							<div class="col-md-7 col-sm-7 col-xs-12">
+							<div class="col-md-6 col-sm-6 col-xs-12">
 								<input type="text" required class="form-control mandatory"
 									name="tableNo" id="tableNo"
 									onkeydown="return isNumberKey(event)"
@@ -125,22 +105,47 @@
 
 					</div>
 
+					<div class="form-group col-md-12">
+						<div class="col-sm-6 form-group">
+							<label class="control-label col-md-5 col-sm-5 col-xs-12">Item
+								Name</label>
+							<div class="col-md-7 col-sm-7 col-xs-12">
+								<select data-plugin-selectTwo class="form-control" id="itemId"
+									name="itemId">
+									<option value="">Select One</option>
+									<c:forEach items="${itemList}" var="list">
+										<option value="${list.itemId}">${list.itemName}</option>
+									</c:forEach>
+								</select>
+							</div>
+						</div>
 
+						<div class="col-sm-6 form-group">
+							<label class="col-md-5 control-label" for="nationalityId">Quantity</label>
+							<div class="col-md-6">
+								<input type="text"  class="form-control mandatory"
+									onblur="orderAddList()" name="quantity" id="quantity"
+									onkeydown="return isNumberKey(event)"
+									value="${pointOfSale.quantity}">
+
+								<div id="errquantity"></div>
+
+							</div>
+
+						</div>
+
+					</div>
 				</div>
 
-				<%-- <c:if test="${pointOfSale.encOrderId != null}">
-					<p style="font-size: 30px; color: red; text-align: center;">Receive
-						Amount : ${pointOfSale.totalPrice}</p>
-				</c:if> --%>
-
-
-
 				<div class="panel-body" id="">
-					<input type="hidden" id="sl" value="${orderSl}"> <br />
+					<input type="hidden" id="sl" value="${orderInfoList.size()}"> <br />
 					<div style="overflow: scroll; max-width: 100%;">
+					
 						<input type='hidden' id='orderIndex' value="${orderInfoListIndex}" />
-						<table
-							class="table table-bordered table-striped table-condensed mb-none"
+						
+						<input type='hidden' id='encOrderId' name='encOrderId' value='${pointOfSale.encOrderId}'/>
+						
+						<table class="table table-bordered table-striped table-condensed mb-none"
 							id="dataTable">
 							<thead>
 								<tr>
@@ -150,60 +155,75 @@
 									<th>Quantity</th>
 									<th>Sub Total</th>
 									<th>Action</th>
-									<c:if test="${!empty orderInfoList}">
+									<%-- <c:if test="${!empty orderInfoList}">
 										<th>Edit</th>
-									</c:if>
+									</c:if> --%>
 								</tr>
 							</thead>
 							<tbody id="orderInfoList">
+							
 								<c:if test="${!empty orderInfoList}">
 									<%
 										int j = 0;
 									%>
 									<c:forEach items="${orderInfoList}" var="list">
 										<tr style="cursor: pointer">
-											<td id="sl">${orderSl}</td>
-											<td style="border-style: inset;">${list.itemName}<input
-												type='hidden' id='itemId_${list.itemId}'
-												value='${list.itemId}'
-												name='orderModelList[<% out.print(j);%>].itemId'> <input
-												type='hidden' id='encOrderId_${list.encOrderId}'
-												value='${list.encOrderId}'
-												name='orderModelList[<% out.print(j);%>].encOrderId'>
+										
+											<td style="border-style: inset;" id="sl"><%-- ${orderSl} --%> <%out.print(j+1);%> 
+												
+											<input type='hidden'  id='encItemOrderId_${list.encItemOrderId}'  
+											value='${list.encItemOrderId}'
+											name='orderModelList[<% out.print(j);%>].encItemOrderId'>
+											
 											</td>
-											<td style="border-style: inset;">${list.itemPrice}<input
-												type='hidden' id='itemPrice_${list.itemPrice}'
+											
+											<td style="border-style: inset;">${list.itemName}
+											<input type='hidden' id='itemId_${list.itemId}'
+												value='${list.itemId}'
+												name='orderModelList[<% out.print(j);%>].itemId'> 
+											</td>
+											
+											<td style="border-style: inset;">${list.itemPrice}
+											<input type='hidden' id='itemPrice_${list.itemPrice}'
 												value='${list.itemPrice}'
 												name='orderModelList[<% out.print(j);%>].itemPrice'>
 											</td>
-											<td style="border-style: inset;">${list.quantity}<input
-												type='hidden' id='quantity_${list.quantity}'
+										
+											<td style="border-style: inset;">${list.quantity}
+											<input type='hidden' id='quantity_${list.quantity}'
 												value='${list.quantity}'
 												name='orderModelList[<% out.print(j);%>].quantity'>
 											</td>
-											<td style="border-style: inset;">${list.subTotal}<input
-												type='hidden' id='subTotal_${list.subTotal}'
+											
+											<td style="border-style: inset;">${list.subTotal}
+											<input type='hidden' id='subTotal_${list.subTotal}'
 												value='${list.subTotal}'
 												name='orderModelList[<% out.print(j);%>].subTotal'>
 											</td>
+											
 											<td style="border-style: inset;"><c:if
 													test="${!empty list.encOrderId }">
 													<a href='#' onclick='removetr(this)'><button
 															class="btn btn-xs btn-primary" type="button">&times;
 														</button></a>
-												</c:if></td>
-											<td style="border-style: inset;"><c:if
+												</c:if>
+											</td>
+												
+											<%-- <td style="border-style: inset;"><c:if
 													test="${!empty list.encOrderId }">
 													<a href='#' onclick='removetr(this)'><button
 															type="button" class="btn btn-primary"
 															onclick="getOrderEditList('${list.encOrderId}')">
 															<i class="fa fa-edit"></i>
 														</button></a>
-												</c:if></td>
+												</c:if>
+											</td> --%>
+											
 										</tr>
 										<%
 											j = j + 1;
 										%>
+										
 									</c:forEach>
 								</c:if>
 
@@ -265,10 +285,10 @@
 								<thead>
 									<tr>
 										<th>#</th>
-										<th>Order ID</th>
+										<th>Date & Time</th>
+										<th>Order No</th>
 										<th>Table No</th>
-										<th>Time</th>
-										<th>Taken By</th>
+										<th>Waiter Name</th>
 										<th>View</th>
 										<th>Edit</th>
 										<th>Token</th>
@@ -290,10 +310,10 @@
 																i++;
 													%>
 												</td>
-												<td>${list.orderId}</td>
-												<td>${list.tableNo}</td>
-												<td>${list.updateDate}</td>
-												<td>${list.updateBy}</td>
+												<td>${list.orderDate}</td>
+												<td style="text-align: center;">${list.orderNo}</td>
+												<td style="text-align: center;">${list.tableNo}</td>
+												<td>${list.employeeName}</td>
 
 												<td><button
 														onclick="getPendingOrderInfoList('${list.encOrderId}')"
@@ -304,7 +324,7 @@
 												<td>
 												<c:if test="${list.finalizedYn == 'N'}">
 														<button type="button" class="btn btn-primary"
-															onclick="getOrderEditList('${list.encOrderId}')">
+															onclick="getOrderEditList('${list.encOrderId}', '${list.employeeId}', '${list.tableNo}')">
 															<i class="fa fa-edit"></i>
 														</button>
 													</c:if>
@@ -312,7 +332,7 @@
 												<td>
 												<c:if test="${list.finalizedYn == 'N'}">
 														<button type="button" class="btn btn-primary"
-															onclick="orderFinalizeReport('${pointOfSale.encOrderId}')">
+															onclick="orderFinalizeReport('${list.encOrderId}')">
 															<i class="fa fa-print"></i>
 														</button>
 													</c:if>
@@ -375,7 +395,7 @@
 	<form class="" method="post" autocomplete="off"
 			action="/pos/pointOfSale/saveOrderFinalize" id="form"
 			onkeypress="return event.keyCode != 13;">
-	<section class="panel">
+	<section class="panel panel-featured panel-featured-primary">
 		<header class="panel-heading">
 			<button class="close modal-dismiss" type="button"
 				id="btnModalEmpListClose">
@@ -386,6 +406,8 @@
 
 		<div class="panel-body">
 			<!-- <div class="col-md-12"> -->
+			
+			<input type='hidden' id='modal_encOrderId' name='encOrderId'/>
 
 			<div class="form-group col-md-12">
 				<label class="col-md-6 control-label" for="personId">
@@ -398,7 +420,8 @@
 						value="${pointOfSale.orderTotalAmount}" />
 				</div>
 			</div>
-			<div class="form-group col-md-12">
+			
+		<!-- 	<div class="form-group col-md-12">
 				<label class="col-md-6 control-label" for="receivedAmount">Received
 					Amount</label>
 				<div class="col-md-6">
@@ -408,10 +431,11 @@
 						onkeypress="return isNumberKey(event)" onkeyup="getChangeAmount()" />
 					<div id="errorderPrice"></div>
 				</div>
-			</div>
+			</div> -->
+			
 			<!-- </div> -->
 			<!-- <div class="col-md-12"> -->
-			<div class="form-group col-md-12">
+			<!-- <div class="form-group col-md-12">
 				<label class="col-md-6 control-label" for="personId">Change
 					Amount <span class="required"> * </span>
 				</label>
@@ -423,7 +447,8 @@
 
 					<div id="errdiscountAmount"></div>
 				</div>
-			</div>
+			</div> -->
+			
 			<div class="form-group col-md-12">
 				<label class="col-md-6 control-label"> Cash Pay Amount <span
 					class="required"> * </span>
@@ -437,6 +462,7 @@
 					<div id="errdiscountAmount"></div>
 				</div>
 			</div>
+			
 			<div class="form-group col-md-12">
 				<label class="col-md-6 control-label"> Card Pay Amount <span
 					class="required"> * </span>
@@ -464,6 +490,7 @@
 					<div id="errdiscountAmount"></div>
 				</div>
 			</div>
+			
 			<div class="form-group col-md-12">
 				<label class="col-md-6 control-label" for="personId"> Net
 					Payable <span class="required"> * </span>
@@ -482,7 +509,7 @@
 				<div class="col-sm-offset-4">
 					<button class="btn btn-primary" type="submit">Submit</button>
 					<a href="/pos/pointOfSale/orderManagement"><button
-							class="btn btn-default" type="button" role="button">Cancel</button></a>
+							class="btn btn-default" type="button" role="button">Close</button></a>
 				</div>
 			</div>
 		</footer>
@@ -499,13 +526,13 @@
 	class="zoom-anim-dialog modal-block modal-block-lg mfp-hide">
 	<!-- class="modal-block modal-block-sm mfp-hide"> -->
 
-	<section class="panel">
+	<section class="panel panel-featured panel-featured-primary">
 		<header class="panel-heading">
 			<button class="close modal-dismiss" type="button"
 				id="makersCountryListClose">
 				<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 			</button>
-			<h2 class="panel-title">Pending Order Info List</h2>
+			<h2 class="panel-title">Pending Order Info Details</h2>
 		</header>
 
 		<div class="panel-body">
@@ -558,6 +585,7 @@ function getCardPayAmount () {
 	}
 }
 
+
 function getCashPayAmount () {
 	var cardPayAmount = $("#cardPayAmount").val();
 	var cashPayAmount = $("#cashPayAmount").val();
@@ -587,6 +615,7 @@ function getChangeAmount () {
 		}
 }
 
+
 function getDiscountAmount () {
 	var discountAmount = $("#discountAmount").val();
 	var orderTotalAmount = $("#orderTotalAmount").val();
@@ -600,9 +629,10 @@ function getDiscountAmount () {
 		}
 }
 
-function getOrderTotalAmount(encOrderId) {
-	var link = "/pos/pointOfSale/getOrderTotalAmount";
 
+function getOrderTotalAmount(encOrderId) {
+	$("#modal_encOrderId").val(encOrderId);
+	var link = "/pos/pointOfSale/getOrderTotalAmount";
 	$
 			.ajax({
 				type : "POST",
@@ -616,13 +646,13 @@ function getOrderTotalAmount(encOrderId) {
 					$("#netPayableAmount").val(data.orderTotalAmount);
 				}
 			});
-};
+		};
 
 
-function getOrderEditList(encOrderId) {
+function getOrderEditList(encOrderId,employeeId,tableNo) {
 	//alert(encStudentId);
 	var url = "/pos/pointOfSale/getOrderEditList?encOrderId="
-			+ encodeURIComponent(encOrderId);
+			+ encodeURIComponent(encOrderId) + "&employeeId=" + employeeId + "&tableNo=" + tableNo;
 	//alert(url);
 	window.location = url;
 }
@@ -718,29 +748,31 @@ function isNumberKey(evt) {
 
 };  
 
+/* function orderFinalizeReport(encOrderId) {
+alert('hello');
+var link = "/pos/reports/viewreport";
+$.ajax({
+	type : "POST",
+	url : link,
+	data : "encOrderId=" + encodeURIComponent(encOrderId)
+			+ "&reportCode=" + "101",
+	async : true,
+	beforeSend : function(xhr) {
+		// here it is
+		//xhr.setRequestHeader(header, token);
+	},
+	success : function(data) {
+		window.open(url, '_blank');
+	},
+	error : function(data) {
+		alert('Error!!!');
+	}
+});
+}; 
 
+*/
 
-	/* function orderFinalizeReport(encOrderId) {
-		alert('hello');
-		var link = "/pos/reports/viewreport";
-		$.ajax({
-			type : "POST",
-			url : link,
-			data : "encOrderId=" + encodeURIComponent(encOrderId)
-					+ "&reportCode=" + "101",
-			async : true,
-			beforeSend : function(xhr) {
-				// here it is
-				//xhr.setRequestHeader(header, token);
-			},
-			success : function(data) {
-				window.open(url, '_blank');
-			},
-			error : function(data) {
-				alert('Error!!!');
-			}
-		});
-	}; */
+	
 
 <%-- 	function printLearner(encServiceRequestNo) {
 		var java_base_url = "<%out.print(session.getAttribute("sess_baseurl"));%>";
@@ -782,7 +814,6 @@ function isNumberKey(evt) {
 			//$("#quantity").focus();
 		} else {
 			
-			
 			/* if (trIndex > 10) {
 				content = "<div class='alert alert-danger'>"
 					+ "<button class='close' aria-hidden='true' data-dismiss='alert' "
@@ -811,11 +842,12 @@ function isNumberKey(evt) {
 							$("#orderInfoListNotFound").remove();
 							if (data.mCode == '1111') {
 								//alert(data.orderPrice);
-								var subTotal = data.itemPrice * quantity;
+								/* var subTotal = data.itemPrice * quantity; */
 								//alert(subTotal);
 								var content = "<tr>"
 										+ "<td style='border-style: inset;'>"
 										+ sl
+										+ "<input type='hidden'  name='orderModelList["+ trIndexResult+ "].encItemOrderId' value='' />"
 										+ "</td>"
 										+ "<td style='border-style: inset;'><input type='hidden' id='itemId_" + itemId+ "'" + " name='orderModelList["+ trIndexResult+ "].itemId' value='"+ itemId+ "' />"
 										+ data.itemName
@@ -827,10 +859,11 @@ function isNumberKey(evt) {
 										+ "<td style='border-style: inset;'><input type='hidden' id='quantity_"+ quantity+ "'"+ " name='orderModelList["+ trIndexResult+ "].quantity' value='"+ quantity+ "'/>"
 										+ quantity
 										
-										+ "<td style='border-style: inset;'><input type='hidden' id='subTotal_" + subTotal+ "'" + " name='orderModelList["+ trIndexResult+ "].subTotal' value='"+ subTotal+ "' />"
-										+ subTotal
+										+ "<td style='border-style: inset;'><input type='hidden' id='subTotal_" + data.subTotal+ "'" + " name='orderModelList["+ trIndexResult+ "].subTotal' value='"+ data.subTotal+ "' />"
+										+ data.subTotal
 										+ "</td>"
 										+ "<td style='border-style: inset;'><a href='#' onclick='removetr(this)'><button class='btn btn-xs btn-primary' type='button'>&times;</button></a></td>"
+										/* + "<td>" + "</td>" */
 										+ "</tr>";
 								// alert(content);
 
@@ -843,6 +876,8 @@ function isNumberKey(evt) {
 								totalPrice = data.orderPrice;
 								//alert(totalPrice);
 								$("#totalPrice").val(totalPrice);
+								
+								
 
 							} else {
 								content = "<div class='alert alert-danger'>"
@@ -852,6 +887,7 @@ function isNumberKey(evt) {
 										+ "</strong>" + "</div>"
 
 								$("#msg").html(content);
+										alert(content)
 							}
 						},
 						error : function(data) {
