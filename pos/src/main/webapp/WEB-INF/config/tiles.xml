@@ -337,5 +337,11 @@
 			value="/WEB-INF/views/accounts/ownerConsumptionInfo.jsp" />
 	</definition>
 	
+	<definition name="ownerConsumptionHistory" extends="base.definition">
+		<put-attribute name="title" value="Owner Consumption History" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/accounts/ownerConsumptionHistory.jsp" />
+	</definition>
+	
 
 </tiles-definitions>

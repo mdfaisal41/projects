@@ -39,5 +39,9 @@ public interface AccountsService {
 
 	public OwnerConsumptionInfo getOwnerConsumption(OwnerConsumptionInfo ownerConsumptionInfo);
 	
+	public OwnerConsumptionInfo finalizeOwnerConsumeInfo(OwnerConsumptionInfo ownerConsumptionInfo);
+	
+	public List<OwnerConsumptionInfo> getOwnerConsumptionHistoryList(OwnerConsumptionInfo ownerConsumptionInfo);
+	
 	
 }

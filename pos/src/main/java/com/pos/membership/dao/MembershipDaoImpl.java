@@ -99,6 +99,7 @@ public class MembershipDaoImpl implements MembershipDao{
 			Membership oMembership = new Membership();
 
 			oMembership.setEncMemberId(oCipherUtils.encrypt(oRemoveNull.nullRemove(String.valueOf(row.get("MEMBER_ID")))));
+			oMembership.setMemberId(oRemoveNull.nullRemove(String.valueOf(row.get("MEMBER_ID"))));
 			oMembership.setMemberName(oRemoveNull.nullRemove(String.valueOf(row.get("MEMBER_NAME"))));
 			oMembership.setKnownAs(oRemoveNull.nullRemove(String.valueOf(row.get("KNOWN_AS"))));
 			oMembership.setMemberNo(oRemoveNull.nullRemove(String.valueOf(row.get("MEMBER_NO"))));

@@ -66,27 +66,79 @@
 
 						<div class="col-md-12">
 
-							<div class="form-group col-sm-6">
-								<label class="col-md-4 control-label"> Member
-									Name <span class="required">*</span>
+						<div class="form-group col-sm-6">
+								<label class="col-md-4 col-sm-4 control-label"> Member
+									Name 
 								</label>
-								<div class="col-md-8">
+								<div class="col-md-8 col-sm-8 col-xs-12">
 									<div class="input-group mb-md">
 										<input type="hidden" id="encMemberId" name="encMemberId"
 											value="${membership.encMemberId}" /> <input
-											class="form-control mandatory" name="memberName" required
+											class="form-control mandatory" name="memberName" 
 											id="memberName" maxlength="50"
 											 onkeyup="this.value = this.value.toUpperCase();"
-											value="${membership.memberName}" /> <span
-											class="input-group-btn"> <a onclick="getProductList()"
+											value="${membership.memberName}" /> 
+											
+											<span
+											class="input-group-btn"> <a onclick="getMemberList()"
 											class="btn btn-mg btn-primary modal-with-move-anim"
-											type="submit" href="#modalProductList"> <i
+											type="submit" href="#modalMemberList"> <i
 												class="fa fa-search"></i>
 										</a>
 										</span>
+										
 									</div>
 								</div>
 							</div>
+							
+							
+							<!-------------------------------- start modal member list ------------------------------------------>
+
+										<div id="modalMemberList"
+											class="zoom-anim-dialog modal-block modal-block-md mfp-hide">
+											<!-- class="zoom-anim-dialog modal-block modal-block-lg mfp-hide"> -->
+											<section class="panel panel-featured panel-featured-primary">
+												<header class="panel-heading">
+													<button class="close modal-dismiss" type="button"
+														id="productListClose">
+														<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+													</button>
+													<h2 class="panel-title">Member List</h2>
+												</header>
+										
+												<div class="panel-body">
+										
+													<div class="row">
+														<div class="col-md-12">
+															<div style="overflow: scroll; max-height: 300px;">
+										
+																<table class="table table-striped table-condensed table-hover mb-none" 
+																id="memberListTable" role="grid">
+																	<thead>
+																		<tr>
+																			<th>#</th>
+																			<th>Member No</th>
+																			<th>Member Name</th>
+																			<th>Known As</th>
+																			<th>Contact No</th>
+																			<th>Address</th>
+																		</tr>
+																		
+																	</thead>
+																	<tbody id="memberList" style="border-style: inset;">
+																	</tbody>
+																</table>
+															</div>
+														</div>
+													</div>
+												</div>
+											</section>
+										</div>
+
+
+<!-------------------------------- end modal member list ------------------------------------------>
+
+							
 							
 							<div class="col-sm-6 form-group">
 								<label class="col-md-4 col-sm-3 control-label"> Known As
@@ -886,6 +938,32 @@ alert()
 			});
 		}
 	}
+	
+	
+	
+	
+	function getMemberList() {
+
+		var link = "/pos/membership/getMemberList";
+		//var reservationDate = $("#reservationDate").val();
+		
+		$.ajax({
+			type : "POST",
+			url : link,
+			async : true,
+
+			success : function(data) {
+				$("#memberList").html(data);
+				$("#memberListTable").DataTable();
+			},
+
+			error : function(data) {
+				alert('Error!!!')
+			}
+		});
+	};
+	
+	
 	
 </script>
 

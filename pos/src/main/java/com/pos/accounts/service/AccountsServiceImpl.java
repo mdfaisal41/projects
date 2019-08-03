@@ -73,6 +73,13 @@ public class AccountsServiceImpl implements AccountsService {
 		return accountsDao.getOwnerConsumption(ownerConsumptionInfo);
 	}
 	
+	public OwnerConsumptionInfo finalizeOwnerConsumeInfo(OwnerConsumptionInfo ownerConsumptionInfo) {
+		return accountsDao.finalizeOwnerConsumeInfo(ownerConsumptionInfo);
+	}
+	
+	public List<OwnerConsumptionInfo> getOwnerConsumptionHistoryList(OwnerConsumptionInfo ownerConsumptionInfo) {
+		return accountsDao.getOwnerConsumptionHistoryList(ownerConsumptionInfo);
+	}
 	
 
 }

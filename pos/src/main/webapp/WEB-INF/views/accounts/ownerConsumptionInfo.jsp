@@ -2,6 +2,11 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
+<style>
+
+th { white-space: nowrap; }
+
+</style>
 
 <header class="page-header">
 	<!-- <h2>Employee Consumption Info</h2> -->
@@ -16,6 +21,7 @@
 
 	</div>
 </header>
+		
 
 <!-- start: page -->
 
@@ -76,6 +82,16 @@
 				<header class="panel-heading">
 					<h2 class="panel-title">Owner Consumption Info</h2>
 				</header>
+				
+				<div class="panel-actions">
+						<c:if test="${designationId == '2'}">
+							<a href="/pos/accounts/ownerConsumptionHistory"><button
+									class="btn btn-primary btn-round" type="button">
+									<span><i class="fa fa-plus" aria-hidden="true"></i> See History
+										 </span>
+								</button></a>
+						</c:if>
+				</div>
 
 				<div class="panel-body">
 
@@ -110,26 +126,24 @@
 								
 								
 								<div class="form-group col-sm-6">
-								<label class="col-md-5 col-sm-5 control-label"> Member
-									Name 
-								</label>
-								<div class="col-md-7 col-sm-7 col-xs-12">
-									<div class="input-group mb-md">
-										<input type="hidden" id="encMemberId" name="encMemberId"
-											value="${membership.encMemberId}" /> <input
-											class="form-control" name="memberName" readonly
-											id="memberName" maxlength="50"
-											 onkeyup="this.value = this.value.toUpperCase();"
-											value="${membership.memberName}" /> <span
-											class="input-group-btn"> <a onclick="getMemberList()"
-											class="btn btn-mg btn-primary modal-with-move-anim"
-											type="submit" href="#modalMemberList"> <i
-												class="fa fa-search"></i>
-										</a>
-										</span>
+									<label class="col-md-5 col-sm-5 control-label"> Member NO &
+										Name 
+									</label>
+									<div class="col-md-7 col-sm-7 col-xs-12">
+												
+												<select data-plugin-selectTwo class="form-control"
+												name="memberId"  id="memberId"
+												>
+												<option value="">Please Select One</option>
+												<c:forEach items="${membershipList}" var="list">
+													<option
+														<c:if test="${list.memberId == ownerConsumptionInfo.memberId}">selected = "selected" </c:if>
+														value="${list.memberId}">${list.memberNo} - ${list.memberName} </option>
+												</c:forEach>
+											</select>
+										
 									</div>
 								</div>
-							</div>
 							
 							
 							<!-------------------------------- start modal member list ------------------------------------------>
@@ -237,7 +251,17 @@
 												required onkeypress="goToNext(event,'contactNo')"
 												name="consumeDate" placeholder="dd/mm/yyyy"
 												data-plugin-masked-input data-input-mask="99/99/9999"
-												value="${ownerConsumptionInfo.consumeDate}"
+												
+												<c:choose>
+													<c:when test="${empty ownerConsumptionInfo.consumeDate}">
+														value="${logindate}"
+													</c:when>
+												
+													<c:otherwise>
+														value="${ownerConsumptionInfo.consumeDate}"
+													</c:otherwise>
+												</c:choose>
+												
 												data-plugin-datepicker />
 										</div>
 									</div>
@@ -309,12 +333,13 @@
 									<th>#</th>
 									<th>Consume Date</th>
 									<th>Owner Name</th>
-									<th>Member Name</th>
+									<th>Member No & Name</th>
 									<th>Item Name</th>
 									<th>Quantity</th>
 									<th>Remarks</th>
 									<th>Update By</th>
 									<th>Token</th>
+									<th>Complete</th>
 									<th>Edit</th>
 								</tr>
 							</thead>
@@ -334,8 +359,6 @@
 												%>
 											</td>
 
-
-
 											<td style="text-align: left;">${list.consumeDate}</td>
 											<td style="text-align: left;">${list.employeeName}</td>
 											<td style="text-align: left;">${list.memberName}</td>
@@ -350,14 +373,25 @@
 															<i class="fa fa-print"></i>
 														</button></a>
 											</td>
+											
+											<td>
+												<button onclick="finalizeOwnerConsumeInfo('${list.encConsumeId}')"
+													class="btn btn-mg btn-success modal-with-move-anim" type="button">
+													Finalize
+												</button>
+											</td>
 
-											<td><c:if test="${list.editable == 'Y'}">
+											<td>
+											<c:if test="${list.editable == 'Y'}">
 													<a href="#"
 														onclick="getOwnerConsumeInfo('${list.encConsumeId}')"><button
 															class="btn btn-xs btn-primary" type="button">
 															<i class="fa fa-pencil"></i>
 														</button></a>
-												</c:if></td>
+												</c:if>
+											</td>
+											
+											
 
 										</tr>
 										<%
@@ -370,7 +404,8 @@
 
 								<c:if test="${! empty ownerConsumptionInfoListNotFound}">
 									<tr>
-										<td colspan="10" class="hiddenRow"><div>${ownerConsumptionInfoListNotFound}</div></td>
+										<td colspan="11" class="hiddenRow"><div>${ownerConsumptionInfoListNotFound}</div></td>
+										<td style="display: none;"></td>
 										<td style="display: none;"></td>
 										<td style="display: none;"></td>
 										<td style="display: none;"></td>
@@ -477,6 +512,19 @@ function getOwnerConsumptionList(id) {
 	};
 	
 	
+	
+	  function finalizeOwnerConsumeInfo(encConsumeId) {
+		  
+		  var conf = confirm("Do You Want To Finalize? ");
+		  
+		  if (conf == true) {
+			  var url = "/pos/accounts/ownerConsumptionInfo/finalizeOwnerConsumeInfo?encConsumeId=" + encodeURIComponent(encConsumeId);
+				window.location = url;
+				
+			  } else {
+				  window.location = "/pos/accounts/ownerConsumptionInfo";
+			  }
+		}; 
 
 	/* window.onload = load;
 	function load() {

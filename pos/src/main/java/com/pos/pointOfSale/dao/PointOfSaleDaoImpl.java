@@ -689,18 +689,7 @@ public class PointOfSaleDaoImpl implements PointOfSaleDao {
 		NamedParameterJdbcTemplate npjt = new NamedParameterJdbcTemplate(jdbcTemplate);
 		
 		try {
-		/*	simpleJdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("PRO_CANCEL_ORDER");
-			Map<String, Object> inParamMap = new HashMap<String, Object>();
-			inParamMap.put("P_ORDER_ID", oCipherUtils.decrypt(pointOfSale.getEncOrderId()));
-
-			// inParamMap.put("P_UPDATE_DATE", student.getUpdateDate());
-
-			Map<String, Object> outParamMap = simpleJdbcCall.execute(new MapSqlParameterSource().addValues(inParamMap));
-
-			oPointOfSale.setMessage((String) outParamMap.get("P_MESSAGE"));
-			oPointOfSale.setmCode((String) outParamMap.get("P_MESSAGE_CODE"));
-			// System.out.println("studentId " + oStudent.getStudentId());
-			 */
+		
 			StringBuilder sBuilder = new StringBuilder();
 			sBuilder.append(" UPDATE ORDER_MANAGEMENT SET ORDER_CANCELED_YN = 'Y'  ");
 			sBuilder.append(" WHERE ORDER_ID = :orderId  ");

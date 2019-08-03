@@ -6,6 +6,7 @@ public class OwnerConsumptionInfo {
 	private String encEmployeeId;
 	private String employeeId;
 	private String employeeName;
+	private String designationId;
 	private String designation;
 	private String itemId;
 	private String itemName;
@@ -129,8 +130,12 @@ public class OwnerConsumptionInfo {
 	public void setMemberName(String memberName) {
 		this.memberName = memberName;
 	}
-	
-	
+	public String getDesignationId() {
+		return designationId;
+	}
+	public void setDesignationId(String designationId) {
+		this.designationId = designationId;
+	}
 	
 
 }

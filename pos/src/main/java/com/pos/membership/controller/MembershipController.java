@@ -178,7 +178,7 @@ public class MembershipController {
 
 				oMembershipList = membershipService.getMemberList(membership);
 				
-				 System.out.println("oMembershipList.size()  " + oMembershipList.size());
+				 //System.out.println("oMembershipList.size()  " + oMembershipList.size());
 				
 				if(oMembershipList.size() >0) {
 					mav.addObject("membershipList", oMembershipList);

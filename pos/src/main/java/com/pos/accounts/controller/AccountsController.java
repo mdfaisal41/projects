@@ -47,6 +47,7 @@ import com.pos.login.service.LoginService;
 import com.pos.lookup.model.LookupModel;
 import com.pos.lookup.service.LookupService;
 import com.pos.membership.model.Membership;
+import com.pos.membership.service.MembershipService;
 import com.pos.pointOfSale.model.PointOfSale;
 
 @Controller
@@ -72,6 +73,9 @@ public class AccountsController {
 	
 	@Autowired
 	private AccountsService accountsService;
+	
+	@Autowired
+	private MembershipService membershipService;
 
 	////////////////// Employee Monthly Consumption Info///////////////////////
 
@@ -549,7 +553,7 @@ public class AccountsController {
 
 	@RequestMapping(value = "ownerConsumptionInfo", method = RequestMethod.GET)
 	public ModelAndView ownerConsumptionInfo(@ModelAttribute("ownerConsumptionInfo") OwnerConsumptionInfo ownerConsumptionInfo,
-			LookupModel lookupModel, HttpSession session, final RedirectAttributes redirectAttributes) {
+			LookupModel lookupModel, Membership membership, HttpSession session, final RedirectAttributes redirectAttributes) {
 		
 		//System.out.println("sadddddddddd");
 		
@@ -566,6 +570,9 @@ public class AccountsController {
 			lookupModel.setId("2");
 			
 			model.addObject("ownerList", lookupService.employeeList(lookupModel));
+			
+			model.addObject("membershipList", membershipService.getMemberList(membership));
+			
 			model.addObject("itemList", lookupService.itemList(lookupModel));
 			
 			//model.addObject("message", employeeMonthlyConsumption.getMessage());
@@ -635,6 +642,33 @@ public class AccountsController {
 	}
 	
 	
+	@RequestMapping(value = "ownerConsumptionInfo/getOwnerConsumption", method = RequestMethod.GET)
+	public ModelAndView getOwnerConsumption(@ModelAttribute("ownerConsumptionInfo") OwnerConsumptionInfo ownerConsumptionInfo, HttpSession session,
+			final RedirectAttributes redirectAttributes) {
+
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+			try {
+
+				OwnerConsumptionInfo oOwnerConsumptionInfo = new OwnerConsumptionInfo();
+
+				oOwnerConsumptionInfo = accountsService.getOwnerConsumption(ownerConsumptionInfo);
+				
+				redirectAttributes.addFlashAttribute("ownerConsumptionInfo", oOwnerConsumptionInfo);
+				
+				return new ModelAndView("redirect:/accounts/ownerConsumptionInfo");
+			} catch (Exception e) {
+				e.printStackTrace();
+				redirectAttributes.addFlashAttribute("mCode", "0000");
+				redirectAttributes.addFlashAttribute("message", "Error occured !!");
+				return new ModelAndView("redirect:/accounts/ownerConsumptionInfo");
+			}
+		} else {
+			return new ModelAndView("redirect:/");
+		}
+
+	}
+	
+	
 	
 	@RequestMapping(value = "ownerConsumptionSave", method = RequestMethod.POST)
 	public ModelAndView ownerConsumptionSave(@ModelAttribute OwnerConsumptionInfo ownerConsumptionInfo,
@@ -688,30 +722,89 @@ public class AccountsController {
 	}
 	
 	
-	@RequestMapping(value = "ownerConsumptionInfo/getOwnerConsumption", method = RequestMethod.GET)
-	public ModelAndView getOwnerConsumption(@ModelAttribute("ownerConsumptionInfo") OwnerConsumptionInfo ownerConsumptionInfo, HttpSession session,
-			final RedirectAttributes redirectAttributes) {
-
+	@RequestMapping(value = "ownerConsumptionInfo/finalizeOwnerConsumeInfo", method = RequestMethod.GET)
+	public ModelAndView finalizeOwnerConsumeInfo(@ModelAttribute OwnerConsumptionInfo ownerConsumptionInfo,
+			LookupModel lookupModel, HttpSession session, final RedirectAttributes redirectAttributes,
+			HttpServletRequest request) {
 		if (session.getAttribute("logonSuccessYN") == "Y") {
+			
 			try {
 
-				OwnerConsumptionInfo oOwnerConsumptionInfo = new OwnerConsumptionInfo();
+				ownerConsumptionInfo.setUpdateBy((String) session.getAttribute("employeeid"));
 
-				oOwnerConsumptionInfo = accountsService.getOwnerConsumption(ownerConsumptionInfo);
+				OwnerConsumptionInfo oOwnerConsumptionInfo = new OwnerConsumptionInfo();
 				
-				redirectAttributes.addFlashAttribute("ownerConsumptionInfo", oOwnerConsumptionInfo);
+				oOwnerConsumptionInfo = accountsService.finalizeOwnerConsumeInfo(ownerConsumptionInfo);
+
+				redirectAttributes.addFlashAttribute("mCode", oOwnerConsumptionInfo.getMessageCode());
+				redirectAttributes.addFlashAttribute("message", oOwnerConsumptionInfo.getMessage());
 				
-				return new ModelAndView("redirect:/accounts/ownerConsumptionInfo");
-			} catch (Exception e) {
+				}  catch (Exception e) {
 				e.printStackTrace();
 				redirectAttributes.addFlashAttribute("mCode", "0000");
-				redirectAttributes.addFlashAttribute("message", "Error occured !!");
-				return new ModelAndView("redirect:/accounts/ownerConsumptionInfo");
+				redirectAttributes.addFlashAttribute("message", "Error occured in finalize action !!");
 			}
+			return new ModelAndView("redirect:/accounts/ownerConsumptionInfo");
+
 		} else {
 			return new ModelAndView("redirect:/");
 		}
+		
+	}
+	
+	
+	
+	@RequestMapping(value = "ownerConsumptionHistory", method = RequestMethod.GET)
+	public ModelAndView ownerConsumptionHistory(@ModelAttribute("ownerConsumptionInfo") OwnerConsumptionInfo ownerConsumptionInfo,
+			LookupModel lookupModel, Membership membership, HttpSession session, final RedirectAttributes redirectAttributes) {
+		
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+			
+			String menuId = "M1003";
+			MenuInfo menuInfo = loginService.checkUserAuthorization((String) session.getAttribute("employeeid"),
+					menuId);
+			
+			if (menuInfo.getMenuId().equals(menuId)) {
+			
+			ModelAndView model = new ModelAndView("ownerConsumptionHistory");
+			
+			String designationId = ((String) session.getAttribute("designationId"));
+			
+			System.out.println("designationId " + designationId);
+			
+			//model.addObject("ownerList", lookupService.employeeList(lookupModel));
+			//model.addObject("membershipList", membershipService.getMemberList(membership));
+			//model.addObject("itemList", lookupService.itemList(lookupModel));
+			
+			if(designationId != null && designationId.equals("2")) {
+			
+				List<OwnerConsumptionInfo> oOwnerConsumptionInfoList = new ArrayList<OwnerConsumptionInfo>();
 
+				oOwnerConsumptionInfoList = accountsService.getOwnerConsumptionHistoryList(ownerConsumptionInfo);
+	
+				// System.out.println("oOwnerConsumptionInfoList.size()  " + oOwnerConsumptionInfoList.size());
+				
+				if(oOwnerConsumptionInfoList.size() >0) {
+					model.addObject("consumptionHistoryList", oOwnerConsumptionInfoList);
+				} else {
+					model.addObject("consumptionHistoryListNotFound", "No Data Found !!");
+				}
+			
+			} else {
+				model.addObject("consumptionHistoryListNotFound", "No Data Found !!");
+			}
+			
+			return model;
+			
+			} else {
+				redirectAttributes.addFlashAttribute("message", "You are not authorized for this Page !");
+				redirectAttributes.addFlashAttribute("mCode", "0000");
+				return new ModelAndView("redirect:/");
+			}
+
+		} else {
+			return new ModelAndView("redirect:/");
+		}
 	}
 	
 	

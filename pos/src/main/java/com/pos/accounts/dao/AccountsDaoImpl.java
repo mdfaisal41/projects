@@ -580,11 +580,11 @@ public class AccountsDaoImpl implements AccountsDao {
 		StringBuilder sBuilder = new StringBuilder();
 		sBuilder.append("SELECT CONSUMPTION_ID, ");
 		sBuilder.append(" (SELECT EMPLOYEE_NAME FROM EMPLOYEE WHERE EMPLOYEE_ID = OFC.OWNER_ID)EMPLOYEE_NAME, ");
-		sBuilder.append(" (SELECT MEMBER_NAME FROM MEMBERSHIP WHERE MEMBER_ID = OFC.MEMBER_ID)MEMBER_NAME, ");
+		sBuilder.append(" (SELECT MEMBER_NO|| '-' ||MEMBER_NAME FROM MEMBERSHIP WHERE MEMBER_ID = OFC.MEMBER_ID)MEMBER_NO_NAME, ");
 		sBuilder.append("ITEM_ID, ");
 		sBuilder.append(" (SELECT ITEM_NAME FROM L_ITEM WHERE ITEM_ID = OFC.ITEM_ID) ITEM_NAME, ");
 		sBuilder.append("QUANTITY, ");
-		sBuilder.append("TO_CHAR (CONSUME_DATE, 'DD-MON-YYYY') CONSUME_DATE, ");
+		sBuilder.append("TO_CHAR (CONSUME_DATE, 'DD-MON-YYYY') CONSUMED_DATE, ");
 		sBuilder.append("REMARKS, ");
 		sBuilder.append("(SELECT EMPLOYEE_NAME ");
 		sBuilder.append("FROM EMPLOYEE ");
@@ -593,19 +593,17 @@ public class AccountsDaoImpl implements AccountsDao {
 		sBuilder.append(" CASE WHEN TRUNC (UPDATE_DATE) = TRUNC (SYSDATE) THEN 'Y' ELSE 'N' END ");
 		sBuilder.append(" EDITABLE ");
 		sBuilder.append(" FROM OWNER_FOOD_CONSUMPTION OFC ");
-		/*sBuilder.append("WHERE 1 = 1 ");
-		sBuilder.append(" AND OWNER_ID = :empId ");*/
+		sBuilder.append(" WHERE COMPLETED_YN IS NULL OR COMPLETED_YN = 'N' ");
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
 		
 		/*if(ownerConsumptionInfo.getEmployeeId() != null && ownerConsumptionInfo.getEmployeeId().length() > 0) {
+		paramSource.addValue("empId", ownerConsumptionInfo.getEmployeeId());
 		} */
 		
-		//paramSource.addValue("empId", ownerConsumptionInfo.getEmployeeId());
+		sBuilder.append("ORDER BY CONSUME_DATE DESC, CONSUMPTION_ID DESC ");
 		
-		sBuilder.append("ORDER BY CONSUME_DATE DESC ");
-		
-		System.out.println(sBuilder);
+		//System.out.println(sBuilder);
 
 		List<Map<String, Object>> rows = npjt.queryForList(sBuilder.toString(), paramSource);
 		
@@ -615,12 +613,13 @@ public class AccountsDaoImpl implements AccountsDao {
 			oOwnerConsumptionInfo.setEncConsumeId(oRemoveNull.nullRemove(oCipherUtils.encrypt((String.valueOf(row.get("CONSUMPTION_ID"))))));
 			
 			oOwnerConsumptionInfo.setEmployeeName(oRemoveNull.nullRemove((String.valueOf(row.get("EMPLOYEE_NAME")))));
-			oOwnerConsumptionInfo.setMemberName(oRemoveNull.nullRemove((String.valueOf(row.get("MEMBER_NAME")))));
+			
+			oOwnerConsumptionInfo.setMemberName(oRemoveNull.nullRemove((String.valueOf(row.get("MEMBER_NO_NAME")))));
 			
 			oOwnerConsumptionInfo.setItemId(oRemoveNull.nullRemove((String.valueOf(row.get("ITEM_ID")))));
 			oOwnerConsumptionInfo.setItemName(oRemoveNull.nullRemove((String.valueOf(row.get("ITEM_NAME")))));
 			oOwnerConsumptionInfo.setQuantity(oRemoveNull.nullRemove((String.valueOf(row.get("QUANTITY")))));
-			oOwnerConsumptionInfo.setConsumeDate(oRemoveNull.nullRemove((String.valueOf(row.get("CONSUME_DATE")))));
+			oOwnerConsumptionInfo.setConsumeDate(oRemoveNull.nullRemove((String.valueOf(row.get("CONSUMED_DATE")))));
 			oOwnerConsumptionInfo.setRemarks(oRemoveNull.nullRemove((String.valueOf(row.get("REMARKS")))));
 			oOwnerConsumptionInfo.setUpdateBy(oRemoveNull.nullRemove((String.valueOf(row.get("UPDATE_BY")))));
 			oOwnerConsumptionInfo.setEditable(oRemoveNull.nullRemove((String.valueOf(row.get("EDITABLE")))));
@@ -641,6 +640,7 @@ public class AccountsDaoImpl implements AccountsDao {
 			
 			inParamMap.put("P_CONSUMPTION_ID", oCipherUtils.decrypt(oRemoveNull.nullRemove(ownerConsumptionInfo.getEncConsumeId())));
 			inParamMap.put("P_EMPLOYEE_ID", ownerConsumptionInfo.getEmployeeId());
+			inParamMap.put("P_MEMBER_ID", ownerConsumptionInfo.getMemberId());
 			inParamMap.put("P_CONSUME_DATE", ownerConsumptionInfo.getConsumeDate());
 			inParamMap.put("P_ITEM_ID", ownerConsumptionInfo.getItemId());
 			inParamMap.put("P_QUANTITY", ownerConsumptionInfo.getQuantity());
@@ -653,7 +653,7 @@ public class AccountsDaoImpl implements AccountsDao {
 			oOwnerConsumptionInfo.setMessage(oRemoveNull.nullRemove((String) outParamMap.get("P_MESSAGE")));
 			oOwnerConsumptionInfo.setMessageCode(oRemoveNull.nullRemove((String) outParamMap.get("P_MESSAGE_CODE")));
 			
-			System.out.println("oOwnerConsumptionInfo.setMessage() " + oOwnerConsumptionInfo.getMessage());
+			System.out.println("ownerConsumptionInfo.getEncConsumeId() " + oCipherUtils.decrypt(oRemoveNull.nullRemove(ownerConsumptionInfo.getEncConsumeId())));
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -674,6 +674,7 @@ public class AccountsDaoImpl implements AccountsDao {
 		StringBuilder sBuilder = new StringBuilder();
 		sBuilder.append("SELECT CONSUMPTION_ID, ");
 		sBuilder.append("OWNER_ID, ");
+		sBuilder.append("MEMBER_ID, ");
 		sBuilder.append("TO_CHAR (CONSUME_DATE, 'DD/MM/YYYY')CONSUME_DATE, ");
 		sBuilder.append("ITEM_ID, ");
 		sBuilder.append("QUANTITY, ");
@@ -693,12 +694,96 @@ public class AccountsDaoImpl implements AccountsDao {
 		Map row : rows) {
 			oOwnerConsumptionInfo.setEncConsumeId(oRemoveNull.nullRemove(oCipherUtils.encrypt((String.valueOf(row.get("CONSUMPTION_ID"))))));
 			oOwnerConsumptionInfo.setEmployeeId(oRemoveNull.nullRemove((String.valueOf(row.get("OWNER_ID")))));
+			oOwnerConsumptionInfo.setMemberId(oRemoveNull.nullRemove((String.valueOf(row.get("MEMBER_ID")))));
 			oOwnerConsumptionInfo.setConsumeDate(oRemoveNull.nullRemove((String.valueOf(row.get("CONSUME_DATE")))));
 			oOwnerConsumptionInfo.setItemId(oRemoveNull.nullRemove((String.valueOf(row.get("ITEM_ID")))));
 			oOwnerConsumptionInfo.setQuantity(oRemoveNull.nullRemove((String.valueOf(row.get("QUANTITY")))));
 			oOwnerConsumptionInfo.setRemarks(oRemoveNull.nullRemove((String.valueOf(row.get("REMARKS")))));
 		}
 		return oOwnerConsumptionInfo;
+	}
+	
+	
+	public OwnerConsumptionInfo finalizeOwnerConsumeInfo(OwnerConsumptionInfo ownerConsumptionInfo) {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+		OwnerConsumptionInfo oOwnerConsumptionInfo = new OwnerConsumptionInfo();
+		NamedParameterJdbcTemplate npjt = new NamedParameterJdbcTemplate(jdbcTemplate);
+		
+		try {
+			StringBuilder sBuilder = new StringBuilder();
+			sBuilder.append(" UPDATE OWNER_FOOD_CONSUMPTION SET COMPLETED_YN = 'Y'  ");
+			sBuilder.append(" WHERE CONSUMPTION_ID = :consumeId  ");
+			
+			MapSqlParameterSource paramSource = new MapSqlParameterSource();
+			paramSource.addValue("consumeId", oCipherUtils.decrypt(oRemoveNull.nullRemove(ownerConsumptionInfo.getEncConsumeId())));
+			
+			npjt.update(sBuilder.toString(), paramSource);
+			
+			oOwnerConsumptionInfo.setMessage("Finalized Successfully");
+			oOwnerConsumptionInfo.setMessageCode("1111");
+				
+				} catch (Exception ex) {
+					oOwnerConsumptionInfo.setMessage("Error Finalizing Record !!!");
+					oOwnerConsumptionInfo.setMessageCode("0000");
+			ex.printStackTrace();
+		}
+		return oOwnerConsumptionInfo;
+	}
+	
+	
+	public List<OwnerConsumptionInfo> getOwnerConsumptionHistoryList(OwnerConsumptionInfo ownerConsumptionInfo) {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+		List<OwnerConsumptionInfo> oConsumptionHistoryList = new ArrayList<OwnerConsumptionInfo>();
+
+		NamedParameterJdbcTemplate npjt = new NamedParameterJdbcTemplate(jdbcTemplate);
+		
+		StringBuilder sBuilder = new StringBuilder();
+		sBuilder.append("SELECT CONSUMPTION_ID, ");
+		sBuilder.append(" (SELECT EMPLOYEE_NAME FROM EMPLOYEE WHERE EMPLOYEE_ID = OFC.OWNER_ID)EMPLOYEE_NAME, ");
+		sBuilder.append(" (SELECT MEMBER_NO|| '-' ||MEMBER_NAME FROM MEMBERSHIP WHERE MEMBER_ID = OFC.MEMBER_ID)MEMBER_NO_NAME, ");
+		sBuilder.append("ITEM_ID, ");
+		sBuilder.append(" (SELECT ITEM_NAME FROM L_ITEM WHERE ITEM_ID = OFC.ITEM_ID) ITEM_NAME, ");
+		sBuilder.append("QUANTITY, ");
+		sBuilder.append("TO_CHAR (CONSUME_DATE, 'DD-MON-YYYY') CONSUMED_DATE, ");
+		sBuilder.append("PRICE, ");
+		sBuilder.append("REMARKS, ");
+		sBuilder.append("(SELECT EMPLOYEE_NAME ");
+		sBuilder.append("FROM EMPLOYEE ");
+		sBuilder.append("WHERE EMPLOYEE_ID = OFC.UPDATE_BY) ");
+		sBuilder.append("UPDATE_BY, ");
+		sBuilder.append(" CASE WHEN TRUNC (UPDATE_DATE) = TRUNC (SYSDATE) THEN 'Y' ELSE 'N' END ");
+		sBuilder.append(" EDITABLE ");
+		sBuilder.append(" FROM OWNER_FOOD_CONSUMPTION OFC ");
+		sBuilder.append(" WHERE COMPLETED_YN = 'Y' ");
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource();
+		
+		/*if(ownerConsumptionInfo.getEmployeeId() != null && ownerConsumptionInfo.getEmployeeId().length() > 0) {
+		paramSource.addValue("empId", ownerConsumptionInfo.getEmployeeId());
+		} */
+		
+		sBuilder.append("ORDER BY CONSUME_DATE DESC, CONSUMPTION_ID DESC ");
+		
+		//System.out.println(sBuilder);
+
+		List<Map<String, Object>> rows = npjt.queryForList(sBuilder.toString(), paramSource);
+		
+		for (@SuppressWarnings("rawtypes")
+		Map row : rows) {
+			OwnerConsumptionInfo oOwnerConsumptionHistory = new OwnerConsumptionInfo();
+			oOwnerConsumptionHistory.setEncConsumeId(oRemoveNull.nullRemove(oCipherUtils.encrypt((String.valueOf(row.get("CONSUMPTION_ID"))))));
+			oOwnerConsumptionHistory.setEmployeeName(oRemoveNull.nullRemove((String.valueOf(row.get("EMPLOYEE_NAME")))));
+			oOwnerConsumptionHistory.setMemberName(oRemoveNull.nullRemove((String.valueOf(row.get("MEMBER_NO_NAME")))));
+			oOwnerConsumptionHistory.setItemId(oRemoveNull.nullRemove((String.valueOf(row.get("ITEM_ID")))));
+			oOwnerConsumptionHistory.setItemName(oRemoveNull.nullRemove((String.valueOf(row.get("ITEM_NAME")))));
+			oOwnerConsumptionHistory.setQuantity(oRemoveNull.nullRemove((String.valueOf(row.get("QUANTITY")))));
+			oOwnerConsumptionHistory.setPrice(oRemoveNull.nullRemove((String.valueOf(row.get("PRICE")))));
+			oOwnerConsumptionHistory.setConsumeDate(oRemoveNull.nullRemove((String.valueOf(row.get("CONSUMED_DATE")))));
+			oOwnerConsumptionHistory.setRemarks(oRemoveNull.nullRemove((String.valueOf(row.get("REMARKS")))));
+			oOwnerConsumptionHistory.setUpdateBy(oRemoveNull.nullRemove((String.valueOf(row.get("UPDATE_BY")))));
+			oConsumptionHistoryList.add(oOwnerConsumptionHistory);
+		}
+		return oConsumptionHistoryList;
 	}
 		
 
