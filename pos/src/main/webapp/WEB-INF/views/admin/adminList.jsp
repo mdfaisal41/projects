@@ -2216,8 +2216,7 @@
 		int i = 1;
 	%>
 	<c:forEach items="${membershipList}" var="list">
-		<tr 
-		<%-- ondblclick="getEmployeeInfo('${list.encEmployeeId}','${list.employeeName}','${list.designationName}')" --%>
+		<tr  ondblclick="getMemberInfo('${list.encMemberId}')"
 			style="cursor: pointer">
 			<td>
 				<%
@@ -2230,13 +2229,16 @@
 			<td>${list.knownAs}</td>
 			<td>${list.contactNo}</td>
 			<td>${list.address}</td>
+			
 			<td>
-			<%-- <a href="#"
-				onclick="getEmployeeInfo('${list.encEmployeeId}','${list.employeeName}','${list.designationName}')"> --%>
+			 <a href="#"
+				onclick="getMemberInfo('${list.encMemberId}')"> 
 				<button
 						class="btn btn-xs btn-primary" type="button">
 						<i class="fa fa-pencil"></i>
 					</button></a>
+		  	</td>
+		  
 		</tr>
 	</c:forEach>
 
@@ -2244,7 +2246,13 @@
 
 <c:if test="${! empty membershipListNotFound}">
 	<tr>
-		<td colspan="9"><p>${membershipListNotFound}</p></td>
+		<td colspan="7"><p>${membershipListNotFound}</p></td>
+		<td style="display:none;"></td>
+		<td style="display:none;"></td>
+		<td style="display:none;"></td>
+		<td style="display:none;"></td>
+		<td style="display:none;"></td>
+		<td style="display:none;"></td>
 	</tr>
 </c:if>
 

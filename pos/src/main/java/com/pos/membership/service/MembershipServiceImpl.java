@@ -21,4 +21,9 @@ public class MembershipServiceImpl implements MembershipService{
 		return membershipDao.getMemberList(membership);
 	}
 	
+	public Membership getMemberInfo(Membership membership) {
+		return membershipDao.getMemberInfo(membership);
+	}
+	
+	
 }

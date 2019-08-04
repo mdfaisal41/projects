@@ -16,6 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.aes.protection.CipherUtils;
 import com.pos.accounts.model.EmployeeMonthlyConsumption;
+import com.pos.admin.model.RoleInfoForm;
 import com.pos.hr.model.EmployeeInformation;
 import com.pos.login.model.MenuInfo;
 import com.pos.login.service.LoginService;
@@ -39,7 +40,7 @@ public class MembershipController {
 	private MembershipService membershipService;
 
 	@RequestMapping(value = "addMember", method = RequestMethod.GET)
-	public ModelAndView addMember(@ModelAttribute Membership membership, HttpSession session, LookupModel lookupModel
+	public ModelAndView addMember(@ModelAttribute("membership") Membership membership, HttpSession session, LookupModel lookupModel
 			, final RedirectAttributes redirectAttributes) {
 		
 		if (session.getAttribute("logonSuccessYN") == "Y") {
@@ -74,7 +75,7 @@ public class MembershipController {
 	
 
 	@RequestMapping(value = "addMemberSave", method = RequestMethod.POST)
-	public ModelAndView addMemberSave(@ModelAttribute Membership membership, LookupModel lookupModel,
+	public ModelAndView addMemberSave(@ModelAttribute("membership") Membership membership, LookupModel lookupModel,
 			HttpSession session, final RedirectAttributes redirectAttributes, HttpServletRequest request) {
 		if (session.getAttribute("logonSuccessYN") == "Y") {
 			try {
@@ -198,6 +199,39 @@ public class MembershipController {
 		}
 		return mav;
 	}
+	
+	
+	
+	@RequestMapping(value = "getMemberInfo", method = RequestMethod.GET)
+	public ModelAndView getMemberInfo(@ModelAttribute Membership membership, HttpSession session,
+			LookupModel lookupModel, final RedirectAttributes redirectAttributes) {
+		
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+			try {
+				Membership oMembership = new Membership();
+				oMembership = membershipService.getMemberInfo(membership);
+				
+				if(oMembership.getMemberId() !=null && oMembership.getMemberId().length() >0) {
+					redirectAttributes.addFlashAttribute("membership", oMembership);
+				} else {
+					redirectAttributes.addFlashAttribute("mCode", "0000");
+					redirectAttributes.addFlashAttribute("message", "No Member Found !!! ");
+				}
+				return new ModelAndView("redirect:/membership/addMember");
+			} catch (Exception e) {
+				e.printStackTrace();
+				redirectAttributes.addFlashAttribute("mCode", "0000");
+				redirectAttributes.addFlashAttribute("message", "Error occured");
+				return new ModelAndView("redirect:/membership/addMember");
+			}
+		} else {
+			return new ModelAndView("login");
+
+		}
+	}
+	
+	
+	
 	
 	
 }

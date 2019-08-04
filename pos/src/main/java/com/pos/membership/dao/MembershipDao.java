@@ -10,4 +10,7 @@ public interface MembershipDao {
 	
 	public List<Membership> getMemberList(Membership membership);
 	
+	public Membership getMemberInfo(Membership membership);
+	
+	
 }

@@ -94,46 +94,125 @@
 							
 							<!-------------------------------- start modal member list ------------------------------------------>
 
-										<div id="modalMemberList"
-											class="zoom-anim-dialog modal-block modal-block-md mfp-hide">
-											<!-- class="zoom-anim-dialog modal-block modal-block-lg mfp-hide"> -->
-											<section class="panel panel-featured panel-featured-primary">
-												<header class="panel-heading">
-													<button class="close modal-dismiss" type="button"
-														id="productListClose">
-														<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
-													</button>
-													<h2 class="panel-title">Member List</h2>
-												</header>
+										<div id="modalMemberList" class="zoom-anim-dialog modal-block modal-block-lg mfp-hide">
 										
-												<div class="panel-body">
-										
-													<div class="row">
-														<div class="col-md-12">
-															<div style="overflow: scroll; max-height: 300px;">
-										
-																<table class="table table-striped table-condensed table-hover mb-none" 
-																id="memberListTable" role="grid">
-																	<thead>
-																		<tr>
-																			<th>#</th>
-																			<th>Member No</th>
-																			<th>Member Name</th>
-																			<th>Known As</th>
-																			<th>Contact No</th>
-																			<th>Address</th>
-																		</tr>
-																		
-																	</thead>
-																	<tbody id="memberList" style="border-style: inset;">
-																	</tbody>
-																</table>
+									<%-- 	<section class="panel panel-featured panel-featured-primary">
+									
+											<header class="panel-heading">
+												<h2 class="panel-title">Member Info View</h2>
+											</header>
+											<div class="panel-body">
+									
+												<div class="row">
+									
+													<div class="form-group col-md-10">
+									
+														<div class="col-sm-6 form-group">
+															<label class="col-md-4 col-sm-3 control-label"> Member
+																No </label>
+															<div class="col-md-8">
+																<input class="form-control" name="employeeName" id="employeeName"
+																	onkeypress="goToNext(event,'fatherName')"
+																	value="${employeeInfo.employeeName}" />
+									
 															</div>
 														</div>
+									
+														<div class="col-sm-6 form-group">
+															<label class="col-md-4 col-sm-3 control-label"> Contact
+																No </label>
+															<div class="col-md-8">
+																<input class="form-control" name="fatherName" id="fatherName"
+																	onkeypress="goToNext(event,'designationId')"
+																	value="${employeeInfo.fatherName}" />
+									
+															</div>
+														</div>
+									
+														<div class="col-sm-6 form-group">
+															<label class="col-md-4 col-sm-3 control-label"> Member
+																Name </label>
+															<div class="col-md-8">
+																<input class="form-control" name="fatherName" id="fatherName"
+																	onkeypress="goToNext(event,'designationId')"
+																	value="${employeeInfo.fatherName}" />
+									
+															</div>
+														</div>
+									
+														<div class="col-sm-6 form-group">
+															<label class="col-md-4 col-sm-3 control-label"> Known
+																As </label>
+															<div class="col-md-8">
+																<input class="form-control" name="fatherName" id="fatherName"
+																	onkeypress="goToNext(event,'designationId')"
+																	value="${employeeInfo.fatherName}" />
+									
+															</div>
+														</div>
+														
+													</div>
+									
+													<div class="form-group col-md-2">
+														<button class="btn btn-animate btn-animate-side btn-primary"
+															id="search" onclick="getEmployeeList()" type="button">
+															<span> <i class="fa fa-search" aria-hidden="true"></i>
+																Search
+															</span>
+														</button>
+													</div>
+									
+												</div>
+									
+											</div>
+									
+									</section> --%>
+										
+										
+									<section class="panel panel-featured panel-featured-primary">
+										<header class="panel-heading">
+											<h2 class="panel-title">Member List</h2>
+										</header>
+								
+										<div class="panel-body">
+								
+											<div class="row">
+												<div class="col-md-12">
+													<div style="overflow: scroll; max-height: 300px;">
+								
+														<table class="table table-bordered table-striped mb-none" 
+														id="memberListTable" role="grid">
+															<thead>
+																<tr>
+																	<th>#</th>
+																	<th>Member No</th>
+																	<th>Member Name</th>
+																	<th>Known As</th>
+																	<th>Contact No</th>
+																	<th>Address</th>
+																	<th>Edit</th>
+																</tr>
+																
+															</thead>
+															<tbody id="memberList">
+															</tbody>
+														</table>
 													</div>
 												</div>
-											</section>
+											</div>
 										</div>
+									</section>
+									
+									
+									<footer class="panel-footer">
+										<div class="row">
+											<div class="col-md-12 text-right">
+												<button class="btn btn-default modal-dismiss" >Close</button>
+											</div>
+										</div>
+									</footer>
+									
+							</div>
 
 
 <!-------------------------------- end modal member list ------------------------------------------>
@@ -319,6 +398,17 @@
 					</div>
 
 					<div class="form-group col-md-12">
+					
+						<div class="col-sm-6 form-group">
+							<label class="col-md-4 col-sm-3 control-label"> Address
+								 </label>
+							<div class="col-md-8">
+								<input type="text" class="form-control" 
+									id="address" name="address"
+									value="${membership.address}" />
+							</div>
+						</div>
+					
 						<div class="col-sm-6 form-group">
 							<label class="col-md-4 col-sm-3 control-label">Status <span
 								class="required">*</span>
@@ -360,7 +450,7 @@
 							<button class="btn btn-primary" type="submit" id="submit">
 								<i class="fa fa-save"></i>
 								<c:choose>
-									<c:when test="${!empty employeeInformation.encEmployeeId}">
+									<c:when test="${!empty membership.encMemberId}">
 										<span> <i class="icon wb-loop" aria-hidden="true"></i>
 											Update
 										</span>
@@ -432,18 +522,9 @@
 
 <script>
 	
-
-	/*   function goToNext(e, next) {
-		var key;
-		
-		if (key == 13) {
-alert()
-			document.getElementById(next).focus();
-			return false;
-
-		} else
-			return true;
-	}  */ 
+	function nextTab(tab) {
+		$('#' + tab).click();
+	}
 	
 	function goToNext(e, next) {
 		var key;
@@ -460,407 +541,6 @@ alert()
 			return true;
 	}
 	
-//===========ON CHANGE SELECTED==========//
-
-	function updateSelectOptions(link, parentSelectElementId,
-			childSelectElementId) {
-		var parentSelectElement = $("#" + parentSelectElementId).val();
-
-		if (parentSelectElement == '') {
-			$("#" + childSelectElementId + "option").remove();
-			$("#" + childSelectElementId).val('');
-			var content = '<option value="">Please Select One</option>';
-			$('#' + childSelectElementId).html(content);
-		} else {
-			$.ajax({
-				type : "get",
-				url : link,
-				data : "id=" + parentSelectElement,
-				async : true,
-				success : function(data) {
-
-					$("#" + childSelectElementId).html(data);
-				}
-			});
-			//alert('success');
-
-			$("#" + childSelectElementId).focus();
-		}
-	};
-	
-	//===========ON CHANGE SELECTED END==========//
-	
-	//===========Edit METHOD START==========//
-	
-	function getEmpEducationInfo(empId,certId){
-		var link = "/cbms/hr/employeeInfo/getEmpEducationInfo?encEmployeeId="+encodeURIComponent(empId)+
-				"&certificateTypeId="+certId;
-				//alert(link);
-	 	window.location = link;
-	}
-	
-	
-	function getEmpExperienceInfo(empId,expId){
-		var link = "/cbms/hr/employeeInfo/getEmpExperienceInfo?encEmployeeId="+encodeURIComponent(empId)+
-				"&encEmpExperienceId="+encodeURIComponent(expId);
-				//alert(link);
-	 	window.location = link;
-	}
-	
-	
-	function getEmpSpouseInfo(empId,spouseId){
-		var link = "/cbms/hr/employeeInfo/getEmpSpouseInfo?encEmployeeId="+encodeURIComponent(empId)+
-				"&encEmpSpouseId="+encodeURIComponent(spouseId);
-				//alert(link);
-	 	window.location = link;
-	}
-	
-	
-	function getEmpChildrenInfo(empId,childId){
-		var link = "/cbms/hr/employeeInfo/getEmpChildrenInfo?encEmployeeId="+encodeURIComponent(empId)+
-				"&encEmpChildrenId="+encodeURIComponent(childId);
-				//alert(link);
-	 	window.location = link;
-	}
-	
-	function getEmpTrainingInfo(empId,trainingId){
-		var link = "/cbms/hr/employeeInfo/getEmpTrainingInfo?encEmployeeId="+encodeURIComponent(empId)+
-				"&encEmpTrainingId="+encodeURIComponent(trainingId);
-				//alert(link);
-	 	window.location = link;
-	}
-	
-	function getEmpReferenceInfo(empId,referenceId){
-		var link = "/cbms/hr/employeeInfo/getEmpReferenceInfo?encEmployeeId="+encodeURIComponent(empId)+
-		"&encEmpReferenceId="+encodeURIComponent(referenceId);
-				//alert(link);
-	 	window.location = link;
-	}
-	
-	//===========Edit METHOD END==========//
-	
-	
-	
-	//===========DELETE METHOD START==========//
-	
-	function delEducation(empId,certId,eduId) {
-		 $("#encEmployeeIdForDeleteEdu").val(empId);
-		  $("#certificateTypeIdForDelete").val(certId);
-		  $("#encEducationIdForDeleteEdu").val(eduId);
-	}
-	
-	function deleteEducationInfo() {
-		var empId =  $('#encEmployeeIdForDeleteEdu').val();
-		var certId =  $('#certificateTypeIdForDelete').val();
-		var eduId =  $('#encEducationIdForDeleteEdu').val();
-		
-		var link = "/cbms/hr/employeeInfo/deleteEducationInfo?encEmployeeId="+encodeURIComponent(empId)+
-				"&certificateTypeId="+certId+"&encEducationId="+encodeURIComponent(eduId);
-				//alert(link);
-	 	window.location = link;
-	}
-	//------------delete education end---------------//
-	
-	function delExperience(empId,experienceId) {
-		 $("#encEmployeeIdForDeleteExp").val(empId);
-		  $("#encEmpExperienceIdForDelete").val(experienceId);
-	}
-	function deleteExperienceInfo() {
-		var empId =  $('#encEmployeeIdForDeleteExp').val();
-		var experienceId =  $('#encEmpExperienceIdForDelete').val();
-		
-		var link = "/cbms/hr/employeeInfo/deleteExperienceInfo?encEmployeeId="+encodeURIComponent(empId)+
-				"&encEmpExperienceId="+encodeURIComponent(experienceId);
-				//alert(link);
-	 	window.location = link;
-	}
-	//------------delete experience end---------------//
-	
-	function delSpouse(empId,spouseId) {
-		 $("#encEmployeeIdForDeleteSpo").val(empId);
-		  $("#encEmpSpouseIdForDelete").val(spouseId);
-	}
-	function deleteSpouseInfo() {
-		var empId =  $('#encEmployeeIdForDeleteSpo').val();
-		var spouseId =  $('#encEmpSpouseIdForDelete').val();
-		var link = "/cbms/hr/employeeInfo/deleteSpouseInfo?encEmployeeId="+encodeURIComponent(empId)+
-				"&encEmpSpouseId="+encodeURIComponent(spouseId);
-				//alert(link);
-	 	window.location = link;
-	}
-	//------------delete spouse end---------------//
-	
-	function delChildren(empId,childId) {
-		 $("#encEmployeeIdForDeleteChi").val(empId);
-		  $("#encEmpChildrenIdForDelete").val(childId);
-	}
-	function deleteChildrenInfo() {
-		var empId =  $('#encEmployeeIdForDeleteChi').val();
-		var childId =  $('#encEmpChildrenIdForDelete').val();
-		var link = "/cbms/hr/employeeInfo/deleteChildrenInfo?encEmployeeId="+encodeURIComponent(empId)+
-				"&encEmpChildrenId="+encodeURIComponent(childId);
-				//alert(link);
-	 	window.location = link;
-	}
-	//------------delete children end---------------//
-	
-	function delTraining(empId,trainingId) {
-		  $("#encEmployeeIdForDeleteTra").val(empId);
-		  $("#encEmpTrainingIdForDelete").val(trainingId);
-	}
-	function deleteTrainingInfo() {
-		var empId =  $('#encEmployeeIdForDeleteTra').val();
-		var trainingId =  $('#encEmpTrainingIdForDelete').val();
-		var link = "/cbms/hr/employeeInfo/deleteTrainingInfo?encEmployeeId="+encodeURIComponent(empId)+
-				"&encEmpTrainingId="+encodeURIComponent(trainingId);
-				//alert(link);
-	 	window.location = link;
-	}
-	
-	//------------delete Reference Info Start---------------//
-	
-	function delReference(empId, referenceId) {
-		  $("#encEmployeeIdForDeleteRef").val(empId);
-		  $("#encEmpReferenceIdForDelete").val(referenceId);
-	}
-	
-	function deleteReferenceInfo() {
-		var empId =  $('#encEmployeeIdForDeleteRef').val();
-		var referenceId =  $('#encEmpReferenceIdForDelete').val();
-		var link = "/cbms/hr/employeeInfo/deleteReferenceInfo?encEmployeeId="+encodeURIComponent(empId)+
-				"&encEmpReferenceId="+encodeURIComponent(referenceId);
-				//alert(link);
-	 	window.location = link;
-	}
-	
-	//------------delete Reference Info End---------------//
-	
-	//===========DELETE METHOD END==========//
-	
-	//===========Clear form value Start==========//
-	
-	function clearEducationInfo () {
-		$("#certificateTypeId").val('');
-		$("#boardOrVersityName").val('');
-		$("#passingYear").val('');
-		$("#instituteName").val('');
-		$("#result").val('');
-		$("#majorSubject").val('');
-	}
-	
-	function clearExperienceInfo () {
-		$("#encEmpExperienceId").val('');
-		$("#organizationName").val('');
-		$("#expDesignation").val('');
-		$("#expJoiningDate").val('');
-		$("#expResigningDate").val('');
-		$("#expJobResponsible").val('');
-	}
-	
-	function clearSpouseInfo () {
-		$("#encEmpSpouseId").val('');
-		$("#spouseName").val('');
-		$("#spouseRelation").val('');
-		$("#spouseOccupation").val('');
-		$("#spouseDesignation").val('');
-		$("#spouseWorkLocation").val('');
-	}
-	
-	function clearChildrenInfo () {
-		$("#encEmpChildrenId").val('');
-		$("#childName").val('');
-		$("#childDateOfBirth").val('');
-		$("#childGender").val('');
-	}
-	
-	function clearTrainingInfo () {
-		$("#encEmpTrainingId").val('');
-		$("#trainingType").val('');
-		$("#trainingSponsor").val('');
-		$("#trainingTitle").val('');
-		$("#trainingInstitute").val('');
-		$("#trainingFromDate").val('');
-		$("#trainingToDate").val('');
-		$("#trainingDuration").val('');
-		//$("#trainingCountry").val().text('');
-		//document.getElementById("trainingCountry").selectedIndex = 0;
-	}
-	
-	function clearReferenceInfo () {
-		$("#encEmpReferenceId").val('');
-		$("#referrerId").val('');
-		$("#referrerRemark").val('');
-	}
-	
-	//===========Clear form value END==========//
-
-	
-
-	function nextTab(tab) {
-		$('#' + tab).click();
-	}
-
- 	$(function() {
-		$("#uploadPhoto")
-				.change(
-						function() {
-							if (typeof (FileReader) != "undefined") {
-								var dvPreview = $("#dvPreviewPhoto");
-								dvPreview.html("");
-								var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.jpg|.jpeg|.gif|.png|.bmp)$/;
-								$($(this)[0].files)
-										.each(
-												function() {
-													var file = $(this);
-													if (regex.test(file[0].name
-															.toLowerCase())) {
-														var reader = new FileReader();
-														reader.onload = function(
-																e) {
-															var img = $("<img />");
-															img
-																	.attr(
-																			"style",
-																			"height:150px;width: 150px");
-															img
-																	.attr(
-																			"src",
-																			e.target.result);
-															dvPreview
-																	.append(img);
-														}
-														reader
-																.readAsDataURL(file[0]);
-													} else {
-														alert(file[0].name
-																+ " is not a valid image file.");
-														dvPreview.html("");
-														return false;
-													}
-												});
-							} else {
-								alert("This browser does not support HTML5 FileReader.");
-							}
-						});
-	}); 
-
-/* 	
-	
-	function readURL(input) {
-
-	    if (input.files && input.files[0]) {
-	        var reader = new FileReader();
-
-	        reader.onload = function (e) {
-	            $('#blah').attr('src', e.target.result);
-	            $('#blah').attr( "style", "height:150px; width: 150px");
-	        }
-
-	        reader.readAsDataURL(input.files[0]);
-	    }
-	}
-
-	$("#uploadPhoto").change(function(){
-	    readURL(this);
-	}); */
-	
-	
-	
-	$(function() {
-		$("#uploadSignature")
-		
-				.change(
-						function() {
-							if (typeof (FileReader) != "undefined") {
-								var dvPreview = $("#dvPreviewSignature");
-								dvPreview.html("");
-								var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.jpg|.jpeg|.gif|.png|.bmp)$/;
-								$($(this)[0].files)
-										.each(
-												function() {
-													var file = $(this);
-													if (regex.test(file[0].name
-															.toLowerCase())) {
-														var reader = new FileReader();
-														reader.onload = function(
-																e) {
-															var img = $("<img />");
-															img
-																	.attr(
-																			"style",
-																			"height:150px;width: 200px");
-															img
-																	.attr(
-																			"src",
-																			e.target.result);
-															dvPreview
-																	.append(img);
-														}
-														reader
-																.readAsDataURL(file[0]);
-													} else {
-														alert(file[0].name
-																+ " is not a valid image file.");
-														dvPreview.html("");
-														return false;
-													}
-												});
-							} else {
-								alert("This browser does not support HTML5 FileReader.");
-							}
-						});
-	});
-	
-	
-	function addlistBody() {
-		var catId = $("#catId").val();
-		var catName = $("#catId option:selected").text();
-
-		var myElem = document.getElementById("catId_" + catId);
-
-		var trIndex = $("#trIndex").val();
-
-		if (catId == '') {
-			alert('Select Category Name !');
-		} else {
-			if (trIndex == '') {
-				var trIndexResult = '0';
-			} else {
-				var trIndexResult = parseInt(trIndex);
-			}
-
-			if (myElem == null) {
-				var trIndexResultSerial = parseInt(trIndex) + 1;
-
-				var newRowContent = "<tr>"
-						+ "<td>"
-						+ trIndexResultSerial
-						+ "</td>"
-						+ "<input type='hidden' id='catId_"+ catId+"' value='"+catId+"' name='adCategoryIdList["+trIndexResult+"].adCategoryId'></td>"
-						+ "<td >"
-						+ catName
-						+ "</td>"
-						+ "<td>"
-						+ "<input onkeyup='disPerOfBasic("+trIndexResult+")' onkeypress='return isNumberKey(event)'  type='text' id='fixedAmount_"+trIndexResult+"' value='' name='adCategoryIdList["+trIndexResult+"].fixedAmount'>"
-						+ "</td>"
-						+ "<td>"
-						+ "<input onkeyup='disfixedAmount("+trIndexResult+")'  onkeypress='return isNumberKey(event)' type='text' id='perOfBasic_"+trIndexResult+"' value='' name='adCategoryIdList["+trIndexResult+"].perOfBasic'>" 
-						+" <button class='btn-primary' type='button' onclick='removetr(this)'  >&times;</button>"
-						+ "</td>"
-						+ "</tr>";
-
-				$("#trIndex").val(trIndexResultSerial);
-				// alert(newRowContent);
-				$(newRowContent).appendTo($("#categoryList"));
-
-			} else {
-				alert('Select another Category Name');
-				$("#catId").focus();
-			}
-		}
-
-	};
-	
 	
 	function removetr(e) {
 		  var whichtr = $(e).closest("tr");
@@ -868,30 +548,6 @@ alert()
 		  whichtr.remove();
 		 };
 		 
-	
-	function disPerOfBasic(id) {
-		var val=$("#fixedAmount_"+id).val();
-		if(val != '') {
-			$("#perOfBasic_"+id).prop('disabled',true);
-		}
-		else
-			{
-			$("#perOfBasic_"+id).prop('disabled',false);
-			}
-	}
-	
-	
-	function disfixedAmount(id) {
-		var val=$("#perOfBasic_"+id).val();
-		if(val != '') {
-			$("#fixedAmount_"+id).prop('disabled',true);
-		}
-		else
-			{
-			$("#fixedAmount_"+id).prop('disabled',false);
-			}
-	}
-	
 	function isNumberKey(evt) {
 	    var charCode = (evt.which) ? evt.which : event.keyCode;
 	    var errid = "err"+evt.target.id;
@@ -905,42 +561,12 @@ alert()
 	    }      
 	}
 	
-	function getTimeDiff() {
-		
-		var trainingFromDate = $("#trainingFromDate").val();
-		var trainingToDate = $("#trainingToDate").val();
-		
-		if ( trainingFromDate != '' && trainingToDate != '') {
-
-			var token = $("meta[name='_csrf']").attr("content");
-			var header = $("meta[name='_csrf_header']").attr("content");
-
-			var link = "/cbms/hr/getTimeDifferent";
-
-			
-			//alert(totalhour);
-
-			$.ajax({
-				type : "POST",
-				url : link,
-				data : "trainingFromDate=" + trainingFromDate + "&trainingToDate=" + trainingToDate,
-				async : true,
-				beforeSend : function(xhr) {
-					// here it is
-					xhr.setRequestHeader(header, token);
-				},
-				success : function(data) {
-					$("#trainingDuration").val(data.trainingDuration);
-				},
-				error : function(data) {
-					alert('Error!!!');
-				}
-			});
-		}
+	function clearChildrenInfo () {
+		$("#encEmpChildrenId").val('');
+		$("#childName").val('');
+		$("#childDateOfBirth").val('');
+		$("#childGender").val('');
 	}
-	
-	
-	
 	
 	function getMemberList() {
 
@@ -963,6 +589,12 @@ alert()
 		});
 	};
 	
+	
+	function getMemberInfo(encMemberId){
+		var link = "/pos/membership/getMemberInfo?encMemberId="+encodeURIComponent(encMemberId);
+				//alert(link);
+	 	window.location = link;
+	}
 	
 	
 </script>

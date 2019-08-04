@@ -52,13 +52,14 @@ public class MembershipDaoImpl implements MembershipDao{
 			inParamMap.put("P_CONTACT_NO", membership.getContactNo());
 			inParamMap.put("P_EMAIL_ADDRESS", membership.getEmailAddress());
 			inParamMap.put("P_ENABLED_YN", membership.getEnabledYN());
+			inParamMap.put("P_ADDRESS", membership.getAddress());
 			inParamMap.put("P_UPDATE_BY", membership.getUpdateBy());
 			
 			Map<String, Object> outParamMap = simpleJdbcCall.execute(new MapSqlParameterSource().addValues(inParamMap));
 
 			oAddMemberSave.setMessage(oRemoveNull.nullRemove((String) outParamMap.get("P_MESSAGE")));
 			oAddMemberSave.setMessageCode(oRemoveNull.nullRemove((String) outParamMap.get("P_MESSAGE_CODE")));
-			oAddMemberSave.setEncMemberId(oRemoveNull.nullRemove(oCipherUtils.encrypt((String) outParamMap.get("P_NEW_MEMBER_ID"))));
+			oAddMemberSave.setEncMemberId(oCipherUtils.encrypt(oRemoveNull.nullRemove((String) outParamMap.get("P_NEW_MEMBER_ID"))));
 			
 			//System.out.println(" P_NEW_EMP_ID "+ (String) outParamMap.get("P_NEW_EMP_ID"));
 
@@ -108,6 +109,63 @@ public class MembershipDaoImpl implements MembershipDao{
 			oMembershipList.add(oMembership);
 		}
 		return oMembershipList;
+	}
+	
+	
+	public Membership getMemberInfo(Membership membership) {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+		Membership oMembership = new Membership();
+		NamedParameterJdbcTemplate npjt = new NamedParameterJdbcTemplate(jdbcTemplate);
+
+		StringBuilder sBuilder = new StringBuilder();
+		sBuilder.append("SELECT MEMBER_ID, ");
+		sBuilder.append("MEMBER_NAME, ");
+		sBuilder.append("KNOWN_AS, ");
+		sBuilder.append("FATHER_NAME, ");
+		sBuilder.append("MOTHER_NAME, ");
+		sBuilder.append("GENDER, ");
+		sBuilder.append("TO_CHAR(DATE_OF_BIRTH, 'DD/MM/YYYY')DATE_BIRTH, ");
+		sBuilder.append("CONTACT_NO, ");
+		sBuilder.append("EMAIL_ADDRESS, ");
+		sBuilder.append("MARITAL_STATUS_ID, ");
+		sBuilder.append("RELIGION_ID, ");
+		sBuilder.append("NATIONAL_ID, ");
+		sBuilder.append("ENABLED_YN, ");
+		sBuilder.append("PRESENT_ADDRESS, ");
+		sBuilder.append("TO_CHAR(JOINING_DATE,'DD/MM/YYYY')JOINING_DATE, ");
+		sBuilder.append("MEMBER_NO ");
+		sBuilder.append("FROM MEMBERSHIP ");
+		sBuilder.append("WHERE MEMBER_ID = :memberId ");
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource();
+		paramSource.addValue("memberId", oCipherUtils.decrypt(oRemoveNull.nullRemove(membership.getEncMemberId())));
+		 
+	    System.out.println(sBuilder);
+
+		List<Map<String, Object>> rows = npjt.queryForList(sBuilder.toString(), paramSource);
+
+		for (@SuppressWarnings("rawtypes")
+		Map row : rows) {
+			oMembership.setEncMemberId(oCipherUtils.encrypt(oRemoveNull.nullRemove(String.valueOf(row.get("MEMBER_ID")))));
+			oMembership.setMemberId(oRemoveNull.nullRemove(String.valueOf(row.get("MEMBER_ID"))));
+			oMembership.setMemberName(oRemoveNull.nullRemove(String.valueOf(row.get("MEMBER_NAME"))));
+			oMembership.setKnownAs(oRemoveNull.nullRemove(String.valueOf(row.get("KNOWN_AS"))));
+			oMembership.setMemberNo(oRemoveNull.nullRemove(String.valueOf(row.get("MEMBER_NO"))));
+			oMembership.setContactNo(oRemoveNull.nullRemove(String.valueOf(row.get("CONTACT_NO"))));
+			oMembership.setAddress(oRemoveNull.nullRemove(String.valueOf(row.get("PRESENT_ADDRESS"))));
+			
+			oMembership.setFathersName(oRemoveNull.nullRemove(String.valueOf(row.get("FATHER_NAME"))));
+			oMembership.setMothersName(oRemoveNull.nullRemove(String.valueOf(row.get("MOTHER_NAME"))));
+			oMembership.setGenderId(oRemoveNull.nullRemove(String.valueOf(row.get("GENDER"))));
+			oMembership.setDateOfBirth(oRemoveNull.nullRemove(String.valueOf(row.get("DATE_BIRTH"))));
+			oMembership.setEmailAddress(oRemoveNull.nullRemove(String.valueOf(row.get("EMAIL_ADDRESS"))));
+			oMembership.setMaritalStatusId(oRemoveNull.nullRemove(String.valueOf(row.get("MARITAL_STATUS_ID"))));
+			oMembership.setReligionId(oRemoveNull.nullRemove(String.valueOf(row.get("RELIGION_ID"))));
+			oMembership.setNationalIdNo(oRemoveNull.nullRemove(String.valueOf(row.get("NATIONAL_ID"))));
+			oMembership.setEnabledYN(oRemoveNull.nullRemove(String.valueOf(row.get("ENABLED_YN"))));
+			oMembership.setJoiningDate(oRemoveNull.nullRemove(String.valueOf(row.get("JOINING_DATE"))));
+		}
+		return oMembership;
 	}
 	
 	
