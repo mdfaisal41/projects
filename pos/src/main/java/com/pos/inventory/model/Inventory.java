@@ -1,6 +1,9 @@
 package com.pos.inventory.model;
 
 public class Inventory {
+	
+	private String encInventoryId;
+	private String inventoryId;
 
 	private String productId;
 	private String encProductId;
@@ -10,7 +13,7 @@ public class Inventory {
 	private String updateDate;
 	private String unitId;
 	private String unitName;
-	private String inventoryId;
+	
 	private String inventoryTypeId;
 	private String inventoryTypeName;
 	private String quantity;
@@ -209,6 +212,12 @@ public class Inventory {
 	}
 	public void setInventoryDate(String inventoryDate) {
 		this.inventoryDate = inventoryDate;
+	}
+	public String getEncInventoryId() {
+		return encInventoryId;
+	}
+	public void setEncInventoryId(String encInventoryId) {
+		this.encInventoryId = encInventoryId;
 	}
 	
 	

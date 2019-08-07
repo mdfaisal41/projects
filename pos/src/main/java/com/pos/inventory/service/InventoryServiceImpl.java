@@ -23,6 +23,10 @@ public class InventoryServiceImpl implements InventoryService{
 		return inventoryDao.getProductList(inventory);
 	}
 
+	public Inventory getProductInfo(Inventory inventory) throws Exception {
+		return inventoryDao.getProductInfo(inventory);
+	}
+	
 	public Inventory saveStoreProduct(Inventory inventory) {
 		return inventoryDao.saveStoreProduct(inventory);
 	}

@@ -9,6 +9,8 @@ public interface InventoryDao {
 
 	public List<Inventory> getProductList(Inventory inventory) throws Exception;
 	
+	public Inventory getProductInfo(Inventory inventory) throws Exception;
+	
 	public Inventory saveIngredients(Inventory inventory);
 	public Inventory saveStoreProduct(Inventory inventory);
 	public List<Inventory> getInventoryList(Inventory inventory);

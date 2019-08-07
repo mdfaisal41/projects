@@ -54,7 +54,8 @@
 			</c:if>
 		</div>
 
-		<form class="form-horizontal form-bordered" action="#" method="post">
+		<form class="form-horizontal form-bordered"
+			action="/pos/inventory/updateStoreProduct" method="post">
 
 			<%-- <div class="form-group col-md-12">
 				<input type="hidden" name="${_csrf.parameterName}"
@@ -79,7 +80,9 @@
 									id="inventoryTypeId" name="inventoryTypeId" required>
 									<option value="">Select One</option>
 									<c:forEach items="${inventoryTypeList}" var="list">
-										<option value="${list.inventoryTypeId}">${list.inventoryTypeName}</option>
+										<option
+											<c:if test="${list.inventoryTypeId == inventory.inventoryTypeId}">selected = "selected" </c:if>
+											value="${list.inventoryTypeId}">${list.inventoryTypeName}</option>
 									</c:forEach>
 								</select>
 							</div>
@@ -124,66 +127,88 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr style="cursor: pointer; display: none;" id="newdatarow">
-									
-									<td><select data-plugin-selectTwo class="form-control"
-									 id="productId"  style="width: 190px" required>
+								<tr id="newdatarow"
+									<c:if test="${empty inventory.encInventoryId}">
+								style="cursor: pointer; display: none;" 
+								</c:if>>
+
+
+
+									<td><input type="hidden" id="encInventoryId"
+										value="${inventory.encInventoryId}" name="encInventoryId" />
+
+										<select data-plugin-selectTwo class="form-control"
+										id="productId" name="productId" style="width: 190px" required>
 											<option value="">Select One</option>
 											<c:forEach items="${productList}" var="list">
-												<option value="${list.productId}">${list.productName}</option>
+												<option
+													<c:if test="${list.productId == inventory.productId}">selected = "selected" </c:if>
+													value="${list.productId}">${list.productName}</option>
 											</c:forEach>
 									</select></td>
-									
+
 									<td><select data-plugin-selectTwo class="form-control"
-										id="unitId" style="width: 120px" required
+										id="unitId" name="unitId" style="width: 120px" required
 										onkeypress="return isNumberKey(event)">
 											<option value="">Select One</option>
 											<c:forEach items="${unitList}" var="list">
-												<option value="${list.unitId}">${list.unitName}</option>
+												<option
+													<c:if test="${list.unitId == inventory.unitId}">selected = "selected" </c:if>
+													value="${list.unitId}">${list.unitName}</option>
 											</c:forEach>
-									</select>
-									</td>
-									
+									</select></td>
+
 									<td><input type="text" class="form-control" id="unitPrice"
-										style="width: 110px"
-										onkeypress="return isNumberKey(event)">
-										<div id="errunitPrice"> </div>
-										</td>
-									
+										name="unitPrice" style="width: 110px"
+										onkeypress="return isNumberKey(event)"
+										value="${inventory.unitPrice}">
+										<div id="errunitPrice"></div></td>
+
 									<td><input type="text" class="form-control" id="quantity"
-										style="width: 110px"
-										onkeypress="return isNumberKey(event)" >
-										<div id="errquantity"> </div>
-										</td>
+										name="quantity" value="${inventory.quantity}"
+										style="width: 110px" onkeypress="return isNumberKey(event)">
+										<div id="errquantity"></div></td>
 
 									<td><input type="text" class="form-control" id="price"
 										name="price" style="width: 85px" required readonly="readonly"
-										onkeypress="return isNumberKey(event)" onclick="getTotalPrice()"/>
-										
-										<div id="errprice"> </div>
-										
-									</td>
-									
-									
+										value="${inventory.price}"
+										onkeypress="return isNumberKey(event)"
+										onclick="getTotalPrice()" />
+
+										<div id="errprice"></div></td>
+
+
 
 									<td><select data-plugin-selectTwo class="form-control"
 										id="employeeId" name="employeeId" style="width: 120px"
 										required>
 											<option value="">Select One</option>
 											<c:forEach items="${employeeList}" var="list">
-												<option value="${list.employeeId}">${list.firstName}</option>
+												<option
+													<c:if test="${list.employeeId == inventory.employeeId}">selected = "selected" </c:if>
+													value="${list.employeeId}">${list.firstName}</option>
 											</c:forEach>
 									</select></td>
 
 
-									<td><a href="#" onclick="saveNewData()">
-											<button class="btn btn-primary" type="button"
-												style="width: 75px;">
-												<span> <i class="fa fa-save"></i> Save
-												</span>
-											</button>
-
-									</a> <a href="#" onclick="cancelnewdata()">
+									<td><c:choose>
+											<c:when test="${!empty inventory.encInventoryId}">
+												<button class="btn btn-primary" type="submit"
+													style="width: 75px;">
+													<span> <i class="fa fa-save"></i> Update
+													</span>
+												</button>
+											</c:when>
+											<c:otherwise>
+												<a href="#" onclick="saveNewData()">
+													<button class="btn btn-primary" type="button"
+														style="width: 75px;">
+														<span> <i class="fa fa-save"></i> Save
+														</span>
+													</button>
+												</a>
+											</c:otherwise>
+										</c:choose> <a href="#" onclick="cancelnewdata()">
 											<button class="btn btn-default" type="button"
 												style="width: 75px;">
 												<span> <i class="fa fa-refresh"></i> Cancel
@@ -197,40 +222,113 @@
 					</div>
 				</div>
 
-
-				<div class="panel-body" id="inventoryDownList" style="display: none">
-					<br />
-					<div style="overflow: scroll; max-width: 100%;">
-						<table
-							class="table table-bordered table-striped table-condensed mb-none"
-							id="dataTable">
-							<thead>
-								<tr>
-									<th>#</th>
-									<th>Product Name</th>
-									<th>Unit</th>
-									<th>Unit Price</th>
-									<th>Quantity</th>
-									<th>Price</th>
-									<th>Shop By</th>
-									<th>Date</th>
-								</tr>
-							</thead>
-							<tbody id="inventoryList">
-							</tbody>
-
-						</table>
-					</div>
-				</div>
-
-
 				<footer class="panel-footer">
-					<br />
+					<div class="row">
+						<div class="btn_div col-sm-offset-1 ">
+							<a href="storeIngredients"><button
+									class="btn btn-sm btn  btn-default" type="button" role="button">
+									<i class="fa fa-refresh"></i> Clear
+								</button></a>
+						</div>
+					</div>
 				</footer>
 
 			</section>
 
 		</form>
+
+		<section class="panel panel-featured panel-featured-primary">
+			<header class="panel-heading">
+				<h2 class="panel-title">Store Ingredients List</h2>
+
+				<div class="panel-actions" id="resultDiv">
+					<p id="result"></p>
+				</div>
+			</header>
+
+			<div class="panel-body" id="inventoryDownList">
+				<br />
+				<div style="overflow: scroll; max-width: 100%;">
+					<table
+						class="table table-bordered table-striped table-condensed mb-none"
+						id="productList">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>Inventory Date</th>
+								<th>Product Name</th>
+								<th>Unit</th>
+								<th>Unit Price</th>
+								<th>Quantity</th>
+								<th>Price</th>
+								<th>Shop By</th>
+								<th>Edit</th>
+							</tr>
+						</thead>
+						<tbody id="inventoryList">
+
+							<c:if test="${!empty inventoryList}">
+								<%
+											int i = 1;
+										%>
+								<c:forEach items="${inventoryList}" var="list">
+
+									<tr style="cursor: pointer">
+										<td>
+											<%
+														out.print(i);
+																i++;
+													%>
+										</td>
+										<td>${list.inventoryDate}</td>
+										<td>${list.productName}</td>
+										<td>${list.unitName}</td>
+										<td>${list.unitPrice}</td>
+										<td>${list.quantity}</td>
+										<td>${list.price}</td>
+										<td>${list.employeeName}</td>
+
+										<td><a href="#"
+											onclick="getProductInfo('${list.encInventoryId}')"><button
+													class="btn btn-xs btn-primary" type="button">
+													<i class="fa fa-pencil"></i>
+												</button></a></td>
+
+									</tr>
+								</c:forEach>
+
+							</c:if>
+
+							<c:if test="${! empty inventoryListNotFound}">
+								<tr>
+									<td colspan="9"><p>${inventoryListNotFound}</p></td>
+									<td style="display: none;"></td>
+									<td style="display: none;"></td>
+									<td style="display: none;"></td>
+									<td style="display: none;"></td>
+									<td style="display: none;"></td>
+									<td style="display: none;"></td>
+									<td style="display: none;"></td>
+									<td style="display: none;"></td>
+								</tr>
+							</c:if>
+
+						</tbody>
+
+					</table>
+				</div>
+			</div>
+
+			<footer class="panel-footer">
+				<br />
+			</footer>
+
+		</section>
+
+
+
+
+
 		<!-- end: page -->
 
 	</div>
@@ -240,6 +338,18 @@
 	value="${inventory.inventoryDate}">
 
 <script>
+
+
+window.onload = function load() {
+	$("#productList").DataTable();
+}
+
+
+function getProductInfo(encInventoryId) {
+	var link = "/pos/inventory/getProductInfo?encInventoryId=" + encodeURIComponent(encInventoryId);
+	//alert(link);
+	window.location = link;
+}
 
 function getTotalPrice () {
 	//alert('hello');
@@ -289,15 +399,11 @@ function isNumberKey(evt) {
 	function cancelnewdata() {
 
 		$("#newdatarow").hide();
-		//$("#taskDate").val('');
-		//$("#projectId").val('');
-		//$("#taskTypeId").val('');
-		$("#taskDesc").val('');
-		//$("#startTime").val('');
-		//$("#endTime").val('');
-		$("#totalHour_").val('00:00');
-		$("#noOfDefect").val('');
-		$("#defectDesc").val('');
+		$("#encInventoryId").val('');
+		$("#unitPrice").val('');
+		$("#quantity").val('');
+		$("#price").val('');
+		$("#employeeId").val('');
 	}
 
 	
