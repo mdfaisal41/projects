@@ -218,7 +218,7 @@
 											</c:otherwise>
 										</c:choose> 
 									
-									<a href="#" onclick="cancelnewdata()">
+									<a href="otherInventory" onclick="cancelnewdata()">
 											<button class="btn btn-default" type="button"
 												style="width: 75px;">
 												<span> <i class="fa fa-refresh"></i> Cancel
@@ -235,9 +235,9 @@
 				<footer class="panel-footer">
 					<div class="row">
 						<div class="btn_div col-sm-offset-1 ">
-							<a href="storeIngredients"><button
+							<a href="otherInventory"><button
 									class="btn btn-sm btn  btn-default" type="button" role="button">
-									<i class="fa fa-refresh"></i> Clear
+									<i class="fa fa-refresh"></i> Refresh
 								</button></a>
 						</div>
 					</div>
@@ -308,7 +308,6 @@
 													class="btn btn-xs btn-primary" type="button">
 													<i class="fa fa-pencil"></i>
 												</button></a></td>
-
 									</tr>
 								</c:forEach>
 
@@ -497,36 +496,31 @@ function isNumberKey(evt) {
 	}
 } ;
 
-function getInventoryList() {
-	
-	var inventoryTypeId = $("#inventoryTypeId").val();
-	var inventoryDate = $("#inventoryDate").val();
 
-	//alert(inventoryTypeId);
-	//alert(updateDate);
-	if (inventoryTypeId == '') {
-		alert("Inventory Type Empty!!!")
-	} else {
+
+	 function getInventoryList() {
 		
-		var link = "/pos/inventory/getInventoryListSupplier";
-		//alert(link);
-		$.ajax({
-			type : "POST",
-			url : link,
-			data : "inventoryTypeId=" + inventoryTypeId + "&inventoryDate=" + inventoryDate,
-			async : true,
-			success : function(data) {
-				$("#inventoryList").html(data);
-				totalPriceCalc();
-				$("#inventoryDownList").show();
-			},
-
-			error : function(data) {
-				alert('Error!!!')
-			}
-		});
-	}
-};
+		var inventoryTypeId = $("#inventoryTypeId").val();
+		//alert(inventoryTypeId);
+			
+			var link = "/pos/inventory/getInventoryListSupplier";
+			//alert(link);
+			$.ajax({
+				type : "POST",
+				url : link,
+				data : "inventoryTypeId=" + inventoryTypeId,
+				async : true,
+				success : function(data) {
+					$("#inventoryList").html(data);
+					$("#productList").show();
+					totalPriceCalc();
+				},
+	
+				error : function(data) {
+					alert('Error!!!')
+				}
+			});
+	}; 
 	
 	
 	function totalPriceCalc () {

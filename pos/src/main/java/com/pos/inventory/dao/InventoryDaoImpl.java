@@ -157,7 +157,7 @@ public class InventoryDaoImpl implements InventoryDao{
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
 		paramSource.addValue("inventoryId", oCipherUtils.decrypt(oRemoveNull.nullRemove(inventory.getEncInventoryId())));
 		
-		System.out.println("getEncInventoryId "+ oCipherUtils.decrypt(oRemoveNull.nullRemove(inventory.getInventoryTypeId())));
+		System.out.println("getEncInventoryId "+ oCipherUtils.decrypt(oRemoveNull.nullRemove(inventory.getEncInventoryId())));
 		System.out.println("getProductInfo "+sBuilder);
 
 		List<Map<String, Object>> rows = npjt.queryForList(sBuilder.toString(), paramSource);
@@ -197,17 +197,19 @@ public class InventoryDaoImpl implements InventoryDao{
 		sBuilder.append(" (SELECT EMPLOYEE_NAME FROM EMPLOYEE WHERE EMPLOYEE_ID = M.EMPLOYEE_ID) EMPLOYEE_NAME, ");
 		sBuilder.append(" ADVANCE_AMOUNT, ");
 		sBuilder.append(" (SELECT SUPPLIER_NAME FROM SUPPLIER_INFO WHERE SUPPLIER_ID = M.SUPPLIER_ID) SUPPLIER_NAME, ");
-		sBuilder.append(" TO_CHAR(INVENTORY_DATE,'DD-MON-YYYY') INVENTORY_DATE ");
+		sBuilder.append(" TO_CHAR(INVENTORY_DATE,'DD-MON-YYYY') INVENT_DATE ");
 		sBuilder.append(" FROM INVENTORY_MASTER M ");
 		sBuilder.append(" WHERE TRUNC(INVENTORY_DATE) = TRUNC(SYSDATE) ");
-		//sBuilder.append(" WHERE INVENTORY_TYPE_ID = :inventoryTypeId ");
+		sBuilder.append(" AND INVENTORY_TYPE_ID NOT IN (206) ");
 		//sBuilder.append(" AND TRUNC(INVENTORY_DATE) = TO_DATE(:inventoryDate,'DD/MM/YYYY') ");
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
 		//paramSource.addValue("inventoryTypeId", inventory.getInventoryTypeId());
 		//paramSource.addValue("inventoryDate", inventory.getInventoryDate());
 		
-		System.out.println(sBuilder);
+		sBuilder.append(" ORDER BY INVENTORY_DATE DESC ");
+		
+		//System.out.println(sBuilder);
 
 		List<Map<String, Object>> rows = npjt.queryForList(sBuilder.toString(), paramSource);
 
@@ -224,7 +226,7 @@ public class InventoryDaoImpl implements InventoryDao{
 			oInventory.setEmployeeName(oRemoveNull.nullRemove(String.valueOf(row.get("EMPLOYEE_NAME"))));
 			oInventory.setAdvanceAmount(oRemoveNull.nullRemove(String.valueOf(row.get("ADVANCE_AMOUNT"))));
 			oInventory.setSupplierName(oRemoveNull.nullRemove(String.valueOf(row.get("SUPPLIER_NAME"))));
-			oInventory.setInventoryDate(oRemoveNull.nullRemove(String.valueOf(row.get("INVENTORY_DATE"))));
+			oInventory.setInventoryDate(oRemoveNull.nullRemove(String.valueOf(row.get("INVENT_DATE"))));
 			oInventoryList.add(oInventory);
 		}
 		return oInventoryList;
@@ -246,16 +248,18 @@ public class InventoryDaoImpl implements InventoryDao{
 		sBuilder.append(" (SELECT UNIT_NAME FROM L_UNIT WHERE UNIT_ID = M.UNIT_ID) UNIT_NAME, ");
 		sBuilder.append(" PRICE, ");
 		sBuilder.append(" (SELECT EMPLOYEE_NAME FROM EMPLOYEE WHERE EMPLOYEE_ID = M.EMPLOYEE_ID) EMPLOYEE_NAME, ");
-		sBuilder.append(" TO_CHAR(INVENTORY_DATE,'DD/MM/YYYY') INVENTORY_DATE, ");
+		sBuilder.append(" TO_CHAR(INVENTORY_DATE,'DD/MM/YYYY') INVENT_DATE, ");
 		sBuilder.append(" ADVANCE_AMOUNT, ");
 		sBuilder.append(" (SELECT SUPPLIER_NAME FROM SUPPLIER_INFO WHERE SUPPLIER_ID = M.SUPPLIER_ID)SUPPLIER_NAME ");
 		sBuilder.append(" FROM INVENTORY_MASTER M ");
-		sBuilder.append(" WHERE INVENTORY_TYPE_ID = :inventoryTypeId ");
-		sBuilder.append(" AND TRUNC(INVENTORY_DATE) = TO_DATE(:inventoryDate,'DD/MM/YYYY') ");
+		sBuilder.append(" WHERE TRUNC(INVENTORY_DATE) = TRUNC(SYSDATE) ");
+		sBuilder.append(" AND INVENTORY_TYPE_ID = :inventoryTypeId ");
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
 		paramSource.addValue("inventoryTypeId", inventory.getInventoryTypeId());
-		paramSource.addValue("inventoryDate", inventory.getInventoryDate());
+		//paramSource.addValue("inventoryDate", inventory.getInventoryDate());
+		
+		sBuilder.append(" ORDER BY INVENTORY_DATE DESC ");
 		
 		//System.out.println(sBuilder);
 
@@ -264,6 +268,7 @@ public class InventoryDaoImpl implements InventoryDao{
 		for (@SuppressWarnings("rawtypes")
 		Map row : rows) {
 			Inventory oInventory = new Inventory();
+			oInventory.setEncInventoryId(oCipherUtils.encrypt(oRemoveNull.nullRemove(String.valueOf(row.get("INVENTORY_ID")))));
 			oInventory.setInventoryId(oRemoveNull.nullRemove(String.valueOf(row.get("INVENTORY_ID"))));
 			oInventory.setProductName(oRemoveNull.nullRemove(String.valueOf(row.get("PRODUCT_NAME"))));
 			oInventory.setUnitPrice(oRemoveNull.nullRemove(String.valueOf(row.get("UNIT_PRICE"))));
@@ -271,7 +276,7 @@ public class InventoryDaoImpl implements InventoryDao{
 			oInventory.setUnitName(oRemoveNull.nullRemove(String.valueOf(row.get("UNIT_NAME"))));
 			oInventory.setPrice(oRemoveNull.nullRemove(String.valueOf(row.get("PRICE"))));
 			oInventory.setEmployeeName(oRemoveNull.nullRemove(String.valueOf(row.get("EMPLOYEE_NAME"))));
-			oInventory.setInventoryDate(oRemoveNull.nullRemove(String.valueOf(row.get("INVENTORY_DATE"))));
+			oInventory.setInventoryDate(oRemoveNull.nullRemove(String.valueOf(row.get("INVENT_DATE"))));
 			oInventory.setAdvanceAmount(oRemoveNull.nullRemove(oRemoveNull.nullRemove(String.valueOf(row.get("ADVANCE_AMOUNT")))));
 			oInventory.setSupplierName(oRemoveNull.nullRemove(oRemoveNull.nullRemove(String.valueOf(row.get("SUPPLIER_NAME")))));
 			

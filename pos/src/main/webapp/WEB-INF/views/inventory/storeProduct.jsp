@@ -130,8 +130,7 @@
 								<tr id="newdatarow"
 									<c:if test="${empty inventory.encInventoryId}">
 								style="cursor: pointer; display: none;" 
-								</c:if>
-								>
+								</c:if>>
 
 
 
@@ -192,9 +191,7 @@
 									</select></td>
 
 
-									<td>
-									
-									<c:choose>
+									<td><c:choose>
 											<c:when test="${!empty inventory.encInventoryId}">
 												<button class="btn btn-primary" type="submit"
 													style="width: 75px;">
@@ -211,10 +208,7 @@
 													</button>
 												</a>
 											</c:otherwise>
-										</c:choose> 
-										
-										
-										<a href="#" onclick="cancelnewdata()">
+										</c:choose> <a href="storeIngredients" onclick="cancelnewdata()">
 											<button class="btn btn-default" type="button"
 												style="width: 75px;">
 												<span> <i class="fa fa-refresh"></i> Cancel
@@ -233,7 +227,7 @@
 						<div class="btn_div col-sm-offset-1 ">
 							<a href="storeIngredients"><button
 									class="btn btn-sm btn  btn-default" type="button" role="button">
-									<i class="fa fa-refresh"></i> Clear
+									<i class="fa fa-refresh"></i> Refresh
 								</button></a>
 						</div>
 					</div>
@@ -275,16 +269,16 @@
 
 							<c:if test="${!empty inventoryList}">
 								<%
-											int i = 1;
-										%>
+									int i = 1;
+								%>
 								<c:forEach items="${inventoryList}" var="list">
 
 									<tr style="cursor: pointer">
 										<td>
 											<%
-														out.print(i);
-																i++;
-													%>
+												out.print(i);
+														i++;
+											%>
 										</td>
 										<td>${list.inventoryDate}</td>
 										<td>${list.productName}</td>
@@ -293,13 +287,11 @@
 										<td>${list.quantity}</td>
 										<td>${list.price}</td>
 										<td>${list.employeeName}</td>
-
 										<td><a href="#"
 											onclick="getProductInfo('${list.encInventoryId}')"><button
 													class="btn btn-xs btn-primary" type="button">
 													<i class="fa fa-pencil"></i>
 												</button></a></td>
-
 									</tr>
 								</c:forEach>
 
@@ -489,36 +481,31 @@ function isNumberKey(evt) {
 	}
 } ;
 
-function getInventoryList() {
-	
-	var inventoryTypeId = $("#inventoryTypeId").val();
-	var inventoryDate = $("#inventoryDate").val();
-
-	//alert(inventoryTypeId);
-	//alert(updateDate);
-	if (inventoryTypeId == '') {
-		alert("Inventory Type Empty!!!")
-	} else {
+	 function getInventoryList() {
 		
-		var link = "/pos/inventory/getInventoryList";
-		//alert(link);
-		$.ajax({
-			type : "POST",
-			url : link,
-			data : "inventoryTypeId=" + inventoryTypeId + "&inventoryDate=" + inventoryDate,
-			async : true,
-			success : function(data) {
-				$("#inventoryList").html(data);
-				totalPriceCalc();
-				$("#inventoryDownList").show();
-			},
+		//var inventoryTypeId = $("#inventoryTypeId").val();
+		//var inventoryDate = $("#inventoryDate").val();
+			
+			var link = "/pos/inventory/getInventoryList";
+			//alert(link);
+			$.ajax({
+				type : "POST",
+				url : link,
+				data : "",
+				/* data : "inventoryTypeId=" + inventoryTypeId + "&inventoryDate=" + inventoryDate, */
+				async : true,
+				success : function(data) {
+					$("#inventoryList").html(data);
+					$("#productList").show();
+					totalPriceCalc();
+				},
+	
+				error : function(data) {
+					alert('Error!!!')
+				}
+			});
+	}; 
 
-			error : function(data) {
-				alert('Error!!!')
-			}
-		});
-	}
-};
 	
 	
 	function totalPriceCalc () {

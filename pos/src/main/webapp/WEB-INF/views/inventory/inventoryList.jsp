@@ -14,14 +14,18 @@
 							i++;
 				%>
 			</td>
+			<td>${list.inventoryDate}</td>
 			<td>${list.productName}</td>
 			<td>${list.unitName}</td>
 			<td>${list.unitPrice}</td>
 			<td>${list.quantity}</td>
 			<td>${list.price}</td>
 			<td>${list.employeeName}</td>
-			<td>${list.inventoryDate}</td>
-
+			<td><a href="#"
+				onclick="getProductInfo('${list.encInventoryId}')"><button
+						class="btn btn-xs btn-primary" type="button">
+						<i class="fa fa-pencil"></i>
+					</button></a></td>
 		</tr>
 	</c:forEach>
 
@@ -29,7 +33,15 @@
 
 <c:if test="${! empty inventoryListNotFound}">
 	<tr>
-		<td colspan="10"><p>${inventoryListNotFound}</p></td>
+		<td colspan="9"><p>${inventoryListNotFound}</p></td>
+		<td style="display: none;"></td>
+		<td style="display: none;"></td>
+		<td style="display: none;"></td>
+		<td style="display: none;"></td>
+		<td style="display: none;"></td>
+		<td style="display: none;"></td>
+		<td style="display: none;"></td>
+		<td style="display: none;"></td>
 	</tr>
 </c:if>
 
@@ -48,6 +60,7 @@
 							i++;
 				%>
 			</td>
+			<td>${list.inventoryDate}</td>
 			<td>${list.productName}</td>
 			<td>${list.unitName}</td>
 			<td>${list.unitPrice}</td>
@@ -55,8 +68,11 @@
 			<td>${list.price}</td>
 			<td>${list.advanceAmount}</td>
 			<td>${list.supplierName}</td>
-			<td>${list.inventoryDate}</td>
-
+			<td><a href="#"
+				onclick="getProductInfoSupplier('${list.encInventoryId}')"><button
+						class="btn btn-xs btn-primary" type="button">
+						<i class="fa fa-pencil"></i>
+					</button></a></td>
 		</tr>
 	</c:forEach>
 
@@ -65,6 +81,14 @@
 <c:if test="${! empty supplierInventoryListNotFound}">
 	<tr>
 		<td colspan="10"><p>${supplierInventoryListNotFound}</p></td>
+		<td style="display: none;"></td>
+		<td style="display: none;"></td>
+		<td style="display: none;"></td>
+		<td style="display: none;"></td>
+		<td style="display: none;"></td>
+		<td style="display: none;"></td>
+		<td style="display: none;"></td>
+		<td style="display: none;"></td>
 	</tr>
 </c:if>
 

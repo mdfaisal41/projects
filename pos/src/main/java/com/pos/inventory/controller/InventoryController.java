@@ -313,6 +313,10 @@ public class InventoryController {
 
 				inventory.setUpdateBy((String) session.getAttribute("employeeid"));
 				oInventory = inventoryService.saveStoreProduct(inventory);
+				
+				if(oInventory.getmCode() !=null && oInventory.getmCode().equals("1111")) {
+					inventory = new Inventory();
+				}
 
 				redirectAttributes.addFlashAttribute("mCode",oInventory.getmCode());
 				redirectAttributes.addFlashAttribute("message",oInventory.getMessage());
@@ -510,7 +514,8 @@ public class InventoryController {
 			mav.addObject("supplierList", lookupService.supplierList(lookupModel));
 			mav.addObject("inventoryTypeList", lookupService.inventoryTypeListOther(lookupModel));
 			
-			List<Inventory> oInventoryList = inventoryService.getInventoryList(inventory);
+			inventory.setInventoryTypeId("206");
+			List<Inventory> oInventoryList = inventoryService.getInventoryListSupplier(inventory);
 
 			if (oInventoryList.size() > 0) {
 				mav.addObject("inventoryList", oInventoryList);
@@ -625,6 +630,10 @@ public class InventoryController {
 
 				inventory.setUpdateBy((String) session.getAttribute("employeeid"));
 				oInventory = inventoryService.saveStoreProduct(inventory);
+				
+				if(oInventory.getmCode() !=null && oInventory.getmCode().equals("1111")) {
+					inventory = new Inventory();
+				}
 
 				redirectAttributes.addFlashAttribute("mCode",oInventory.getmCode());
 				redirectAttributes.addFlashAttribute("message",oInventory.getMessage());
