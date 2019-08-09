@@ -509,6 +509,15 @@ public class InventoryController {
 			mav.addObject("productList", lookupService.productList(lookupModel));
 			mav.addObject("supplierList", lookupService.supplierList(lookupModel));
 			mav.addObject("inventoryTypeList", lookupService.inventoryTypeListOther(lookupModel));
+			
+			List<Inventory> oInventoryList = inventoryService.getInventoryList(inventory);
+
+			if (oInventoryList.size() > 0) {
+				mav.addObject("inventoryList", oInventoryList);
+			} else {
+				mav.addObject("inventoryListNotFound", "No Data Found!");
+			}
+			
 			return mav;
 			
 			   } else {
@@ -521,6 +530,113 @@ public class InventoryController {
 
 		}
 	}
+	
+	
+	
+	@RequestMapping(value = "getProductInfoSupplier", method = RequestMethod.GET)
+	public ModelAndView getProductInfoSupplier(@ModelAttribute("inventory") Inventory inventory, HttpSession session,
+			LookupModel lookupModel, final RedirectAttributes redirectAttributes) {
+		
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+			try {
+				Inventory oInventory = new Inventory();
+				oInventory = inventoryService.getProductInfo(inventory);
+				
+				if(oInventory.getEncInventoryId() !=null && oInventory.getEncInventoryId().length() >0) {
+					redirectAttributes.addFlashAttribute("inventory", oInventory);
+				} else {
+					redirectAttributes.addFlashAttribute("mCode", "0000");
+					redirectAttributes.addFlashAttribute("message", "No Supplier Product Info Found !!! ");
+				}
+				return new ModelAndView("redirect:/inventory/otherInventory");
+			} catch (Exception e) {
+				e.printStackTrace();
+				redirectAttributes.addFlashAttribute("mCode", "0000");
+				redirectAttributes.addFlashAttribute("message", "Error occured");
+				return new ModelAndView("redirect:/inventory/otherInventory");
+			}
+		} else {
+			return new ModelAndView("login");
+
+		}
+	}
+	
+	
+	
+	@RequestMapping(value = "updateStoreProductSupplier", method = RequestMethod.POST)
+	public ModelAndView  updateStoreProductSupplier(@ModelAttribute Inventory inventory, LookupModel lookupModel,
+			HttpSession session, final RedirectAttributes redirectAttributes) {
+
+		Inventory oInventory = new Inventory();
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+
+			if (inventory.getInventoryTypeId() == null || inventory.getInventoryTypeId() == "") {
+				oInventory.setmCode("0000");
+				oInventory.setMessage("Please Select Inventory type !!");
+				redirectAttributes.addFlashAttribute("mCode",oInventory.getmCode());
+				redirectAttributes.addFlashAttribute("message",oInventory.getMessage());
+				
+			} else if (inventory.getProductId() == null || inventory.getProductId() == "") {
+				oInventory.setmCode("0000");
+				oInventory.setMessage("Please Select Ingredient Name !!");
+				redirectAttributes.addFlashAttribute("mCode",oInventory.getmCode());
+				redirectAttributes.addFlashAttribute("message",oInventory.getMessage());
+				
+			} else if (inventory.getUnitId() == null || inventory.getUnitId() == "") {
+				oInventory.setmCode("0000");
+				oInventory.setMessage("Please Select Unit !!");
+				redirectAttributes.addFlashAttribute("mCode",oInventory.getmCode());
+				redirectAttributes.addFlashAttribute("message",oInventory.getMessage());
+				
+			} else if (inventory.getUnitPrice() == null || inventory.getUnitPrice() == "") {
+				oInventory.setmCode("0000");
+				oInventory.setMessage("Please Enter Unit Price !!");
+				redirectAttributes.addFlashAttribute("mCode",oInventory.getmCode());
+				redirectAttributes.addFlashAttribute("message",oInventory.getMessage());
+				
+			} else if (inventory.getQuantity() == null || inventory.getQuantity() == "") {
+				oInventory.setmCode("0000");
+				oInventory.setMessage("Please Enter Quantity !!");
+				redirectAttributes.addFlashAttribute("mCode",oInventory.getmCode());
+				redirectAttributes.addFlashAttribute("message",oInventory.getMessage());
+			
+			} else if (inventory.getPrice() == null || inventory.getPrice() == "") {
+				oInventory.setmCode("0000");
+				oInventory.setMessage("Please Enter Price !!");
+				redirectAttributes.addFlashAttribute("mCode",oInventory.getmCode());
+				redirectAttributes.addFlashAttribute("message",oInventory.getMessage());
+			} else {
+
+				if (inventory.getInventoryTypeId().equals("206")) {
+					if (inventory.getSupplierId() == null || inventory.getSupplierId() == "") {
+						oInventory.setmCode("0000");
+						oInventory.setMessage("Please Select Supplier !!");
+						redirectAttributes.addFlashAttribute("mCode",oInventory.getmCode());
+						redirectAttributes.addFlashAttribute("message",oInventory.getMessage());
+					}
+				} else {
+					if (inventory.getEmployeeId() == null || inventory.getEmployeeId() == "") {
+						oInventory.setmCode("0000");
+						oInventory.setMessage("Please Select Shop By !!");
+						redirectAttributes.addFlashAttribute("mCode",oInventory.getmCode());
+						redirectAttributes.addFlashAttribute("message",oInventory.getMessage());
+					}
+				}
+
+				inventory.setUpdateBy((String) session.getAttribute("employeeid"));
+				oInventory = inventoryService.saveStoreProduct(inventory);
+
+				redirectAttributes.addFlashAttribute("mCode",oInventory.getmCode());
+				redirectAttributes.addFlashAttribute("message",oInventory.getMessage());
+				
+				redirectAttributes.addFlashAttribute("inventory",inventory);
+			}
+		}
+		return new ModelAndView("redirect:/inventory/otherInventory");
+	}
+	
+	
+	
 
 	@RequestMapping(value = "wastageView", method = RequestMethod.GET)
 	public ModelAndView wastageView(@ModelAttribute Inventory inventory, HttpSession session, LookupModel lookupModel

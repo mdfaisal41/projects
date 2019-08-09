@@ -156,7 +156,7 @@ public class LookupDaoImpl implements LookupDao{
 			sBuilder.append("INVENTORY_TYPE_ID,");
 			sBuilder.append("INVENTORY_TYPE_NAME ");
 			sBuilder.append("FROM L_INVENTORY_TYPE ");
-			sBuilder.append("WHERE INVENTORY_TYPE_ID IN(201,202,203,204,205,206) ");
+			sBuilder.append("WHERE INVENTORY_TYPE_ID IN(201,202,203,204,205) ");
 
 			// String sql = "SELECT BRANCH_ID, NAME FROM L_BRANCH " + "WHERE 1 = 1 ";
 

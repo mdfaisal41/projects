@@ -116,7 +116,7 @@
 							id="dataTable">
 							<thead>
 								<tr>
-									<th>Ingredient Name</th>
+									<th>Product Name</th>
 									<th>Unit</th>
 									<th>Unit Price</th>
 									<th>Quantity</th>
@@ -130,7 +130,8 @@
 								<tr id="newdatarow"
 									<c:if test="${empty inventory.encInventoryId}">
 								style="cursor: pointer; display: none;" 
-								</c:if>>
+								</c:if>
+								>
 
 
 
@@ -191,7 +192,9 @@
 									</select></td>
 
 
-									<td><c:choose>
+									<td>
+									
+									<c:choose>
 											<c:when test="${!empty inventory.encInventoryId}">
 												<button class="btn btn-primary" type="submit"
 													style="width: 75px;">
@@ -208,7 +211,10 @@
 													</button>
 												</a>
 											</c:otherwise>
-										</c:choose> <a href="#" onclick="cancelnewdata()">
+										</c:choose> 
+										
+										
+										<a href="#" onclick="cancelnewdata()">
 											<button class="btn btn-default" type="button"
 												style="width: 75px;">
 												<span> <i class="fa fa-refresh"></i> Cancel
@@ -397,7 +403,6 @@ function isNumberKey(evt) {
 	}
 
 	function cancelnewdata() {
-
 		$("#newdatarow").hide();
 		$("#encInventoryId").val('');
 		$("#unitPrice").val('');

@@ -115,6 +115,8 @@ public class InventoryDaoImpl implements InventoryDao{
 			inParamMap.put("P_SUPPLIER_ID", inventory.getSupplierId());
 			
 			System.out.println("inventory.getUnitPrice() " + inventory.getUnitPrice());
+			System.out.println("inventory.getPrice() " + inventory.getPrice());
+			System.out.println("inventory.getAdvanceAmount() " + inventory.getAdvanceAmount());
 			
 
 			Map<String, Object> outParamMap = simpleJdbcCall.execute(new MapSqlParameterSource().addValues(inParamMap));
@@ -146,7 +148,9 @@ public class InventoryDaoImpl implements InventoryDao{
 		sBuilder.append(" UNIT_PRICE, ");
 		sBuilder.append(" QUANTITY, ");
 		sBuilder.append(" PRICE, ");
-		sBuilder.append(" EMPLOYEE_ID ");
+		sBuilder.append(" EMPLOYEE_ID, ");
+		sBuilder.append(" ADVANCE_AMOUNT, ");
+		sBuilder.append(" SUPPLIER_ID ");
 		sBuilder.append(" FROM INVENTORY_MASTER ");
 		sBuilder.append(" WHERE INVENTORY_ID = :inventoryId ");
 
@@ -169,6 +173,9 @@ public class InventoryDaoImpl implements InventoryDao{
 			oInventory.setQuantity(oRemoveNull.nullRemove(String.valueOf(row.get("QUANTITY"))));
 			oInventory.setPrice(oRemoveNull.nullRemove(String.valueOf(row.get("PRICE"))));
 			oInventory.setEmployeeId(oRemoveNull.nullRemove(String.valueOf(row.get("EMPLOYEE_ID"))));
+			oInventory.setAdvanceAmount(oRemoveNull.nullRemove(String.valueOf(row.get("ADVANCE_AMOUNT"))));
+			oInventory.setSupplierId(oRemoveNull.nullRemove(String.valueOf(row.get("SUPPLIER_ID"))));
+		
 		}
 		return oInventory;
 	}
@@ -188,6 +195,8 @@ public class InventoryDaoImpl implements InventoryDao{
 		sBuilder.append(" QUANTITY, ");
 		sBuilder.append(" PRICE, ");
 		sBuilder.append(" (SELECT EMPLOYEE_NAME FROM EMPLOYEE WHERE EMPLOYEE_ID = M.EMPLOYEE_ID) EMPLOYEE_NAME, ");
+		sBuilder.append(" ADVANCE_AMOUNT, ");
+		sBuilder.append(" (SELECT SUPPLIER_NAME FROM SUPPLIER_INFO WHERE SUPPLIER_ID = M.SUPPLIER_ID) SUPPLIER_NAME, ");
 		sBuilder.append(" TO_CHAR(INVENTORY_DATE,'DD-MON-YYYY') INVENTORY_DATE ");
 		sBuilder.append(" FROM INVENTORY_MASTER M ");
 		sBuilder.append(" WHERE TRUNC(INVENTORY_DATE) = TRUNC(SYSDATE) ");
@@ -213,6 +222,8 @@ public class InventoryDaoImpl implements InventoryDao{
 			oInventory.setQuantity(oRemoveNull.nullRemove(String.valueOf(row.get("QUANTITY"))));
 			oInventory.setPrice(oRemoveNull.nullRemove(String.valueOf(row.get("PRICE"))));
 			oInventory.setEmployeeName(oRemoveNull.nullRemove(String.valueOf(row.get("EMPLOYEE_NAME"))));
+			oInventory.setAdvanceAmount(oRemoveNull.nullRemove(String.valueOf(row.get("ADVANCE_AMOUNT"))));
+			oInventory.setSupplierName(oRemoveNull.nullRemove(String.valueOf(row.get("SUPPLIER_NAME"))));
 			oInventory.setInventoryDate(oRemoveNull.nullRemove(String.valueOf(row.get("INVENTORY_DATE"))));
 			oInventoryList.add(oInventory);
 		}

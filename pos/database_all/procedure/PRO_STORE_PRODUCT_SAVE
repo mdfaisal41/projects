@@ -42,21 +42,21 @@ BEGIN
       BEGIN
          IF P_INVENTORY_TYPE_ID = 206
          THEN
-            IF P_PRICE < P_ADVANCE_AMOUNT
+            IF TO_NUMBER(P_PRICE) < TO_NUMBER(P_ADVANCE_AMOUNT)
             THEN
                P_MESSAGE := 'ADVANCE AMOUNT EXCEED FROM TOTAL PRICE !!';
                P_MESSAGE_CODE := '0000';
                RETURN;
-            ELSIF P_ADVANCE_AMOUNT = P_PRICE
+            ELSIF TO_NUMBER(P_ADVANCE_AMOUNT) = TO_NUMBER(P_PRICE)
             THEN
-               V_ADVANCE_AMOUNT := P_ADVANCE_AMOUNT;
+               V_ADVANCE_AMOUNT := TO_NUMBER(P_ADVANCE_AMOUNT);
                V_FINAL_PAY_YN := 'Y';
-            ELSIF P_ADVANCE_AMOUNT IS NULL
+            ELSIF TO_NUMBER(P_ADVANCE_AMOUNT) IS NULL
             THEN
-               V_ADVANCE_AMOUNT := P_PRICE;
+               V_ADVANCE_AMOUNT := TO_NUMBER(P_PRICE);
                V_FINAL_PAY_YN := 'Y';
             ELSE
-               V_ADVANCE_AMOUNT := P_ADVANCE_AMOUNT;
+               V_ADVANCE_AMOUNT := TO_NUMBER(P_ADVANCE_AMOUNT);
                V_FINAL_PAY_YN := 'N';
             END IF;
          END IF;
@@ -73,6 +73,8 @@ BEGIN
                    UNIT_PRICE = P_UNIT_PRICE,
                    PRICE = P_PRICE,
                    EMPLOYEE_ID = P_EMPLOYEE_ID,
+                   ADVANCE_AMOUNT = P_ADVANCE_AMOUNT,
+                   SUPPLIER_ID = P_SUPPLIER_ID,
                    UPDATE_BY = P_UPDATE_BY,
                    UPDATE_DATE = SYSDATE
              WHERE INVENTORY_ID = P_INVENTORY_ID;
