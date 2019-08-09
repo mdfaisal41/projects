@@ -1,0 +1,148 @@
+CREATE OR REPLACE PROCEDURE POS.PRO_ADD_MEMBER_SAVE (
+   P_MEMBER_ID               VARCHAR2,
+   P_MEMBER_NAME             VARCHAR2,
+   P_KNOWN_AS                VARCHAR2,
+   P_FATHERS_NAME            VARCHAR2,
+   P_MOTHERS_NAME            VARCHAR2,
+   P_GENDER_ID               VARCHAR2,
+   P_DATE_OF_BIRTH           VARCHAR2,
+   P_RELIGION_ID             VARCHAR2,
+   P_MARITAL_STATUS_ID       VARCHAR2,
+   P_NID_NUMBER              VARCHAR2,
+   P_JOINING_DATE            VARCHAR2,
+   P_CONTACT_NO              VARCHAR2,
+   P_EMAIL_ADDRESS           VARCHAR2,
+   P_ENABLED_YN              VARCHAR2,
+   P_ADDRESS                 VARCHAR2,
+   P_UPDATE_BY               VARCHAR2,
+   P_MESSAGE             OUT VARCHAR2,
+   P_MESSAGE_CODE        OUT VARCHAR2,
+   P_NEW_MEMBER_ID       OUT VARCHAR2)
+AS
+   V_COUNT       NUMBER;
+   V_MEMBER_ID   VARCHAR2 (50);
+   V_MEMBER_NO   NUMBER;
+BEGIN
+   IF P_MEMBER_ID IS NOT NULL
+   THEN
+      BEGIN
+         SELECT COUNT (P_MEMBER_ID)
+           INTO V_COUNT
+           FROM MEMBERSHIP
+          WHERE MEMBER_ID = P_MEMBER_ID;
+
+         IF V_COUNT > 0
+         THEN
+            BEGIN
+               UPDATE MEMBERSHIP
+                  SET MEMBER_NAME = UPPER (P_MEMBER_NAME),
+                      KNOWN_AS = UPPER (P_KNOWN_AS),
+                      FATHER_NAME = UPPER (P_FATHERS_NAME),
+                      MOTHER_NAME = UPPER (P_MOTHERS_NAME),
+                      GENDER = P_GENDER_ID,
+                      DATE_OF_BIRTH = TO_DATE (P_DATE_OF_BIRTH, 'DD/MM/YYYY'),
+                      RELIGION_ID = P_RELIGION_ID,
+                      MARITAL_STATUS_ID = P_MARITAL_STATUS_ID,
+                      NATIONAL_ID = P_NID_NUMBER,
+                      JOINING_DATE = TO_DATE (P_JOINING_DATE, 'DD/MM/YYYY'),
+                      CONTACT_NO = P_CONTACT_NO,
+                      EMAIL_ADDRESS = P_EMAIL_ADDRESS,
+                      ENABLED_YN = P_ENABLED_YN,
+                      PRESENT_ADDRESS = P_ADDRESS,
+                      UPDATE_BY = P_UPDATE_BY,
+                      UPDATE_DATE = SYSDATE
+                WHERE MEMBER_ID = P_MEMBER_ID;
+            EXCEPTION
+               WHEN OTHERS
+               THEN
+                  P_MESSAGE := 'ERROR UPDATING RECORD!!!';
+                  P_MESSAGE_CODE := '0000';
+                  RETURN;
+            END;
+
+            P_MESSAGE := 'UPDATED SUCCESSFULLY';
+            P_MESSAGE_CODE := '1111';
+         ELSE
+            P_MESSAGE := 'NO DATA FOUND TO UPDATE';
+            P_MESSAGE_CODE := '0000';
+         END IF;
+      EXCEPTION
+         WHEN OTHERS
+         THEN
+            P_MESSAGE := SQLERRM || ' ERROR UPDATING RECORD!!!';
+            P_MESSAGE_CODE := '0000';
+            RETURN;
+      END;
+   ELSE
+      BEGIN
+         SELECT    SUBSTR (UPPER (P_KNOWN_AS), 0, 3)
+                || '-'
+                || LPAD (MEMBER_SEQ.NEXTVAL, 3, 0)
+           INTO V_MEMBER_ID
+           FROM DUAL;
+
+
+         SELECT MAX (NVL (MEMBER_NO, 100)) + 1
+           INTO V_MEMBER_NO
+           FROM MEMBERSHIP;
+
+
+         BEGIN
+            INSERT INTO MEMBERSHIP (MEMBER_ID,
+                                    MEMBER_NAME,
+                                    KNOWN_AS,
+                                    FATHER_NAME,
+                                    MOTHER_NAME,
+                                    GENDER,
+                                    DATE_OF_BIRTH,
+                                    RELIGION_ID,
+                                    MARITAL_STATUS_ID,
+                                    NATIONAL_ID,
+                                    JOINING_DATE,
+                                    CONTACT_NO,
+                                    EMAIL_ADDRESS,
+                                    ENABLED_YN,
+                                    PRESENT_ADDRESS,
+                                    UPDATE_BY,
+                                    UPDATE_DATE,
+                                    MEMBER_NO)
+                 VALUES (V_MEMBER_ID,
+                         UPPER (P_MEMBER_NAME),
+                         UPPER (P_KNOWN_AS),
+                         UPPER (P_FATHERS_NAME),
+                         UPPER (P_MOTHERS_NAME),
+                         P_GENDER_ID,
+                         TO_DATE (P_DATE_OF_BIRTH, 'DD/MM/YYYY'),
+                         P_RELIGION_ID,
+                         P_MARITAL_STATUS_ID,
+                         P_NID_NUMBER,
+                         TO_DATE (P_JOINING_DATE, 'DD/MM/YYYY'),
+                         P_CONTACT_NO,
+                         P_EMAIL_ADDRESS,
+                         P_ENABLED_YN,
+                         P_ADDRESS,
+                         P_UPDATE_BY,
+                         SYSDATE,
+                         V_MEMBER_NO);
+         EXCEPTION
+            WHEN OTHERS
+            THEN
+               P_MESSAGE := 'ERROR SAVING RECORD!!!' || SQLERRM;
+               P_MESSAGE_CODE := '0000';
+               RETURN;
+         END;
+
+
+         P_MESSAGE := 'SAVED SUCCESSFULLY';
+         P_MESSAGE_CODE := '1111';
+         P_NEW_MEMBER_ID := V_MEMBER_ID;
+      EXCEPTION
+         WHEN OTHERS
+         THEN
+            P_MESSAGE := SQLERRM || ' ERROR SAVING RECORD 2!!!' || SQLERRM;
+            P_MESSAGE_CODE := '0000';
+            RETURN;
+      END;
+   END IF;
+END;
+/
