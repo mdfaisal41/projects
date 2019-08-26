@@ -5,7 +5,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <script>
-
 </script>
 
 <header class="page-header">
@@ -533,10 +532,8 @@
 		else
 			key = e.which; //firefox
 		if (key == 13) {
-
 			document.getElementById(next).focus();
 			return false;
-
 		} else
 			return true;
 	}
@@ -544,7 +541,6 @@
 	
 	function removetr(e) {
 		  var whichtr = $(e).closest("tr");
-
 		  whichtr.remove();
 		 };
 		 
@@ -569,7 +565,6 @@
 	}
 	
 	function getMemberList() {
-
 		var link = "/pos/membership/getMemberList";
 		//var reservationDate = $("#reservationDate").val();
 		
@@ -577,12 +572,10 @@
 			type : "POST",
 			url : link,
 			async : true,
-
 			success : function(data) {
 				$("#memberList").html(data);
 				$("#memberListTable").DataTable();
 			},
-
 			error : function(data) {
 				alert('Error!!!')
 			}

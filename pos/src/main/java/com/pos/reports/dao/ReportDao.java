@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.pos.pointOfSale.model.PointOfSale;
 import com.pos.reports.model.ReportModel;
 
 import net.sf.jasperreports.engine.JRDataSource;
@@ -26,5 +27,10 @@ public interface ReportDao {
 	
 	public String viewPdfReport(String fileName, HttpServletRequest request, HttpServletResponse response,
 			Map parameters) throws JRException, IOException, SQLException, ClassNotFoundException, Exception;
+	
+	public JRDataSource kitchenQTReportData(ReportModel reportModel);
+	
+	public JRDataSource customerMoneyReceiptData(ReportModel reportModel);
 
+	public ReportModel updateItemWiseKitchenQT(ReportModel reportModel);
 }

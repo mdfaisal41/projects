@@ -2,6 +2,7 @@ package com.pos.pointOfSale.dao;
 
 import java.util.List;
 
+import com.pos.accounts.model.OwnerConsumptionInfo;
 import com.pos.pointOfSale.model.PointOfSale;
 
 
@@ -26,4 +27,34 @@ public interface PointOfSaleDao {
 	public List<PointOfSale> getOrderEditList(PointOfSale pointOfSale) throws Exception;
 	public PointOfSale getOrderTotalAmount(String encOrderId);
 	public PointOfSale saveOrderFinalize(PointOfSale pointOfSale);
+	
+	public List<PointOfSale> getOwnerConsumptionList(PointOfSale pointOfSale);
+	
+	public PointOfSale saveOwnerConsumption(PointOfSale pointOfSale);
+
+	public PointOfSale getOwnerConsumption(PointOfSale pointOfSale);
+	
+	public PointOfSale orderProcessComplete(PointOfSale pointOfSale);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

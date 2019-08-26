@@ -84,4 +84,19 @@ public class PointOfSaleServiceImpl implements PointOfSaleService {
 	public PointOfSale saveOrderFinalize(PointOfSale pointOfSale) {
 		return pointOfSaleDao.saveOrderFinalize(pointOfSale);
 	}
+
+	public List<PointOfSale> getOwnerConsumptionList(PointOfSale pointOfSale) {
+		return pointOfSaleDao.getOwnerConsumptionList(pointOfSale);
+	}
+
+	public PointOfSale saveOwnerConsumption(PointOfSale pointOfSale) {
+		return pointOfSaleDao.saveOwnerConsumption(pointOfSale);
+	}
+	public PointOfSale getOwnerConsumption(PointOfSale pointOfSale) {
+		return pointOfSaleDao.getOwnerConsumption(pointOfSale);
+	}
+
+	public PointOfSale orderProcessComplete(PointOfSale pointOfSale) {
+		return pointOfSaleDao.orderProcessComplete(pointOfSale);
+	}
 }

@@ -352,20 +352,14 @@
 
 
 <script>
-
 window.onload = function load() {
 	$("#productList").DataTable();
 }
-
-
-
 function getProductInfoSupplier(encInventoryId) {
 	var link = "/pos/inventory/getProductInfoSupplier?encInventoryId=" + encodeURIComponent(encInventoryId);
 	//alert(link);
 	window.location = link;
 }
-
-
 function cancelnewdata() {
 	$("#newdatarow").hide();
 	$("#encInventoryId").val('');
@@ -374,8 +368,6 @@ function cancelnewdata() {
 	$("#price").val('');
 	$("#supplierId").val('');
 }
-
-
 function getTotalPrice () {
 	//alert('hello');
 	var unitPrice = $("#unitPrice").val();
@@ -392,8 +384,6 @@ function getTotalPrice () {
 	}
 	
 }
-
-
 /* function isNumberKey(evt) {
     var charCode = (evt.which) ? evt.which : event.keyCode;
     var errid = "err"+evt.target.id;
@@ -406,8 +396,6 @@ function getTotalPrice () {
         return true;
     }      
 } */
-
-
 function isNumberKey(evt) {
     var charCode = (evt.which) ? evt.which : event.keyCode;
     var errid = "err"+evt.target.id;
@@ -420,7 +408,6 @@ function isNumberKey(evt) {
         return true;
     }      
 }
-
 	
 	 function saveNewData() {
 	//alert('hello');
@@ -456,7 +443,6 @@ function isNumberKey(evt) {
 					+ "&price=" + price 
 					+ "&advanceAmount=" + advanceAmount 
 					+ "&supplierId=" + supplierId,
-
 					async : true,
 					 /* beforeSend : function(xhr) {
 						// here it is
@@ -475,29 +461,22 @@ function isNumberKey(evt) {
 									+ '<strong>' + data.message
 									+ '</strong></div>';
 							$("#effortSearchButton").click();
-
 						} else {
-
 							msg = '<div class="alert alert-danger">'
 									+ '<button class="close" aria-hidden="true" data-dismiss="alert"'
 				+'type="button">x</button>'
 									+ '<strong>' + data.message
 									+ '</strong></div>';
-
 						}
 						//alert(msg);
 						$("#msg").html(msg);
 					},
-
 					error : function(data) {
 						alert('Error!!!')
 					}
 				});
 	}
 } ;
-
-
-
 	 function getInventoryList() {
 		
 		var inventoryTypeId = $("#inventoryTypeId").val();
@@ -526,7 +505,6 @@ function isNumberKey(evt) {
 	function totalPriceCalc () {
 		var inventoryTypeId = $("#inventoryTypeId").val();
 		var inventoryDate = $("#inventoryDate").val();
-
 		//alert(inventoryTypeId);
 		//alert(updateDate);
 			
@@ -543,7 +521,6 @@ function isNumberKey(evt) {
 					//totalPriceCalc();
 					//$("#inventoryDownList").show();
 				},
-
 				error : function(data) {
 					alert('Error!!!')
 				}
@@ -554,11 +531,8 @@ function isNumberKey(evt) {
 	
 	function newData() {
 		$("#newdatarow").show();
-
 	}
-
 	
-
 	
 </script>
 <script

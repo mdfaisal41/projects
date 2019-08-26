@@ -116,10 +116,10 @@ public class LookupDaoImpl implements LookupDao{
 
 			MapSqlParameterSource paramSource = new MapSqlParameterSource();
 			
-			if(lookupModel.getId() !=null && lookupModel.getId().length() >0) {
+			/*if(lookupModel.getId() !=null && lookupModel.getId().length() >0) {
 				sBuilder.append("AND DESIGNATION_ID = :id ");
 				paramSource.addValue("id", lookupModel.getId());
-			}
+			}*/
 			
 			 sBuilder.append("ORDER BY EMPLOYEE_NAME ");
 				
@@ -321,26 +321,19 @@ public class LookupDaoImpl implements LookupDao{
 
 	/*public List<LookupModel> unitList(LookupModel lookupModel) {
 		jdbcTemplate = new JdbcTemplate(dataSource);
-
 		List<LookupModel> oUnitList = new ArrayList<LookupModel>();
 		try {
 			NamedParameterJdbcTemplate npjt = new NamedParameterJdbcTemplate(jdbcTemplate);
-
 			StringBuilder sBuilder = new StringBuilder();
 			sBuilder.append("SELECT ");
 			sBuilder.append("UNIT_ID,");
 			sBuilder.append("UNIT_NAME ");
 			sBuilder.append("FROM L_UNIT ");
-
 			// String sql = "SELECT BRANCH_ID, NAME FROM L_BRANCH " + "WHERE 1 =
 			// 1 ";
-
 			MapSqlParameterSource paramSource = new MapSqlParameterSource();
-
 			// System.out.println(sql);
-
 			List<Map<String, Object>> rows = npjt.queryForList(sBuilder.toString(), paramSource);
-
 			for (@SuppressWarnings("rawtypes")
 			Map row : rows) {
 				LookupModel oLookupModel = new LookupModel();
@@ -348,11 +341,9 @@ public class LookupDaoImpl implements LookupDao{
 				oLookupModel.setUnitName(String.valueOf(row.get("UNIT_NAME")));
 				oUnitList.add(oLookupModel);
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 		return oUnitList;
 	}
 */	

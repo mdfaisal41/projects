@@ -44,6 +44,17 @@ public class ReportServiceImpl implements ReportService{
 	public JRDataSource costAnalysisReportData(ReportModel reportModel) {
 		return reportDao.costAnalysisReportData(reportModel);
 	}
+
+	public JRDataSource kitchenQTReportData(ReportModel reportModel) {
+		return reportDao.kitchenQTReportData(reportModel);
+	}
+	public JRDataSource customerMoneyReceiptData(ReportModel reportModel) {
+		return reportDao.customerMoneyReceiptData(reportModel);
+	}
+
+	public ReportModel updateItemWiseKitchenQT(ReportModel reportModel) {
+		return reportDao.updateItemWiseKitchenQT(reportModel);
+	}
 	
 	
 }

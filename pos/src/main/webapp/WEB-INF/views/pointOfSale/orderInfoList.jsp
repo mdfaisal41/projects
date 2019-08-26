@@ -45,6 +45,7 @@
 			<td>${list.quantity}</td>
 			<td>${list.itemPrice}</td>
 			<td>${list.subTotal}</td>
+			<td>${list.orderNote}</td>
 		</tr>
 	</c:forEach>
 
@@ -59,6 +60,7 @@
 		<td></td>
 		<td><p>Net Total</p></td>
 		<td><p>${sum_data}</p></td>
+		<td></td>
 	</tr>
 </c:if>
 

@@ -54,8 +54,88 @@ public class PointOfSale {
 	private String orderNo;
 	private String orderDate;
 	
+	private String encConsumeId;
+	private String consumeDate;
+	private String remarks;
+	private String editable;
+	private String price;
+	private String orderNote;
+	private String bkashPaymentAmount;
+	private String bkashTranNo;
+	private String discountReferenceBy;
 	
+	private String servedBy;
+	private String ownerFoodYn;
 	
+	private String billPrintYn;
+	
+	public String getOwnerFoodYn() {
+		return ownerFoodYn;
+	}
+	public void setOwnerFoodYn(String ownerFoodYn) {
+		this.ownerFoodYn = ownerFoodYn;
+	}
+	public String getServedBy() {
+		return servedBy;
+	}
+	public void setServedBy(String servedBy) {
+		this.servedBy = servedBy;
+	}
+	public String getBkashPaymentAmount() {
+		return bkashPaymentAmount;
+	}
+	public void setBkashPaymentAmount(String bkashPaymentAmount) {
+		this.bkashPaymentAmount = bkashPaymentAmount;
+	}
+
+	public String getBkashTranNo() {
+		return bkashTranNo;
+	}
+	public void setBkashTranNo(String bkashTranNo) {
+		this.bkashTranNo = bkashTranNo;
+	}
+	public String getDiscountReferenceBy() {
+		return discountReferenceBy;
+	}
+	public void setDiscountReferenceBy(String discountReferenceBy) {
+		this.discountReferenceBy = discountReferenceBy;
+	}
+	public String getOrderNote() {
+		return orderNote;
+	}
+	public void setOrderNote(String orderNote) {
+		this.orderNote = orderNote;
+	}
+	public String getPrice() {
+		return price;
+	}
+	public void setPrice(String price) {
+		this.price = price;
+	}
+	public String getEncConsumeId() {
+		return encConsumeId;
+	}
+	public void setEncConsumeId(String encConsumeId) {
+		this.encConsumeId = encConsumeId;
+	}
+	public String getConsumeDate() {
+		return consumeDate;
+	}
+	public void setConsumeDate(String consumeDate) {
+		this.consumeDate = consumeDate;
+	}
+	public String getRemarks() {
+		return remarks;
+	}
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
+	public String getEditable() {
+		return editable;
+	}
+	public void setEditable(String editable) {
+		this.editable = editable;
+	}
 	public String getCompletedYn() {
 		return completedYn;
 	}
@@ -315,6 +395,12 @@ public class PointOfSale {
 	}
 	public void setEmployeeName(String employeeName) {
 		this.employeeName = employeeName;
+	}
+	public String getBillPrintYn() {
+		return billPrintYn;
+	}
+	public void setBillPrintYn(String billPrintYn) {
+		this.billPrintYn = billPrintYn;
 	}
 	
 	

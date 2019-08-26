@@ -126,7 +126,7 @@
 
 
 
-<c:if test="${!empty projectList}">
+<%-- <c:if test="${!empty projectList}">
 	<c:forEach items="${projectList}" var="list">
 		<tr ondblclick="getProjectInfo('${list.encProjectId}')"
 			style="cursor: pointer">
@@ -137,7 +137,7 @@
 			<td><a href="#" onclick="getProjectInfo('${list.encProjectId}')"><button
 						class="btn btn-xs btn-primary" type="button">
 						<i class="fa fa-pencil"></i>
-					</button></a> <%-- <a href="#" onclick="deleteProjectInfo('${list.encProjectId}')"><button class="btn btn-xs btn-danger" type="button"><i class="fa fa-trash-o"></i></button></a>	</td> --%>
+					</button></a> <a href="#" onclick="deleteProjectInfo('${list.encProjectId}')"><button class="btn btn-xs btn-danger" type="button"><i class="fa fa-trash-o"></i></button></a>	</td>
 		</tr>
 	</c:forEach>
 
@@ -147,12 +147,12 @@
 	<tr>
 		<td colspan="5"><p>${projectNotFound}</p></td>
 	</tr>
-</c:if>
+</c:if> --%>
 
 
 
 
-<c:if test="${!empty costPurposeInfoList}">
+<%-- <c:if test="${!empty costPurposeInfoList}">
 	<c:forEach items="${costPurposeInfoList}" var="list">
 		<tr ondblclick="" style="cursor: pointer">
 			<td>${list.projectName}</td>
@@ -173,10 +173,10 @@
 	<tr>
 		<td colspan="5"><p>${costPurposeInfoNotFound}</p></td>
 	</tr>
-</c:if>
+</c:if> --%>
 
 
-<c:if test="${!empty bankAccInfoList}">
+<%-- <c:if test="${!empty bankAccInfoList}">
 	<c:forEach items="${bankAccInfoList}" var="list">
 		<tr ondblclick="getBankAccInfo('${list.encBankAccId}')"
 			style="cursor: pointer">
@@ -198,11 +198,11 @@
 	<tr>
 		<td colspan="6"><p>${bankAccInfoNotFound}</p></td>
 	</tr>
-</c:if>
+</c:if> --%>
 
 
 
-<c:if test="${!empty bankMasterList}">
+<%-- <c:if test="${!empty bankMasterList}">
 	<c:forEach items="${bankMasterList}" var="list">
 		<tr ondblclick="getBankInfo('${list.encBankId}')"
 			style="cursor: pointer">
@@ -223,10 +223,10 @@
 		<td colspan="5"><p>${bankMasterNotFound}</p></td>
 	</tr>
 </c:if>
+ --%>
 
 
-
-<c:if test="${!empty bankBranchList}">
+<%-- <c:if test="${!empty bankBranchList}">
 	<c:forEach items="${bankBranchList}" var="list">
 		<tr ondblclick="getBankBranch('${list.encBankBranchId}')"
 			style="cursor: pointer">
@@ -252,12 +252,12 @@
 	<tr>
 		<td colspan="7"><p>${bankBranchNotFound}</p></td>
 	</tr>
-</c:if>
+</c:if> --%>
 
 
 
 
-<c:if test="${!empty cashRecipientList}">
+<%-- <c:if test="${!empty cashRecipientList}">
 	<c:forEach items="${cashRecipientList}" var="list">
 		<tr ondblclick="getCashRecipient('${list.encRecipientId}')"
 			style="cursor: pointer">
@@ -278,12 +278,12 @@
 	<tr>
 		<td colspan="4"><p>${cashRecipientNotFound}</p></td>
 	</tr>
-</c:if>
+</c:if> --%>
 
 
 
 
-<c:if test="${!empty cashChequeRecipientList}">
+<%-- <c:if test="${!empty cashChequeRecipientList}">
 	<c:forEach items="${cashChequeRecipientList}" var="list">
 		<tr
 			ondblclick="getCashChequeRecipient('${list.encCashChequeRecipientId}', '${list.recipientName}')"
@@ -306,13 +306,13 @@
 	<tr>
 		<td colspan="5"><p>${cashChequeRecipientNotFound}</p></td>
 	</tr>
-</c:if>
+</c:if> --%>
 
 
 
 
 
-<c:if test="${!empty otherRecipientList}">
+<%-- <c:if test="${!empty otherRecipientList}">
 	<c:forEach items="${otherRecipientList}" var="list">
 		<tr ondblclick="getOtherRecipient('${list.encOtherRecipientId}')"
 			style="cursor: pointer">
@@ -334,12 +334,12 @@
 	<tr>
 		<td colspan="5"><p>${otherRecipientNotFound}</p></td>
 	</tr>
-</c:if>
+</c:if> --%>
 
 
 
 
-<c:if test="${!empty chequeCancelList}">
+<%-- <c:if test="${!empty chequeCancelList}">
 	<c:forEach items="${chequeCancelList}" var="list">
 		<tr style="cursor: pointer">
 			<td>${list.bankName}</td>
@@ -355,12 +355,12 @@
 	<tr>
 		<td colspan="4"><p>${chequeCancelNotFound}</p></td>
 	</tr>
-</c:if>
+</c:if> --%>
 
 
 
 
-<c:if test="${!empty chequeBookInfoList}">
+<%-- <c:if test="${!empty chequeBookInfoList}">
 	<c:forEach items="${chequeBookInfoList}" var="list">
 		<tr ondblclick="getChequeBookInfo('${list.encChequeBookId}')"
 			style="cursor: pointer">
@@ -384,9 +384,9 @@
 	<tr>
 		<td colspan="7"><p>${chequeBookInfoNotFound}</p></td>
 	</tr>
-</c:if>
+</c:if> --%>
 
-<c:if test="${!empty cashBookRegisterList}">
+<%-- <c:if test="${!empty cashBookRegisterList}">
 	<c:forEach items="${cashBookRegisterList}" var="list">
 		<tr
 			<c:if test="${chequeEditPermission == 'Y' && list.paymentAmount != '0.00'}">ondblclick="getCashBookRegister('${list.encRegisterId}')"</c:if>
@@ -414,10 +414,10 @@
 		</tr>
 	</c:forEach>
 
-</c:if>
+</c:if> --%>
 
 
-<c:if test="${!empty cashBookRegisterTotal}">
+<%-- <c:if test="${!empty cashBookRegisterTotal}">
 
 	<c:forEach items="${cashBookRegisterTotal}" var="total">
 		<tr style="cursor: pointer">
@@ -445,13 +445,13 @@
 		<td
 			<c:choose><c:when test="${cashEditPermission == 'Y'}">colspan="7"</c:when><c:otherwise>colspan="6"</c:otherwise></c:choose>><p>${cashBookRegisterNotFound}</p></td>
 	</tr>
-</c:if>
+</c:if> --%>
 
 
 
 
 
-<c:if test="${!empty pettyCashRegisterList}">
+<%-- <c:if test="${!empty pettyCashRegisterList}">
 	<c:forEach items="${pettyCashRegisterList}" var="list">
 		<tr
 			<c:if test="${cashEditPermission == 'Y' && list.refRegisterId == ''}">ondblclick="getPettyCashRegister('${list.encRegisterId}')"</c:if>
@@ -477,10 +477,10 @@
 		</tr>
 	</c:forEach>
 
-</c:if>
+</c:if> --%>
 
 
-<c:if test="${!empty pettyCashRegisterTotal}">
+<%-- <c:if test="${!empty pettyCashRegisterTotal}">
 	<c:forEach items="${pettyCashRegisterTotal}" var="total">
 		<tr style="cursor: pointer">
 			<td></td>
@@ -504,13 +504,13 @@
 		<td
 			<c:choose><c:when test="${cashEditPermission == 'Y'}">colspan="7"</c:when><c:otherwise>colspan="6"</c:otherwise></c:choose>><p>${pettyCashRegisterNotFound}</p></td>
 	</tr>
-</c:if>
+</c:if> --%>
 
 
 
 
 
-<c:if test="${!empty chequeBookRegisterList}">
+<%-- <c:if test="${!empty chequeBookRegisterList}">
 	<%
 		int i = 1;
 	%>
@@ -581,14 +581,14 @@
 			<c:choose><c:when test="${chequeEditPermission == 'Y'}">colspan="12"</c:when><c:otherwise>colspan="11"</c:otherwise></c:choose>><p>${chequeBookRegisterNotFound}</p></td>
 	</tr>
 </c:if>
+ --%>
 
 
 
 
 
 
-
-<c:if test="${!empty bankTransferList}">
+<%-- <c:if test="${!empty bankTransferList}">
 	<c:forEach items="${bankTransferList}" var="list">
 		<tr style="cursor: pointer">
 			<td>${list.transferDate}</td>
@@ -610,14 +610,14 @@
 	<tr>
 		<td colspan="8"><p>${bankTransferNotFound}</p></td>
 	</tr>
-</c:if>
+</c:if> --%>
 
 
 
 
 
 
-<c:if test="${!empty vehicleRequisitionList}">
+<%-- <c:if test="${!empty vehicleRequisitionList}">
 	<%
 		int sl = 0;
 	%>
@@ -675,10 +675,10 @@
 		<td colspan="10"><p>${vehicleRequisitionListNotFound}</p></td>
 	</tr>
 </c:if>
+ --%>
 
 
-
-<c:if test="${!empty cashAdvanceList}">
+<%-- <c:if test="${!empty cashAdvanceList}">
 	<c:forEach items="${cashAdvanceList}" var="list">
 		<tr style="cursor: pointer">
 			<td>${list.registerDate}</td>
@@ -702,10 +702,10 @@
 	<tr>
 		<td colspan="9"><p>${cashAdvanceNotFound}</p></td>
 	</tr>
-</c:if>
+</c:if> --%>
 
 
-<c:if test="${!empty cashAdvanceForRefundList}">
+<%-- <c:if test="${!empty cashAdvanceForRefundList}">
 
 	<%
 		int i = 0;
@@ -747,10 +747,10 @@
 		<td colspan="9"><p>${cashAdvanceForRefundNotFound}</p></td>
 	</tr>
 </c:if>
+ --%>
 
 
-
-<c:if test="${!empty VehicleInformationList}">
+<%-- <c:if test="${!empty VehicleInformationList}">
 	<c:forEach items="${VehicleInformationList}" var="list">
 		<tr ondblclick="getVehicleInfornation('${list.encVehicleId}')"
 			style="cursor: pointer">
@@ -777,9 +777,9 @@
 		<td colspan="7"><p>${vehicleInformationListNotFound}</p></td>
 	</tr>
 </c:if>
+ --%>
 
-
-<c:if test="${!empty purposeList}">
+<%-- <c:if test="${!empty purposeList}">
 
 
 	<%
@@ -812,7 +812,9 @@
 		<td colspan="3"><p>${purposeNotFound}</p></td>
 	</tr>
 </c:if>
-
+ --%>
+ 
+ <%-- 
 <c:if test="${!empty FuelRefillingList}">
 	<c:forEach items="${FuelRefillingList}" var="list">
 		<tr ondblclick="getFuelRefillingInfo('${list.encFuelRefillingId}')"
@@ -844,11 +846,11 @@
 		<td colspan="8"><p>${FuelRefillingListNotFound}</p></td>
 	</tr>
 </c:if>
+ --%>
 
 
 
-
-
+<%-- 
 <c:if test="${!empty VehicleRequisitionList}">
 	<c:forEach items="${VehicleRequisitionList}" var="list">
 		<tr ondblclick="VeRequisitionInfo('${list.encRequisitionId}')"
@@ -859,7 +861,7 @@
 			<td>${list.requisitionTimeFrom}</td>
 			<td>${list.requisitionTimeTo}</td>
 			<td>${list.passengerNo}</td>
-			<%-- <td>${list.requisitionStatusId}</td> --%>
+			<td>${list.requisitionStatusId}</td>
 
 			<td><a href="#"
 				onclick="VeRequisitionInfo('${list.encRequisitionId}')"><button
@@ -878,11 +880,11 @@
 		<td colspan="8"><p>${VehicleRequisitionListNotFound}</p></td>
 	</tr>
 </c:if>
+ --%>
 
 
 
-
-
+<%-- 
 <c:if test="${!empty allowanceDeductionList}">
 	<c:forEach items="${allowanceDeductionList}" var="list">
 		<tr ondblclick="getAllowanceDeductionInfo('${list.encAdCategoryId}')"
@@ -906,10 +908,10 @@
 	</tr>
 </c:if>
 
+ --%>
 
 
-
-
+<%-- 
 <c:if test="${!empty categoryList}">
 	<input type="hidden" id="trIndex" value="${categoryListSize}">
 	<%
@@ -968,12 +970,12 @@
 		<td colspan="8"><p>${categoryListNotFound}</p></td>
 	</tr>
 </c:if>
+ --%>
 
 
 
 
-
-<c:if test="${!empty salaryAlterationListNew}">
+<%-- <c:if test="${!empty salaryAlterationListNew}">
 	<%
 		int i = 1;
 	%>
@@ -1029,10 +1031,10 @@
 		<td colspan="8"><p>${salaryAlterationListNewNotFound}</p></td>
 	</tr>
 </c:if>
+ --%>
 
 
-
-<c:if test="${!empty salaryAlterationList}">
+<%-- <c:if test="${!empty salaryAlterationList}">
 	<%
 		int i = 1;
 	%>
@@ -1094,9 +1096,9 @@
 		<td colspan="8"><p>${salaryAlterationListNotFound}</p></td>
 	</tr>
 </c:if>
+ --%>
 
-
-<c:if test="${!empty payrollProcessList}">
+<%-- <c:if test="${!empty payrollProcessList}">
 	<%
 		int i = 1;
 	%>
@@ -1134,11 +1136,11 @@
 
 
 
-			<%-- <td><a href="#"
+			<td><a href="#"
 														onclick="VeRequisitionInfo('${list.encEmployeeId}')"><button
 																class="btn btn-xs btn-primary" type="button">
 																<i class="fa fa-pencil"></i>
-															</button></a></td> --%>
+															</button></a></td>
 
 		</tr>
 	</c:forEach>
@@ -1180,11 +1182,11 @@
 		<td colspan="20"><p>${payrollProcessListNotFound}</p></td>
 	</tr>
 </c:if>
-
+ --%>
 
 <!-- Start Payroll Pending list -->
 
-<c:if test="${!empty payrollPendingList}">
+<%-- <c:if test="${!empty payrollPendingList}">
 	<%
 		int i = 1;
 	%>
@@ -1264,10 +1266,10 @@
 	<c:forEach items="${payrollPendingTotal}" var="total">
 		<tr style="cursor: pointer">
 
-			<%-- <td>${payrollPendingList.size()+1}</td>
+			<td>${payrollPendingList.size()+1}</td>
 			<td></td>
 			<td></td>
-			<td></td> --%>
+			<td></td>
 			<td colspan="5" style="text-align: right; color: blue;">Total</td>
 			<td style="text-align: right;">${total.basicPay}</td>
 			<td style="text-align: right;">${total.houseRentAllowance}</td>
@@ -1300,12 +1302,11 @@
 		<td colspan="20"><p>${payrollPendingListNotFound}</p></td>
 	</tr>
 </c:if>
-
+ --%>
 
 <%-- 
 							<table 
 								class="table table-striped table-bordered table-condensed table-hover mb-none datatable3333">
-
 								<thead>
 									<tr>
 										<th>SL No.</th>
@@ -1331,7 +1332,6 @@
 											</div></th>
 									</tr>
 								</thead>
-
 								<tbody id="payrollPendingList">
 <div style="overflow: scroll; height:200px;">
 									<c:if test="${!empty payrollPendingList}">
@@ -1342,7 +1342,6 @@
 											varStatus="status">
 											
 											<tr style="cursor: pointer">
-
 												<td>
 													<%
 														out.print(i);
@@ -1368,7 +1367,6 @@
 												name="payrollPendingListDetails[${status.index}].miscellaneousDeduction" value="${list.miscellaneousDeduction}"> </td> 
 												<td><div
 														class="checkbox-custom chekbox-primary input-group">
-
 														<input class="to-labelauty" type="checkbox"
 															id="selectYN_${list.payrollId}"
 															value="${list.encPayrollId}"
@@ -1380,7 +1378,6 @@
 										</c:forEach>
 										</div>
 									</c:if>
-
 									
 								</tbody>
 							</table> --%>
@@ -1468,7 +1465,7 @@
 </c:if>
 
 
-<c:if test="${!empty loanInfoList}">
+<%-- <c:if test="${!empty loanInfoList}">
 	<c:forEach items="${loanInfoList}" var="list">
 		<tr ondblclick="getLoanInfo('${list.encEmployeeId}')"
 			style="cursor: pointer">
@@ -1478,7 +1475,7 @@
 			<td>${list.loanAmount}</td>
 			<td>${list.recoveryAmount}</td>
 			<td>${list.dueAmount}</td>
-			<%-- <td>${list.requisitionStatusId}</td> --%>
+			<td>${list.requisitionStatusId}</td>
 
 			<td><a href="#" onclick="getLoanInfo('${list.encEmployeeId}')"><button
 						class="btn btn-xs btn-primary" type="button">
@@ -1496,10 +1493,10 @@
 		<td colspan="8"><p>${loanInfoListNotFound}</p></td>
 	</tr>
 </c:if>
+ --%>
 
 
-
-<c:if test="${!empty postingInfoList}">
+<%-- <c:if test="${!empty postingInfoList}">
 	<c:forEach items="${postingInfoList}" var="list">
 		<tr
 			ondblclick="getPostingInfo('${list.encPostingId}','${list.encEmployeeId}')"
@@ -1526,10 +1523,10 @@
 		<td colspan="8"><p>${postingInfoListNotFound}</p></td>
 	</tr>
 </c:if>
+ --%>
 
 
-
-<c:if test="${!empty leaveInfoList}">
+<%-- <c:if test="${!empty leaveInfoList}">
 	<c:forEach items="${leaveInfoList}" var="list">
 		<tr style="cursor: pointer">
 			<td><input type="hidden" value="${list.encEmployeeId}"></input>${list.employeeName}</td>
@@ -1538,7 +1535,7 @@
 			<td>${list.toDate}</td>
 			<td>${list.alterEmpName}</td>
 			<td>${list.emergencyContactNo}</td>
-			<%-- <td>${list.leaveDescription}</td> --%>
+			<td>${list.leaveDescription}</td>
 			<td><c:if test="${list.editableYN == 'Y'}">
 					<a href="#"
 						onclick="getLeaveInfo('${list.encLeaveId}','${list.encEmployeeId}','${list.editableYN}')">
@@ -1558,7 +1555,8 @@
 		<td colspan="8"><p>${leaveInfoListNotFound}</p></td>
 	</tr>
 </c:if>
-
+ --%>
+ <%-- 
 <c:if test="${!empty absentInfoList}">
 	<c:forEach items="${absentInfoList}" var="list">
 		<tr style="cursor: pointer">
@@ -1566,7 +1564,7 @@
 			<td>${list.absentType}</td>
 			<td>${list.absentDate}</td>
 			<td>${list.emergencyContactNo}</td>
-			<%-- <td>${list.leaveDescription}</td> --%>
+			<td>${list.leaveDescription}</td>
 			<td><c:if test="${list.editableYN == 'Y'}">
 					<a href="#"
 						onclick="getAbsentInfo('${list.encAbsentId}','${list.encEmployeeId}','${list.editableYN}')"><button
@@ -1585,7 +1583,8 @@
 		<td colspan="8"><p>${absentInfoListNotFound}</p></td>
 	</tr>
 </c:if>
-
+ --%>
+ <%-- 
 <c:if test="${!empty onDutyInfoList}">
 	<c:forEach items="${onDutyInfoList}" var="list">
 		<tr style="cursor: pointer">
@@ -1613,12 +1612,13 @@
 		<td colspan="8"><p>${onDutyInfoListNotFound}</p></td>
 	</tr>
 </c:if>
-
+ --%>
+ <%-- 
 <c:if test="${!empty holidayInfoList}">
 	<c:forEach items="${holidayInfoList}" var="list">
 		<tr style="cursor: pointer">
 			<td><input type="hidden" value="${list.encHolidayId}" />${list.fromDate}</td>
-			<%-- <td>${list.holidayDate}</td> --%>
+			<td>${list.holidayDate}</td>
 			<td>${list.toDate}</td>
 			<td>${list.holidayDescription}</td>
 			<td><a href="#" onclick="getHolidayInfo('${list.encHolidayId}')"><button
@@ -1635,10 +1635,10 @@
 	<tr>
 		<td colspan="8"><p>${holidayInfoListNotFound}</p></td>
 	</tr>
-</c:if>
+</c:if> --%>
 
 
-<c:if test="${!empty lateAttendenceInfoList}">
+<%-- <c:if test="${!empty lateAttendenceInfoList}">
 	<c:forEach items="${lateAttendenceInfoList}" var="list">
 		<tr
 			ondblclick="getLateAttendenceInfo('${list.encLateAttendenceId}','${list.encEmployeeId}')"
@@ -1648,7 +1648,7 @@
 			<td>${list.designationName}</td>
 			<td>${list.lateAttendenceDate}</td>
 			<td>${list.lateAttendenceDescription}</td>
-			<%-- <td><input type="hidden" value="${list.departmentId}"/>${list.departmentName}</td> --%>
+			<td><input type="hidden" value="${list.departmentId}"/>${list.departmentName}</td>
 			<td><a href="#"
 				onclick="getLateAttendenceInfo('${list.encLateAttendenceId}','${list.encEmployeeId}')"><button
 						class="btn btn-xs btn-primary" type="button">
@@ -1665,9 +1665,9 @@
 		<td colspan="8"><p>${lateAttendenceInfoListNotFound}</p></td>
 	</tr>
 </c:if>
+ --%>
 
-
-<c:if test="${!empty taskTrackingInfoList}">
+<%-- <c:if test="${!empty taskTrackingInfoList}">
 	<c:forEach items="${taskTrackingInfoList}" var="list">
 
 		<tr ondblclick="getTaskTrackingInfo('${list.encEffortTrackingId}')"
@@ -1780,9 +1780,9 @@
 		<td colspan="10"><p>${taskTrackingInfoListNotFound}</p></td>
 	</tr>
 </c:if>
+ --%>
 
-
-<c:if test="${!empty taskTrackingCorrectionList}">
+<%-- <c:if test="${!empty taskTrackingCorrectionList}">
 	<c:forEach items="${taskTrackingCorrectionList}" var="list">
 
 		<tr ondblclick="getTaskTrackingInfo('${list.encEffortTrackingId}')"
@@ -1895,12 +1895,12 @@
 		<td colspan="10"><p>${taskTrackingCorrectionListNotFound}</p></td>
 	</tr>
 </c:if>
-
+ --%>
 
 
 <!-- Start Project Role Assignment -->
 
-<c:if test="${!empty projectRoleAssignList}">
+<%-- <c:if test="${!empty projectRoleAssignList}">
 	<%
 		int i = 1;
 	%>
@@ -1943,12 +1943,12 @@
 		<td colspan="10"><p>${projectRoleAssignListNotFound}</p></td>
 	</tr>
 </c:if>
-
+ --%>
 <!-- End Project Role Assignment -->
 
 <!-- Start effect Edit Permission List -->
 
-<c:if test="${!empty effectEditPermissionList}">
+<%-- <c:if test="${!empty effectEditPermissionList}">
 	<%
 		int i = 1;
 	%>
@@ -1988,11 +1988,11 @@
 		<td colspan="10"><p>${effectEditPermissionListNotFound}</p></td>
 	</tr>
 </c:if>
-
+ --%>
 <!-- End effect Edit Permission List -->
 
 
-
+<%-- 
 <c:if test="${!empty rosterEmpAttendaceUploadList}">
 	<%
 		int i = 1;
@@ -2031,11 +2031,11 @@
 		<td colspan="11"><p>${rosterEmpAttendaceUploadListNotFound}</p></td>
 	</tr>
 </c:if>
-
+ --%>
 
 <!-- Start Payroll Edit list -->
 
-<c:if test="${!empty payrollEditList}">
+<%-- <c:if test="${!empty payrollEditList}">
 	<%
 		int i = 1;
 	%>
@@ -2069,7 +2069,7 @@
 			<td
 				style=" <c:if test="${list.providentFundDeduction !='0'}"> color : red;  </c:if> text-align: right;">
 				${list.providentFundDeduction}</td>
-			<%-- <td style="<c:if test="${list.incomeTaxDeduction !='0'}"> color :  </c:if> red; text-align: right;">${list.incomeTaxDeduction}</td> --%>
+			<td style="<c:if test="${list.incomeTaxDeduction !='0'}"> color :  </c:if> red; text-align: right;">${list.incomeTaxDeduction}</td>
 			<td><input class="form-control" type="text"
 				id="incomeTaxDeduction_${list.payrollId}" style="color: red;"
 				disabled onkeypress="return isNumberKey(event)"
@@ -2080,9 +2080,9 @@
 			<td nowrap
 				style="<c:if test="${list.payDeduction !='0'}"> color : red;  </c:if> text-align: right;">
 
-				<%-- <c:if test="${list.payDeduction !='0'}"> --%> <a
+				<c:if test="${list.payDeduction !='0'}"> <a
 				onclick="basicPopup('${list.encPayrollId}');return false">
-					Details </a> <%-- </c:if> --%> ${list.payDeduction}
+					Details </a> </c:if> ${list.payDeduction}
 
 			</td>
 
@@ -2113,10 +2113,10 @@
 <c:if test="${!empty payrollEditTotal}">
 	<c:forEach items="${payrollEditTotal}" var="total">
 		<tr style="cursor: pointer">
-			<%-- <td>${payrollEditList.size()+1}</td>
+			<td>${payrollEditList.size()+1}</td>
 			<td></td>
 			<td></td>
-			<td></td> --%>
+			<td></td>
 			<td colspan="5"  style="text-align: right; color: blue;">Total</td>
 			<td style="text-align: right;">${total.basicPay}</td>
 			<td style="text-align: right;">${total.houseRentAllowance}</td>
@@ -2151,7 +2151,7 @@
 		<td colspan="20"><p>${payrollEditListNotFound}</p></td>
 	</tr>
 </c:if>
-
+ --%>
 
 <%--  Owner Consumption info --%>
 
@@ -2255,6 +2255,3 @@
 		<td style="display:none;"></td>
 	</tr>
 </c:if>
-
-
-

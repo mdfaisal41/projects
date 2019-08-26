@@ -121,7 +121,7 @@
 				</div>
 				<footer class="panel-footer">
 					<div class="row">
-						<div class="col-sm-offset-6">
+						<div class="col-sm-offset-5">
 							<input type="hidden" value="${supplierInfo.encSupplierId}"
 								id="encSupplierId" name="encSupplierId">
 							<button class="btn btn-primary" type="submit">
@@ -154,8 +154,6 @@
 </div>
 
 <script>
-
-
 function isNumberKey(evt) {
     var charCode = (evt.which) ? evt.which : event.keyCode;
     var errid = "err"+evt.target.id;
@@ -170,49 +168,39 @@ function isNumberKey(evt) {
 }
 	 
 	 
-
 function getOrderPrice () {
 var orderId = $("#orderId").val();
 	//var link = "/pos/pointOfSale/getOrderPrice";
-
 	$.ajax({
 		type : "POST",
 		url : "/pos/pointOfSale/getOrderPrice",
 		data : "orderId=" + orderId,
 		async : true,
-
 		success : function(data) {
 			//alert(data.itemPrice);
 			//alert('ssssss!!!')
 			$("#orderPrice").val(data.itemPrice);
 		},
-
 		error : function(data) {
 			alert('Error!!!')
 		}
 	});
 }
-
 function getItemList() {
-
 	var link = "/pos/pointOfSale/getItemList";
-
 	$.ajax({
 		type : "POST",
 		url : link,
 		async : true,
-
 		success : function(data) {
 			//alert('ssssss!!!')
 			$("#itemList").html(data);
 		},
-
 		error : function(data) {
 			alert('Error!!!')
 		}
 	});
 };
-
 /* function selectItemList(encItemId,itemName,itemPrice) {
 	$("#encItemId").val(encItemId);
 	$("#itemName").val(itemName);
@@ -232,13 +220,9 @@ function getItemList() {
     return true;
 } */
  
-
-
-
 function updateSelectOptions(link, parentSelectElementId,
 		childSelectElementId) {
 	var parentSelectElement = $("#" + parentSelectElementId).val();
-
 	//alert('fff');
 	//alert(parentSelectElement);
 	if (parentSelectElement == '') {
@@ -248,10 +232,8 @@ function updateSelectOptions(link, parentSelectElementId,
 		$('#' + childSelectElementId).html(content);
 		//$("#select2-roleId-container").html('Please Select One');
 	} else {
-
 		//alert(parentSelectElement);
 		//alert(childSelectElementId);
-
 		$.ajax({
 			type : "get",
 			url : link,
@@ -262,15 +244,12 @@ function updateSelectOptions(link, parentSelectElementId,
 				$("#" + childSelectElementId).html(data);
 				
 			}
-
 		});
 		
 	
-
 		$("#" + childSelectElementId).focus();
 	}
 };
-
 /* 
 function copyTextValue(v) {
 	alert("lkjkl");
@@ -292,10 +271,7 @@ function copyTextValue(v) {
 	  }
 	}
  */
-
-
 /* function copyTextValue(village) {
-
 	var peCountryId = document.getElementById("peCountryId").value;
 	var peStreet = document.getElementById("peStreet").value;
 	var peVillage = document.getElementById("peVillage").value;
@@ -387,7 +363,6 @@ function copyTextValue(v) {
 	document.getElementById("prThanaId").value.hidden = peThanaId;
 	document.getElementById("prFax").value.hidden = peFax;
 	document.getElementById("prTelephone").value.hidden = peTelephone;
-
 };
  */
 /*  $(document).ready( function() {
@@ -420,14 +395,12 @@ function getPersonList() {
 	var fathersName = $("#fathersName2").val();
 	var dateOfBirth = $("#dateOfBirth2").val();
 	var requiredfield = "Minimum One Value of Criteria is Required!!!";
-
 	if (personId == '' && personName == '' && fathersName == ''
 			&& dateOfBirth == '') {
 		$("#registrationModalmsg").html(
 				'<span style="color:red">' + requiredfield + '<span>');
 		alert('Minimum One Value of Criteria is Required!!!');
 	} else {
-
 		var link = "/brtais/personalInfo/getPersonList";
 		$.ajax({
 			type : "POST",
@@ -435,11 +408,8 @@ function getPersonList() {
 			data : "personId=" + personId + "&personName="
 					+ personName + "&fathersName=" + fathersName
 					+ "&dateOfBirth=" + dateOfBirth,
-
 			/* {"${_csrf.parameterName}":"${_csrf.token}"}, */
-
 			async : true,
-
 			success : function(data) {
 				// alert('success')
 				$("#personList").html(data);
@@ -448,14 +418,8 @@ function getPersonList() {
 				alert('Error!!!')
 			}
 		});
-
 	}
 }
-
-
-
-
-
 </script>
 
 

@@ -64,7 +64,7 @@ public class ReportDaoImpl implements ReportDao{
 			Map row : rows) {
 				reportModel.setJesperName(String.valueOf(row.get("JESPER_NAME")));
 				
-				//System.out.println("JESPER_NAME " + reportModel.getJesperName());
+				System.out.println("JESPER_NAME " + reportModel.getJesperName());
 			}
 
 		} catch (Exception ex) {
@@ -212,7 +212,7 @@ public class ReportDaoImpl implements ReportDao{
 			sBuilder.append(" ITEM_PRICE, ");
 			sBuilder.append(" UPDATE_BY, ");
 			sBuilder.append(" TO_CHAR(UPDATE_DATE,'DD/MM/YYYY') UPDATE_DATE ");
-			sBuilder.append(" FROM ORDER_MANAGEMENT OM ");
+			sBuilder.append(" FROM ITEM_ORDER OM ");
 			sBuilder.append(" WHERE TRUNC(UPDATE_DATE) BETWEEN TO_DATE(:fromDate,'DD/MM/YYYY') AND TO_DATE(:toDate,'DD/MM/YYYY') ");
 
 			MapSqlParameterSource paramSource = new MapSqlParameterSource();
@@ -321,6 +321,7 @@ public class ReportDaoImpl implements ReportDao{
 			oReportModel.setInventoryCost(oRemoveNull.nullRemove((String) outParamMap.get("P_INVENTORY")));
 			oReportModel.setDiscountCost(oRemoveNull.nullRemove((String) outParamMap.get("P_DISCOUNT")));
 			oReportModel.setWastageCost(oRemoveNull.nullRemove((String) outParamMap.get("P_WASTAGE")));
+			oReportModel.setOwnerFoodConsumeCost(oRemoveNull.nullRemove((String) outParamMap.get("P_OWNER_FOOD_CONSUME")));
 			oReportModel.setTotalCost(oRemoveNull.nullRemove((String) outParamMap.get("P_TOTAL_COST")));
 			oReportModel.setTotalOrderPrice(oRemoveNull.nullRemove((String) outParamMap.get("P_ORDER_PRICE")));
 			oReportModel.setEmployeeSalary(oRemoveNull.nullRemove((String) outParamMap.get("P_EMPLOYEE_SALARY")));
@@ -341,4 +342,262 @@ public class ReportDaoImpl implements ReportDao{
 
 		return ds;
 	}
+
+	public JRDataSource kitchenQTReportData(ReportModel reportModel) {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+		List<ReportModel> list = new ArrayList<ReportModel>();
+		try {
+			NamedParameterJdbcTemplate npjt = new NamedParameterJdbcTemplate(jdbcTemplate);
+			StringBuilder sBuilder = new StringBuilder();
+
+			sBuilder.append(" SELECT IO.ITEM_ORDER_ID, ");
+			sBuilder.append(" IO.ORDER_ID, ");
+			sBuilder.append(" IO.ITEM_ID, ");
+			sBuilder.append(" (SELECT ITEM_NAME FROM L_ITEM WHERE ITEM_ID = IO.ITEM_ID) ITEM_NAME, ");
+			sBuilder.append(" IO.QUANTITY, ");
+			sBuilder.append(" IO.ITEM_PRICE, ");
+			sBuilder.append(" IO.SUB_TOTAL, ");
+			sBuilder.append(" (SELECT KNOWN_AS FROM EMPLOYEE WHERE EMPLOYEE_ID = IO.UPDATE_BY) UPDATE_BY, ");
+			sBuilder.append(" TO_CHAR(IO.UPDATE_DATE,'DD/MM/YYYY HH12:MI:SS AM') UPDATE_DATE, ");
+			sBuilder.append(" IO.PRINTED_YN, ");
+			sBuilder.append(" IO.UPDATED_YN, ");
+			sBuilder.append(" IO.ORDER_NOTE, ");
+			sBuilder.append(" (SELECT KNOWN_AS FROM EMPLOYEE WHERE EMPLOYEE_ID = OM.WAITER_ID) SERVED_BY, ");
+			sBuilder.append(" OM.TABLE_NO, ");
+			sBuilder.append(" OM.ORDER_NO ");
+			sBuilder.append(" FROM ITEM_ORDER IO, ORDER_MANAGEMENT OM ");
+			sBuilder.append(" WHERE IO.ORDER_ID = OM.ORDER_ID ");
+			sBuilder.append(" AND PRINTED_YN = 'N' ");
+			sBuilder.append(" AND IO.ORDER_ID = :encOrderId ");
+			
+
+			MapSqlParameterSource paramSource = new MapSqlParameterSource();
+			paramSource.addValue("encOrderId", oCipherUtils.decrypt(reportModel.getEncOrderId()));
+			/*paramSource.addValue("fromDate", reportModel.getFromDate());
+			paramSource.addValue("toDate", reportModel.getToDate());*/
+			
+
+			// System.out.println(sBuilder);
+
+			// paramSource.addValue("regNo", reportModel.getRegistrationNo());
+
+			List<Map<String, Object>> rows = npjt.queryForList(sBuilder.toString(), paramSource);
+
+			for (@SuppressWarnings("rawtypes")
+			Map row : rows) {
+				ReportModel oReportModel = new ReportModel();
+				// oReportModel.setEncRegisterId(oCipherUtils.encrypt(String.valueOf(row.get("REGISTER_ID"))));
+				oReportModel.setItemOrderId(oRemoveNull.nullRemove(String.valueOf(row.get("ITEM_ORDER_ID"))));
+				oReportModel.setOrderId(oRemoveNull.nullRemove(String.valueOf(row.get("ORDER_ID"))));
+				oReportModel.setItemId(oRemoveNull.nullRemove(String.valueOf(row.get("ITEM_ID"))));
+				oReportModel.setItemName(oRemoveNull.nullRemove(String.valueOf(row.get("ITEM_NAME"))));
+				oReportModel.setQuantity(oRemoveNull.nullRemove(String.valueOf(row.get("QUANTITY"))));
+				oReportModel.setItemPrice(Integer.parseInt(oRemoveNull.nullRemove(String.valueOf(row.get("ITEM_PRICE")))));
+				oReportModel.setSubTotal(oRemoveNull.nullRemove(String.valueOf(row.get("SUB_TOTAL"))));
+				oReportModel.setPrintedYn(oRemoveNull.nullRemove(String.valueOf(row.get("PRINTED_YN"))));
+				oReportModel.setUpdatedYn(oRemoveNull.nullRemove(String.valueOf(row.get("UPDATED_YN"))));
+				oReportModel.setTableNo(oRemoveNull.nullRemove(String.valueOf(row.get("TABLE_NO"))));
+				oReportModel.setOrderNote(oRemoveNull.nullRemove(String.valueOf(row.get("ORDER_NOTE"))));
+				oReportModel.setUpdateBy(oRemoveNull.nullRemove(String.valueOf(row.get("UPDATE_BY"))));
+				oReportModel.setUpdateDate(oRemoveNull.nullRemove(String.valueOf(row.get("UPDATE_DATE"))));
+				oReportModel.setEmployeeName(oRemoveNull.nullRemove(String.valueOf(row.get("SERVED_BY"))));
+				oReportModel.setOrderNo(oRemoveNull.nullRemove(String.valueOf(row.get("ORDER_NO"))));
+				//System.out.println("price " + reportModel.getItemPrice());
+				
+				list.add(oReportModel);
+
+			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+		JRDataSource ds = new JRBeanCollectionDataSource(list);
+
+		return ds;
+	}
+
+	public JRDataSource customerMoneyReceiptData(ReportModel reportModel) {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+		List<ReportModel> list = new ArrayList<ReportModel>();
+		try {
+			NamedParameterJdbcTemplate npjt = new NamedParameterJdbcTemplate(jdbcTemplate);
+			StringBuilder sBuilder = new StringBuilder();
+
+			sBuilder.append(" SELECT OM.ORDER_ID, ");
+			sBuilder.append(" OM.ORDER_NO, ");
+			sBuilder.append(" TO_CHAR (OM.ORDER_DATE, 'DD/MM/YYYY HH12:MI:SS AM') ORDER_DATE, ");
+			sBuilder.append(" OM.TABLE_NO, ");
+			sBuilder.append(" OM.WAITER_ID, ");
+			sBuilder.append(" (SELECT KNOWN_AS FROM EMPLOYEE WHERE EMPLOYEE_ID = OM.WAITER_ID) WAITER_NAME, ");
+			sBuilder.append(" OM.PAYABLE_AMOUNT, ");
+			sBuilder.append(" OM.NET_PAY_AMOUNT, ");
+			sBuilder.append(" OM.RECEIVED_AMOUNT, ");
+			sBuilder.append(" OM.CHANGE_AMOUNT, ");
+			sBuilder.append(" OM.CASH_PAY_AMOUNT, ");
+			sBuilder.append(" OM.CARD_PAY_AMOUNT, ");
+			sBuilder.append(" OM.BKASH_PAYMENT_AMOUNT, ");
+			sBuilder.append(" OM.BKASH_TRAN_NO, ");
+			sBuilder.append(" OM.DISCOUNT_AMOUNT, ");
+			sBuilder.append(" OM.DISCOUNT_REFERENCE_BY, ");
+			sBuilder.append(" OM.FINALIZED_YN, ");
+			sBuilder.append(" OM.COMPLETED_YN, ");
+			sBuilder.append(" (SELECT KNOWN_AS FROM EMPLOYEE WHERE EMPLOYEE_ID = OM.UPDATE_BY) UPDATE_BY, ");
+			sBuilder.append(" TO_CHAR (OM.UPDATE_DATE, 'DD/MM/YYYY HH12:MI:SS AM') UPDATE_DATE, ");
+			sBuilder.append(" (SELECT ITEM_NAME FROM L_ITEM WHERE ITEM_ID = IO.ITEM_ID) ITEM_NAME, ");
+			sBuilder.append(" IO.QUANTITY, ");
+			sBuilder.append(" IO.ITEM_PRICE, ");
+			sBuilder.append(" IO.SUB_TOTAL ");
+			sBuilder.append(" FROM ORDER_MANAGEMENT OM, ITEM_ORDER IO ");
+			sBuilder.append(" WHERE OM.ORDER_ID = IO.ORDER_ID AND OM.ORDER_ID = :encOrderId ");
+			
+
+			MapSqlParameterSource paramSource = new MapSqlParameterSource();
+			paramSource.addValue("encOrderId", oCipherUtils.decrypt(reportModel.getEncOrderId()));
+			System.out.println("orderId " + oCipherUtils.decrypt(reportModel.getEncOrderId()));
+			/*paramSource.addValue("fromDate", reportModel.getFromDate());
+			paramSource.addValue("toDate", reportModel.getToDate());*/
+			
+
+			 System.out.println(sBuilder);
+
+			// paramSource.addValue("regNo", reportModel.getRegistrationNo());
+
+			List<Map<String, Object>> rows = npjt.queryForList(sBuilder.toString(), paramSource);
+
+			for (@SuppressWarnings("rawtypes")
+			Map row : rows) {
+				ReportModel oReportModel = new ReportModel();
+				// oReportModel.setEncRegisterId(oCipherUtils.encrypt(String.valueOf(row.get("REGISTER_ID"))));
+				oReportModel.setOrderId(oRemoveNull.nullRemove(String.valueOf(row.get("ORDER_ID"))));
+				oReportModel.setOrderNo(oRemoveNull.nullRemove(String.valueOf(row.get("ORDER_NO"))));
+				oReportModel.setOrderDate(oRemoveNull.nullRemove(String.valueOf(row.get("ORDER_DATE"))));
+				oReportModel.setTableNo(oRemoveNull.nullRemove(String.valueOf(row.get("TABLE_NO"))));
+				oReportModel.setWaiterId(oRemoveNull.nullRemove(String.valueOf(row.get("WAITER_ID"))));
+				oReportModel.setWaiterName(oRemoveNull.nullRemove(String.valueOf(row.get("WAITER_NAME"))));
+				oReportModel.setOrderTotalAmount(oRemoveNull.nullRemove(String.valueOf(row.get("PAYABLE_AMOUNT"))));
+				oReportModel.setNetPayableAmount(oRemoveNull.nullRemove(String.valueOf(row.get("NET_PAY_AMOUNT"))));
+				oReportModel.setReceivedAmount(oRemoveNull.nullRemove(String.valueOf(row.get("RECEIVED_AMOUNT"))));
+				oReportModel.setChangeAmount(oRemoveNull.nullRemove(String.valueOf(row.get("CHANGE_AMOUNT"))));
+				
+				oReportModel.setCashPayAmount(oRemoveNull.nullRemove(String.valueOf(row.get("CASH_PAY_AMOUNT"))));
+				/*if (oReportModel.getCashPayAmount().equals("0")) {
+					oReportModel.setCashPayAmount("");
+				}*/
+				oReportModel.setCardPayAmount(oRemoveNull.nullRemove(String.valueOf(row.get("CARD_PAY_AMOUNT"))));
+				/*if (oReportModel.getCardPayAmount().equals("0")) {
+					oReportModel.setCardPayAmount("");
+				}*/
+				oReportModel.setBkashPaymentAmount(oRemoveNull.nullRemove(String.valueOf(row.get("BKASH_PAYMENT_AMOUNT"))));
+				/*if (oReportModel.getBkashPaymentAmount().equals("0")) {
+					oReportModel.setBkashPaymentAmount("");
+				}*/
+				oReportModel.setBkashTranNo(oRemoveNull.nullRemove(String.valueOf(row.get("BKASH_TRAN_NO"))));
+				oReportModel.setDiscountCost(oRemoveNull.nullRemove(String.valueOf(row.get("DISCOUNT_AMOUNT"))));
+				if (oReportModel.getDiscountCost().equals("0")) {
+					oReportModel.setDiscountCost("");
+				}
+				oReportModel.setDiscountReferenceBy(oRemoveNull.nullRemove(String.valueOf(row.get("DISCOUNT_REFERENCE_BY"))));
+				oReportModel.setFinalizedYn(oRemoveNull.nullRemove(String.valueOf(row.get("FINALIZED_YN"))));
+				oReportModel.setCompletedYn(oRemoveNull.nullRemove(String.valueOf(row.get("COMPLETED_YN"))));
+				oReportModel.setUpdateBy(oRemoveNull.nullRemove(String.valueOf(row.get("UPDATE_BY"))));
+				oReportModel.setUpdateDate(oRemoveNull.nullRemove(String.valueOf(row.get("UPDATE_DATE"))));
+				
+				oReportModel.setItemName(oRemoveNull.nullRemove(String.valueOf(row.get("ITEM_NAME"))));
+				oReportModel.setQuantity(oRemoveNull.nullRemove(String.valueOf(row.get("QUANTITY"))));
+				oReportModel.setItemPrice(Integer.parseInt(oRemoveNull.nullRemove(String.valueOf(row.get("ITEM_PRICE")))));
+				oReportModel.setSubTotal(oRemoveNull.nullRemove(String.valueOf(row.get("SUB_TOTAL"))));
+				
+				//System.out.println("price " + reportModel.getItemPrice());
+				
+				list.add(oReportModel);
+
+			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+		JRDataSource ds = new JRBeanCollectionDataSource(list);
+
+		return ds;
+	};
+	
+	public PointOfSale cancelOrder(PointOfSale pointOfSale) {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+		PointOfSale oPointOfSale = new PointOfSale();
+		NamedParameterJdbcTemplate npjt = new NamedParameterJdbcTemplate(jdbcTemplate);
+
+		try {
+
+			StringBuilder sBuilder = new StringBuilder();
+			sBuilder.append(" UPDATE ORDER_MANAGEMENT SET ORDER_CANCELED_YN = 'Y'  ");
+			sBuilder.append(" WHERE ORDER_ID = :orderId  ");
+
+			MapSqlParameterSource paramSource = new MapSqlParameterSource();
+			paramSource.addValue("orderId", oCipherUtils.decrypt(oRemoveNull.nullRemove(pointOfSale.getEncOrderId())));
+
+			npjt.update(sBuilder.toString(), paramSource);
+
+			oPointOfSale.setMessage("Order Caceled Successfully");
+			oPointOfSale.setmCode("1111");
+
+		} catch (Exception ex) {
+			oPointOfSale.setMessage("Error Canceling Record !!!");
+			oPointOfSale.setmCode("0000");
+			ex.printStackTrace();
+		}
+		return oPointOfSale;
+	}
+	
+	
+	public ReportModel updateItemWiseKitchenQT(ReportModel reportModel) {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+		ReportModel oReportModel = new ReportModel();
+		NamedParameterJdbcTemplate npjt = new NamedParameterJdbcTemplate(jdbcTemplate);
+		try {
+
+			StringBuilder sBuilder = new StringBuilder();
+			
+			sBuilder.append(" UPDATE ITEM_ORDER SET PRINTED_YN = 'Y' WHERE PRINTED_YN <> 'Y' ");
+			sBuilder.append(" AND ORDER_ID = :orderId  ");
+			   
+			/*sBuilder.append(" UPDATE ORDER_MANAGEMENT SET ORDER_CANCELED_YN = 'Y'  ");
+			sBuilder.append(" WHERE ORDER_ID = :orderId  ");*/
+
+			MapSqlParameterSource paramSource = new MapSqlParameterSource();
+			paramSource.addValue("orderId", oCipherUtils.decrypt(oRemoveNull.nullRemove(reportModel.getEncOrderId())));
+
+			npjt.update(sBuilder.toString(), paramSource);
+
+		} catch (Exception ex) {
+			oReportModel.setMessage("Error Updating Record !!!");
+			oReportModel.setmCode("0000");
+			ex.printStackTrace();
+		}
+		return oReportModel;
+	}
+
+/*	public ReportModel updateItemWiseKitchenQT(ReportModel reportModel) {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+		ReportModel oReportModel = new ReportModel();
+		try {
+			simpleJdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("PRO_UPDATE_KITCHEN_QT");
+			Map<String, Object> inParamMap = new HashMap<String, Object>();
+			inParamMap.put("P_ORDER_ID", oCipherUtils.decrypt(reportModel.getEncOrderId()));
+
+			// inParamMap.put("P_UPDATE_DATE", student.getUpdateDate());
+
+			Map<String, Object> outParamMap = simpleJdbcCall.execute(new MapSqlParameterSource().addValues(inParamMap));
+
+			oReportModel.setMessage((String) outParamMap.get("P_MESSAGE"));
+			oReportModel.setmCode((String) outParamMap.get("P_MESSAGE_CODE"));
+			// System.out.println("studentId " + oStudent.getStudentId());
+		} catch (Exception ex) {
+			oReportModel.setMessage("Error Saving Record !!!");
+			oReportModel.setmCode("0000");
+			ex.printStackTrace();
+		}
+		return oReportModel;
+	}*/
 }

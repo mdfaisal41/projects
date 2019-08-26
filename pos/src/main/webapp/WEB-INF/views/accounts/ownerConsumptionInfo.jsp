@@ -3,9 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <style>
-
 th { white-space: nowrap; }
-
 </style>
 
 <header class="page-header">
@@ -440,11 +438,9 @@ th { white-space: nowrap; }
 
 
 <script>
-
 window.onload = function load() {
 	$("#ownerConsumeDataTable").DataTable();
 }
-
 function isNumberKey(evt) {
     var charCode = (evt.which) ? evt.which : event.keyCode;
     var errid = "err"+evt.target.id;
@@ -457,9 +453,7 @@ function isNumberKey(evt) {
         return true;
     }      
 }
-
 function getOwnerConsumptionList(id) {
-
 	var link = "/pos/accounts/ownerConsumptionInfo/getOwnerConsumptionList";
 	//var reservationDate = $("#reservationDate").val();
 	
@@ -468,14 +462,12 @@ function getOwnerConsumptionList(id) {
 		data : "employeeId=" +id,
 		url : link,
 		async : true,
-
 		success : function(data) {
 			$("#ownerConsumeData").html(data);
 			
 			$("#ownerConsumeDataTable").DataTable();
 			
 		},
-
 		error : function(data) {
 			alert('Error!!!')
 		}
@@ -491,7 +483,6 @@ function getOwnerConsumptionList(id) {
 	
 	
 	function getMemberList() {
-
 		var link = "/pos/membership/getMemberList";
 		//var reservationDate = $("#reservationDate").val();
 		
@@ -499,12 +490,10 @@ function getOwnerConsumptionList(id) {
 			type : "POST",
 			url : link,
 			async : true,
-
 			success : function(data) {
 				$("#memberList").html(data);
 				$("#memberListTable").DataTable();
 			},
-
 			error : function(data) {
 				alert('Error!!!')
 			}
@@ -525,12 +514,10 @@ function getOwnerConsumptionList(id) {
 				  window.location = "/pos/accounts/ownerConsumptionInfo";
 			  }
 		}; 
-
 	/* window.onload = load;
 	function load() {
 		document.getElementById('employeeName').focus();
 	}
-
 	function goToNext(e, next) {
 		var key;
 		if (window.event)
@@ -538,14 +525,11 @@ function getOwnerConsumptionList(id) {
 		else
 			key = e.which; //firefox
 		if (key == 13) {
-
 			document.getElementById(next).focus();
 			return false;
-
 		} else
 			return true;
 	}
-
 	function getEmployeeInfo(encEmpId,empName,designationName) {
 		var link = "/pos/accounts/empMonthlyConsumption/getEmpMonthlyConsumptionList?encEmployeeId="
 				+ encodeURIComponent(encEmpId) + "&employeeName=" + empName + "&designation=" + designationName;
@@ -560,7 +544,6 @@ function getOwnerConsumptionList(id) {
 	} */
 	
 	/* window.onload = load();
-
 	function load() {
 		var empId = $("#employeeId").val();
 		

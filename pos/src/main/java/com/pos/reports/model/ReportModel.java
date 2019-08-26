@@ -38,8 +38,157 @@ public class ReportModel {
 	private String month;
 	private String employeeSalary;
 	private String netIncome;
+	private String itemOrderId;
+	private String subTotal;
+	private String printedYn;
+	private String updatedYn;
+	private String tableNo;
+	private String orderNote;
+	
+	private String receivedAmount;
+	private String changeAmount;
+	private String cardPayAmount;
+	private String cashPayAmount;
+	private String netPayableAmount;
+	
+	private String completedYn;
+	private String finalizedYn;
+	private String bkashPaymentAmount;
+	private String bkashTranNo;
+	private String discountReferenceBy;
+	private String orderDate;
+	private String waiterId;
+	private String waiterName;
+	private String orderTotalAmount;
+	private String ownerFoodConsumeCost;
 	
 	
+	public String getOwnerFoodConsumeCost() {
+		return ownerFoodConsumeCost;
+	}
+	public void setOwnerFoodConsumeCost(String ownerFoodConsumeCost) {
+		this.ownerFoodConsumeCost = ownerFoodConsumeCost;
+	}
+	public String getOrderTotalAmount() {
+		return orderTotalAmount;
+	}
+	public void setOrderTotalAmount(String orderTotalAmount) {
+		this.orderTotalAmount = orderTotalAmount;
+	}
+	public String getOrderDate() {
+		return orderDate;
+	}
+	public void setOrderDate(String orderDate) {
+		this.orderDate = orderDate;
+	}
+	public String getWaiterId() {
+		return waiterId;
+	}
+	public void setWaiterId(String waiterId) {
+		this.waiterId = waiterId;
+	}
+	public String getWaiterName() {
+		return waiterName;
+	}
+	public void setWaiterName(String waiterName) {
+		this.waiterName = waiterName;
+	}
+	public String getReceivedAmount() {
+		return receivedAmount;
+	}
+	public void setReceivedAmount(String receivedAmount) {
+		this.receivedAmount = receivedAmount;
+	}
+	public String getChangeAmount() {
+		return changeAmount;
+	}
+	public void setChangeAmount(String changeAmount) {
+		this.changeAmount = changeAmount;
+	}
+	public String getCardPayAmount() {
+		return cardPayAmount;
+	}
+	public void setCardPayAmount(String cardPayAmount) {
+		this.cardPayAmount = cardPayAmount;
+	}
+	public String getCashPayAmount() {
+		return cashPayAmount;
+	}
+	public void setCashPayAmount(String cashPayAmount) {
+		this.cashPayAmount = cashPayAmount;
+	}
+	public String getNetPayableAmount() {
+		return netPayableAmount;
+	}
+	public void setNetPayableAmount(String netPayableAmount) {
+		this.netPayableAmount = netPayableAmount;
+	}
+	public String getCompletedYn() {
+		return completedYn;
+	}
+	public void setCompletedYn(String completedYn) {
+		this.completedYn = completedYn;
+	}
+	public String getFinalizedYn() {
+		return finalizedYn;
+	}
+	public void setFinalizedYn(String finalizedYn) {
+		this.finalizedYn = finalizedYn;
+	}
+	public String getBkashPaymentAmount() {
+		return bkashPaymentAmount;
+	}
+	public void setBkashPaymentAmount(String bkashPaymentAmount) {
+		this.bkashPaymentAmount = bkashPaymentAmount;
+	}
+	public String getBkashTranNo() {
+		return bkashTranNo;
+	}
+	public void setBkashTranNo(String bkashTranNo) {
+		this.bkashTranNo = bkashTranNo;
+	}
+	public String getDiscountReferenceBy() {
+		return discountReferenceBy;
+	}
+	public void setDiscountReferenceBy(String discountReferenceBy) {
+		this.discountReferenceBy = discountReferenceBy;
+	}
+	public String getOrderNote() {
+		return orderNote;
+	}
+	public void setOrderNote(String orderNote) {
+		this.orderNote = orderNote;
+	}
+	public String getTableNo() {
+		return tableNo;
+	}
+	public void setTableNo(String tableNo) {
+		this.tableNo = tableNo;
+	}
+	public String getPrintedYn() {
+		return printedYn;
+	}
+	public void setPrintedYn(String printedYn) {
+		this.printedYn = printedYn;
+	}
+	public String getUpdatedYn() {
+		return updatedYn;
+	}
+	public void setUpdatedYn(String updatedYn) {
+		this.updatedYn = updatedYn;
+	}
+	public String getSubTotal() {
+		return subTotal;
+	}
+	public void setSubTotal(String subTotal) {
+		this.subTotal = subTotal;
+	}
+	public String getItemOrderId() {
+		return itemOrderId;
+	}
+	public void setItemOrderId(String itemOrderId) {
+		this.itemOrderId = itemOrderId;
+	}
 	public String getNetIncome() {
 		return netIncome;
 	}

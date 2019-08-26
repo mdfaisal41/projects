@@ -16,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.aes.protection.CipherUtils;
+import com.pos.accounts.model.OwnerConsumptionInfo;
 import com.pos.inventory.model.Inventory;
 import com.pos.login.model.MenuInfo;
 import com.pos.login.service.LoginService;
@@ -222,10 +223,10 @@ public class PointOfSaleController {
 
 			mav.setViewName("orderManagement");
 			
-			lookupModel.setId("17");
+			//lookupModel.setId("17");
 			
 			mav.addObject("waiterList", lookupService.employeeList(lookupModel));
-			
+			mav.addObject("employeeList", lookupService.employeeList(lookupModel));
 			mav.addObject("itemList", lookupService.itemList(lookupModel));
 			
 			List<PointOfSale> oPendingOrderList = pointOfSaleService.getPendingOrderList(pointOfSale);
@@ -616,6 +617,34 @@ public class PointOfSaleController {
 				redirectAttributes.addFlashAttribute("message", oPointOfSale.getMessage());
 				redirectAttributes.addFlashAttribute("mCode", oPointOfSale.getmCode());
 
+				//redirectAttributes.addFlashAttribute("pointOfSale", pointOfSale);
+				return new ModelAndView("redirect:/pointOfSale/orderManagement");
+			} catch (Exception e) {
+				e.printStackTrace();
+				redirectAttributes.addFlashAttribute("mCode", "0000");
+				redirectAttributes.addFlashAttribute("message", "Error occured!!");
+				return new ModelAndView("redirect:/pointOfSale/orderManagement");
+			}
+		} else {
+			return new ModelAndView("redirect:/login");
+		}
+	}
+	
+	@RequestMapping(value = "saveOrderBillPrint", method = RequestMethod.POST)
+	public ModelAndView saveOrderBillPrint(@ModelAttribute PointOfSale pointOfSale, HttpSession session,
+			final RedirectAttributes redirectAttributes, HttpServletRequest request) {
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+			try {
+				pointOfSale.setUpdateBy((String) session.getAttribute("employeeid"));
+				PointOfSale oPointOfSale = new PointOfSale();
+				
+				pointOfSale.setBillPrintYn("Y");
+
+				oPointOfSale = pointOfSaleService.saveOrderFinalize(pointOfSale);
+
+				redirectAttributes.addFlashAttribute("message", oPointOfSale.getMessage());
+				redirectAttributes.addFlashAttribute("mCode", oPointOfSale.getmCode());
+
 				redirectAttributes.addFlashAttribute("pointOfSale", pointOfSale);
 				return new ModelAndView("redirect:/pointOfSale/orderManagement");
 			} catch (Exception e) {
@@ -628,6 +657,194 @@ public class PointOfSaleController {
 			return new ModelAndView("redirect:/login");
 		}
 	}
+	
+	
+	
+	////////////////// Owner Consumption Info///////////////////////
+
+	@RequestMapping(value = "ownerConsumptionInfo", method = RequestMethod.GET)
+	public ModelAndView ownerConsumptionInfo(@ModelAttribute("pointOfSale") PointOfSale pointOfSale,
+			LookupModel lookupModel, HttpSession session, final RedirectAttributes redirectAttributes) {
+		
+		//System.out.println("sadddddddddd");
+		
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+			
+			String menuId = "M0205";
+			MenuInfo menuInfo = loginService.checkUserAuthorization((String) session.getAttribute("employeeid"),
+					menuId);
+			
+			if (menuInfo.getMenuId().equals(menuId)) {
+			
+			ModelAndView model = new ModelAndView("ownerFoodConsumptionInfo");
+			
+			lookupModel.setId("2");
+			
+			model.addObject("ownerList", lookupService.employeeList(lookupModel));
+			model.addObject("itemList", lookupService.itemList(lookupModel));
+			
+			//model.addObject("message", employeeMonthlyConsumption.getMessage());
+			//model.addObject("mCode", employeeMonthlyConsumption.getMessageCode());
+			
+			return model;
+			
+			} else {
+				redirectAttributes.addFlashAttribute("message", "You are not authorized for this Page !");
+				redirectAttributes.addFlashAttribute("mCode", "0000");
+				return new ModelAndView("redirect:/");
+			}
+
+		} else {
+			return new ModelAndView("redirect:/");
+		}
+	}
+	
+	
+	@RequestMapping(value = "ownerConsumptionInfo/getOwnerConsumptionList", method = RequestMethod.POST)
+	public ModelAndView getOwnerConsumptionList(@ModelAttribute("pointOfSale") PointOfSale pointOfSale, 
+			HttpSession session) {
+		
+		ModelAndView mav = new ModelAndView("adminList");
+		
+		 //System.out.println("dsadsadsa");
+
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+			try {
+
+				List<PointOfSale> oOwnerConsumptionInfoList = new ArrayList<PointOfSale>();
+
+				oOwnerConsumptionInfoList = pointOfSaleService.getOwnerConsumptionList(pointOfSale);
+
+				// System.out.println("oOwnerConsumptionInfoList.size()  " + oOwnerConsumptionInfoList.size());
+				
+				if(oOwnerConsumptionInfoList.size() >0) {
+					mav.addObject("ownerConsumptionInfoList", oOwnerConsumptionInfoList);
+				} else {
+					mav.addObject("ownerConsumptionInfoListNotFound", "No Data Found !!");
+				}
+				
+				return mav;
+				
+			} catch (Exception e) {
+				mav.addObject("mCode", "0000");
+				mav.addObject("message", "Error occured !!");
+				return mav;
+			}
+		} else {
+			return new ModelAndView("redirect:/");
+		}
+
+	}
+	
+	
+	
+	@RequestMapping(value = "ownerConsumptionSave", method = RequestMethod.POST)
+	public ModelAndView ownerConsumptionSave(@ModelAttribute("pointOfSale") PointOfSale pointOfSale,
+			LookupModel lookupModel, HttpSession session, final RedirectAttributes redirectAttributes,
+			HttpServletRequest request) {
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+			System.out.println("dfdf");
+			try {
+
+				pointOfSale.setUpdateBy((String) session.getAttribute("employeeid"));
+				//System.out.println(" sess  emp id  "+  (String) session.getAttribute("employeeid"));
+
+				PointOfSale oOwnerConsumptionInfo = new PointOfSale();
+				
+				oOwnerConsumptionInfo = pointOfSaleService.saveOwnerConsumption(pointOfSale);
+				
+				if(oOwnerConsumptionInfo.getmCode() !=null && oOwnerConsumptionInfo.getmCode().equals("1111")) {
+					pointOfSale.setConsumeDate("");
+					pointOfSale.setItemId("");
+					pointOfSale.setQuantity("");
+					pointOfSale.setRemarks("");
+				}
+
+				redirectAttributes.addFlashAttribute("mCode", oOwnerConsumptionInfo.getmCode());
+				redirectAttributes.addFlashAttribute("message", oOwnerConsumptionInfo.getMessage());
+					
+				redirectAttributes.addFlashAttribute("ownerConsumptionInfo", pointOfSale);
+				
+				
+				List<PointOfSale> oOwnerConsumptionInfoList = pointOfSaleService.getOwnerConsumptionList(pointOfSale);
+
+				
+				if(oOwnerConsumptionInfoList.size() >0) {
+					redirectAttributes.addFlashAttribute("ownerConsumptionInfoList", oOwnerConsumptionInfoList);
+				} else {
+					redirectAttributes.addFlashAttribute("ownerConsumptionInfoListNotFound", "No Data Found !!");
+				}
+				
+				}  catch (Exception e) {
+				e.printStackTrace();
+				redirectAttributes.addFlashAttribute("mCode", "0000");
+				redirectAttributes.addFlashAttribute("message", "Error occured in saving data !!");
+				redirectAttributes.addFlashAttribute("ownerConsumptionInfo", pointOfSale);
+			}
+			return new ModelAndView("redirect:/pointOfSale/ownerConsumptionInfo");
+
+		} else {
+			return new ModelAndView("redirect:/");
+		}
+		
+	}
+	
+	
+	@RequestMapping(value = "ownerConsumptionInfo/getOwnerConsumption", method = RequestMethod.GET)
+	public ModelAndView getOwnerConsumption(@ModelAttribute("pointOfSale") PointOfSale pointOfSale, HttpSession session,
+			final RedirectAttributes redirectAttributes) {
+
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+			try {
+
+				PointOfSale oOwnerConsumptionInfo = new PointOfSale();
+
+				oOwnerConsumptionInfo = pointOfSaleService.getOwnerConsumption(pointOfSale);
+				
+				redirectAttributes.addFlashAttribute("ownerConsumptionInfo", oOwnerConsumptionInfo);
+				
+				return new ModelAndView("redirect:/accounts/ownerConsumptionInfo");
+			} catch (Exception e) {
+				e.printStackTrace();
+				redirectAttributes.addFlashAttribute("mCode", "0000");
+				redirectAttributes.addFlashAttribute("message", "Error occured !!");
+				return new ModelAndView("redirect:/pointOfSale/ownerConsumptionInfo");
+			}
+		} else {
+			return new ModelAndView("redirect:/");
+		}
+
+	}
+	
+	@RequestMapping(value = "orderProcessComplete", method = RequestMethod.GET)
+	public ModelAndView orderProcessComplete(@ModelAttribute PointOfSale pointOfSale, HttpSession session,
+			final RedirectAttributes redirectAttributes, HttpServletRequest request) {
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+			System.out.println("entrance " + pointOfSale.getEncOrderId());
+			try {
+				pointOfSale.setUpdateBy((String) session.getAttribute("employeeid"));
+				PointOfSale oPointOfSale = new PointOfSale();
+
+				oPointOfSale = pointOfSaleService.orderProcessComplete(pointOfSale);
+				
+				//oPointOfSale = pointOfSaleService.cancelOrder(pointOfSale);
+
+				redirectAttributes.addFlashAttribute("message", oPointOfSale.getMessage());
+				redirectAttributes.addFlashAttribute("mCode", oPointOfSale.getmCode());
+
+				redirectAttributes.addFlashAttribute("pointOfSale", pointOfSale);
+				return new ModelAndView("redirect:/pointOfSale/orderManagement");
+			} catch (Exception e) {
+				e.printStackTrace();
+				redirectAttributes.addFlashAttribute("mCode", "0000");
+				redirectAttributes.addFlashAttribute("message", "Error occured!!");
+				return new ModelAndView("redirect:/pointOfSale/orderManagement");
+			}
+		} else {
+			return new ModelAndView("redirect:/login");
+		}
+	}
+
 	
 /*	@RequestMapping(value = "getOrderTotalAmount", method = RequestMethod.POST)
 	public ModelAndView getOrderTotalAmount(@ModelAttribute PointOfSale pointOfSale, LookupModel lookupModel,

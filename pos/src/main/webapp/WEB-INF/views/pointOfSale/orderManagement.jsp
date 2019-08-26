@@ -67,30 +67,30 @@
 				</header>
 				<div class="panel-body">
 					<br />
-					
-					
+
+
 					<div class="form-group col-md-12">
-					
+
 						<div class="col-sm-6 form-group">
-									<label class="col-md-5 col-sm-5 control-label"> Waiter
-										Name <span class="required">*</span>
-									</label>
-									<div class="col-md-7 col-sm-7 col-xs-12">
-										<select data-plugin-selectTwo class="form-control"
-											name="employeeId" required id="employeeId"
-											onkeypress="goToNext(event,'levelNo')">
-											<option value="">Please Select One</option>
-											<c:forEach items="${waiterList}" var="list">
-												<option
-													<c:if test="${list.employeeId == pointOfSale.employeeId}">selected = "selected" </c:if>
-													value="${list.employeeId}">${list.firstName}</option>
-											</c:forEach>
-										</select>
-									</div>
+							<label class="col-md-6 col-sm-6 control-label"> Waiter
+								Name <span class="required">*</span>
+							</label>
+							<div class="col-md-6 col-sm-6 col-xs-12">
+								<select data-plugin-selectTwo class="form-control"
+									name="employeeId" required id="employeeId"
+									onkeypress="goToNext(event,'levelNo')">
+									<option value="">Please Select One</option>
+									<c:forEach items="${waiterList}" var="list">
+										<option
+											<c:if test="${list.employeeId == pointOfSale.employeeId}">selected = "selected" </c:if>
+											value="${list.employeeId}">${list.firstName}</option>
+									</c:forEach>
+								</select>
+							</div>
 						</div>
 
 						<div class="col-sm-6 form-group">
-							<label class="control-label col-md-5 col-sm-5 col-xs-12"
+							<label class="control-label col-md-6 col-sm-6 col-xs-12"
 								for="tableNo">Table No</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
 								<input type="text" required class="form-control mandatory"
@@ -106,10 +106,39 @@
 					</div>
 
 					<div class="form-group col-md-12">
+
 						<div class="col-sm-6 form-group">
-							<label class="control-label col-md-5 col-sm-5 col-xs-12">Item
+							<label class="control-label col-md-6 col-sm-6 col-xs-12">Owner
+								Food</label>
+							<div class="col-md-6 col-sm-6 col-xs-12">
+								<select class="form-control" id="ownerFoodYn" name="ownerFoodYn">
+									<option
+										<c:if test="${pointOfSale.ownerFoodYn == 'N'}">selected = "selected" </c:if>
+										value="N">NO</option>
+									<option
+										<c:if test="${pointOfSale.ownerFoodYn == 'Y'}">selected = "selected" </c:if>
+										value="Y">YES</option>
+								</select>
+							</div>
+						</div>
+
+						<div class="col-sm-6 form-group">
+							<label class="control-label col-md-6 col-sm-6 col-xs-12"
+								for="orderNote">Order Note</label>
+							<div class="col-md-6 col-sm-6 col-xs-12">
+								<input type="text" class="form-control" 
+									id="orderNote" maxlength="500" value="${pointOfSale.orderNote}">
+							</div>
+						</div>
+
+					</div>
+
+					<div class="form-group col-md-12">
+
+						<div class="col-sm-6 form-group">
+							<label class="control-label col-md-6 col-sm-6 col-xs-12">Item
 								Name</label>
-							<div class="col-md-7 col-sm-7 col-xs-12">
+							<div class="col-md-6 col-sm-6 col-xs-12">
 								<select data-plugin-selectTwo class="form-control" id="itemId"
 									name="itemId">
 									<option value="">Select One</option>
@@ -120,10 +149,11 @@
 							</div>
 						</div>
 
+
 						<div class="col-sm-6 form-group">
-							<label class="col-md-5 control-label" for="nationalityId">Quantity</label>
-							<div class="col-md-6">
-								<input type="text"  class="form-control mandatory"
+							<label class="control-label col-md-6 col-sm-6 col-xs-12" for="">Quantity</label>
+							<div class="col-md-6 col-sm-6 col-xs-12">
+								<input type="text" class="form-control mandatory"
 									onblur="orderAddList()" name="quantity" id="quantity"
 									onkeydown="return isNumberKey(event)"
 									value="${pointOfSale.quantity}">
@@ -131,21 +161,25 @@
 								<div id="errquantity"></div>
 
 							</div>
-
 						</div>
+
+
 
 					</div>
 				</div>
 
 				<div class="panel-body" id="">
-					<input type="hidden" id="sl" value="${orderInfoList.size()}"> <br />
+					<input type="hidden" id="sl" value="${orderInfoList.size()}">
+					<br />
 					<div style="overflow: scroll; max-width: 100%;">
-					
+
 						<input type='hidden' id='orderIndex' value="${orderInfoListIndex}" />
-						
-						<input type='hidden' id='encOrderId' name='encOrderId' value='${pointOfSale.encOrderId}'/>
-						
-						<table class="table table-bordered table-striped table-condensed mb-none"
+
+						<input type='hidden' id='encOrderId' name='encOrderId'
+							value='${pointOfSale.encOrderId}' />
+
+						<table
+							class="table table-bordered table-striped table-condensed mb-none"
 							id="dataTable">
 							<thead>
 								<tr>
@@ -154,6 +188,7 @@
 									<th>Item Price</th>
 									<th>Quantity</th>
 									<th>Sub Total</th>
+									<th>Order Note</th>
 									<th>Action</th>
 									<%-- <c:if test="${!empty orderInfoList}">
 										<th>Edit</th>
@@ -161,54 +196,60 @@
 								</tr>
 							</thead>
 							<tbody id="orderInfoList">
-							
+
 								<c:if test="${!empty orderInfoList}">
 									<%
 										int j = 0;
 									%>
 									<c:forEach items="${orderInfoList}" var="list">
 										<tr style="cursor: pointer">
-										
-											<td style="border-style: inset;" id="sl"><%-- ${orderSl} --%> <%out.print(j+1);%> 
-												
-											<input type='hidden'  id='encItemOrderId_${list.encItemOrderId}'  
-											value='${list.encItemOrderId}'
-											name='orderModelList[<% out.print(j);%>].encItemOrderId'>
-											
+
+											<td style="border-style: inset;" id="sl">
+												<%-- ${orderSl} --%> <%
+ 												out.print(j + 1);
+ 												%> <input type='hidden' id='encItemOrderId_${list.encItemOrderId}'
+												value='${list.encItemOrderId}'
+												name='orderModelList[<% out.print(j);%>].encItemOrderId'>
+
 											</td>
-											
-											<td style="border-style: inset;">${list.itemName}
-											<input type='hidden' id='itemId_${list.itemId}'
+
+											<td style="border-style: inset;">${list.itemName}<input
+												type='hidden' id='itemId_${list.itemId}'
 												value='${list.itemId}'
-												name='orderModelList[<% out.print(j);%>].itemId'> 
+												name='orderModelList[<% out.print(j);%>].itemId'>
 											</td>
-											
-											<td style="border-style: inset;">${list.itemPrice}
-											<input type='hidden' id='itemPrice_${list.itemPrice}'
+
+											<td style="border-style: inset;">${list.itemPrice}<input
+												type='hidden' id='itemPrice_${list.itemPrice}'
 												value='${list.itemPrice}'
 												name='orderModelList[<% out.print(j);%>].itemPrice'>
 											</td>
-										
-											<td style="border-style: inset;">${list.quantity}
-											<input type='hidden' id='quantity_${list.quantity}'
+
+											<td style="border-style: inset;">${list.quantity}<input
+												type='hidden' id='quantity_${list.quantity}'
 												value='${list.quantity}'
 												name='orderModelList[<% out.print(j);%>].quantity'>
 											</td>
-											
-											<td style="border-style: inset;">${list.subTotal}
-											<input type='hidden' id='subTotal_${list.subTotal}'
+
+											<td style="border-style: inset;">${list.subTotal}<input
+												type='hidden' id='subTotal_${list.subTotal}'
 												value='${list.subTotal}'
 												name='orderModelList[<% out.print(j);%>].subTotal'>
 											</td>
-											
+
+											<td style="border-style: inset;">${list.orderNote}<input
+												type='hidden' id='orderNote_${list.orderNote}'
+												value='${list.orderNote}'
+												name='orderModelList[<% out.print(j);%>].orderNote'>
+											</td>
+
 											<td style="border-style: inset;"><c:if
 													test="${!empty list.encOrderId }">
 													<a href='#' onclick='removetr(this)'><button
 															class="btn btn-xs btn-primary" type="button">&times;
 														</button></a>
-												</c:if>
-											</td>
-												
+												</c:if></td>
+
 											<%-- <td style="border-style: inset;"><c:if
 													test="${!empty list.encOrderId }">
 													<a href='#' onclick='removetr(this)'><button
@@ -218,12 +259,12 @@
 														</button></a>
 												</c:if>
 											</td> --%>
-											
+
 										</tr>
 										<%
 											j = j + 1;
 										%>
-										
+
 									</c:forEach>
 								</c:if>
 
@@ -285,14 +326,16 @@
 								<thead>
 									<tr>
 										<th>#</th>
+										<th>Table No</th>
 										<th>Date & Time</th>
 										<th>Order No</th>
-										<th>Table No</th>
 										<th>Waiter Name</th>
 										<th>View</th>
 										<th>Edit</th>
-										<th>Token</th>
+										<th>QT</th>
+										<th>Bill</th>
 										<th>Receipt</th>
+										<th>Remove</th>
 										<th>Cancel</th>
 									</tr>
 								</thead>
@@ -303,16 +346,20 @@
 									<c:if test="${!empty pendingOrderList}">
 
 										<c:forEach items="${pendingOrderList}" var="list">
-											<tr style="cursor: pointer">
+											<tr
+												<c:if test="${list.ownerFoodYn == 'Y'}">
+											style="color: red"
+											</c:if>>
 												<td>
 													<%
 														out.print(i);
 																i++;
 													%>
 												</td>
+												<td style="text-align: center;">${list.tableNo}</td>
 												<td>${list.orderDate}</td>
 												<td style="text-align: center;">${list.orderNo}</td>
-												<td style="text-align: center;">${list.tableNo}</td>
+
 												<td>${list.employeeName}</td>
 
 												<td><button
@@ -321,49 +368,79 @@
 														href="#modalOrderInfoList" type="button">
 														<i class="fa fa-eye"></i>
 													</button></td>
-												<td>
-												<c:if test="${list.finalizedYn == 'N'}">
+												<td><c:if
+														test="${list.finalizedYn == 'N' && list.billPrintYn == 'N'}">
 														<button type="button" class="btn btn-primary"
-															onclick="getOrderEditList('${list.encOrderId}', '${list.employeeId}', '${list.tableNo}')">
+															onclick="getOrderEditList('${list.encOrderId}', '${list.employeeId}','${list.tableNo}','${list.ownerFoodYn}','${list.orderNote}')">
 															<i class="fa fa-edit"></i>
 														</button>
-													</c:if>
-												</td>
-												<td>
-												<c:if test="${list.finalizedYn == 'N'}">
-														<button type="button" class="btn btn-primary"
-															onclick="orderFinalizeReport('${list.encOrderId}')">
+													</c:if></td>
+												<td><c:if test="${list.finalizedYn == 'N'}">
+														<button type="button" class="btn btn-warning"
+															onclick="printKitchenQT('${list.encOrderId}')">
 															<i class="fa fa-print"></i>
 														</button>
-													</c:if>
-												</td>
-												<td>
-												<c:choose>
-														<c:when test="${list.finalizedYn == 'N'}">
-															<button onclick="getOrderTotalAmount('${list.encOrderId}')"
-															class="btn btn-mg btn-success modal-with-move-anim" 
-															href="#modalMoneyReceiptInfo"
-															type="button">Finalize</button>
+													</c:if></td>
+
+												<td style="text-align: center;" nowrap><c:choose>
+														<c:when test="${list.billPrintYn == 'N' && list.finalizedYn == 'N'}">
+															<button
+																onclick="getOrderTotalAmountBillPrint('${list.encOrderId}')"
+																class="btn btn-primary modal-with-move-anim"
+																href="#modalBillPrintInfo" type="button">Bill
+																Create</button>
 														</c:when>
 														<c:otherwise>
-															<button
-																onclick="getOrderTotalAmount('${list.encOrderId}')"
-																class="btn btn-mg btn-success modal-with-move-anim"
-																href="#modalMoneyReceiptInfo" type="button">
+															<button class="btn btn-primary" type="button"
+																onclick="customerBillCopy('${list.encOrderId}')">
 																<i class="fa fa-print"></i>
 															</button>
 														</c:otherwise>
-													</c:choose>
+													</c:choose></td>
 
-												</td>
-												<td><button class="btn btn-xs btn-primary"
-														onclick="cancelOrder('${list.encOrderId}')" type="button">&times;</button></td>
+												<td><c:choose>
+														<c:when test="${list.finalizedYn == 'N'}">
+															<button
+																onclick="getOrderTotalAmount('${list.encOrderId}')"
+																class="btn btn-mg btn-success modal-with-move-anim"
+																href="#modalMoneyReceiptInfo" type="button">Finalize</button>
+														</c:when>
+														<c:otherwise>
+															<button class="btn btn-success" type="button"
+																onclick="customerMoneyReceipt('${list.encOrderId}')">
+																<i class="fa fa-print"></i>
+															</button>
+														</c:otherwise>
+													</c:choose></td>
+
+												<td><c:if test="${list.finalizedYn == 'Y'}">
+														<button class="btn btn-success" type="button"
+															onclick="orderProcessComplete('${list.encOrderId}')">
+															<i class="fa fa-eye-slash"></i>
+														</button>
+													</c:if></td>
+												<td><c:if test="${list.finalizedYn == 'N'}">
+														<button class="btn btn-xs btn-danger"
+															onclick="cancelOrder('${list.encOrderId}')" type="button">&times;</button>
+													</c:if></td>
 											</tr>
 										</c:forEach>
 									</c:if>
 									<c:if test="${! empty pendingOrderListNotFound}">
 										<tr>
-											<td colspan="10"><p>${pendingOrderListNotFound}</p></td>
+											<td colspan="12"><p>${pendingOrderListNotFound}</p></td>
+											<td style="display: none;"></td>
+											<td style="display: none;"></td>
+											<td style="display: none;"></td>
+											<td style="display: none;"></td>
+											<td style="display: none;"></td>
+											<td style="display: none;"></td>
+											<td style="display: none;"></td>
+											<td style="display: none;"></td>
+											<td style="display: none;"></td>
+											<td style="display: none;"></td>
+											<td style="display: none;"></td>
+											<td style="display: none;"></td>
 										</tr>
 									</c:if>
 								</tbody>
@@ -385,12 +462,302 @@
 	</div>
 </div>
 
+<!----------------------------------------------------- Start Order Finalize Modal ----------------------------------------------------------------------->
+
+
+<div id="modalMoneyReceiptInfo"
+	class="zoom-anim-dialog modal-block modal-block-lg mfp-hide">
+	<!-- class="zoom-anim-dialog modal-block modal-block-sm mfp-hide"> modal-block modal-block-full mfp-hide  -->
+	<!-- class="mb-xs mt-xs mr-xs modal-sizes btn btn-default"  -->
+	<form class="form-horizontal form-bordered" id="formExtra"
+		method="post" autocomplete="off"
+		action="/pos/pointOfSale/saveOrderFinalize"
+		onkeypress="return event.keyCode != 13;">
+		<section class="panel panel-featured panel-featured-primary">
+			<header class="panel-heading">
+				<button class="close modal-dismiss" type="button"
+					id="btnModalEmpListClose">
+					<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+				</button>
+				<h2 class="panel-title">Customer Payment</h2>
+			</header>
+
+			<div class="panel-body">
+
+
+				<div class="col-md-12" id="modalMsg" style="text-align: center;"></div>
+
+
+				<input type='hidden' id='modal_encOrderId' name='encOrderId' />
+
+				<div class="form-group col-md-12">
+					<div class="col-sm-6">
+						<label class="col-md-6 control-label" for="orderTotalAmount">
+							Payable Amount </label>
+						<div class="col-md-6">
+							<!-- <p id="orderTotalAmount"></p> -->
+							<input type="text" class="form-control" readonly
+								name="orderTotalAmount" id="orderTotalAmount"
+								value="${pointOfSale.orderTotalAmount}" />
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<label class="col-md-6 control-label" for="netPayableAmount">
+							Net Payable <span class="required"> * </span>
+						</label>
+						<div class="col-md-6">
+							<input type="text" required class="form-control" readonly
+								name="netPayableAmount" id="netPayableAmount"
+								value="${pointOfSale.netPayableAmount}" />
+						</div>
+					</div>
+
+				</div>
+
+
+				<div class="form-group col-md-12">
+					<div class="col-sm-6">
+						<label class="col-md-6 control-label"> Discount/Gift
+							Amount </label>
+						<div class="col-md-6">
+							<input type="text" class="form-control" name="discountAmount"
+								id="discountAmount" value=""
+								onkeypress="return isNumberKey(event)"
+								onkeyup="getDiscountAmount()" onblur="getDiscountAmount()" />
+
+							<div id="errdiscountAmount"></div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<label class="col-md-6 control-label"> Discount/Gift
+							Reason </label>
+						<div class="col-md-6">
+							<input type="text" class="form-control"
+								name="discountReferenceBy" id="discountReferenceBy" value="" />
+							<%-- <select data-plugin-selectTwo class="form-control" required
+								id="referenceById" name="referenceById">
+								<option value="">Select One</option>
+								<c:forEach items="${employeeList}" var="list">
+									<option
+										<c:if test="${list.employeeId==pointOfSale.referenceById}">selected="selected"</c:if>
+										value="${list.employeeId}">${list.firstName}</option>
+								</c:forEach>
+							</select> --%>
+						</div>
+					</div>
+
+				</div>
+
+
+				<div class="form-group col-md-12">
+					<div class="col-sm-6">
+						<label class="col-md-6 control-label" for="cashPayAmount">
+							Cash Pay Amount <span class="required"> * </span>
+						</label>
+						<div class="col-md-6">
+							<input type="text" class="form-control mandatory"
+								name="cashPayAmount" id="cashPayAmount" required value=""
+								onkeypress="return isNumberKey(event)"
+								onkeyup="getCashPayAmount()" onblur="getCashPayAmount()" />
+
+							<div id="errcashPayAmount"></div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<label class="col-md-6 control-label" for="cardPayAmount">
+							Card Pay Amount </label>
+						<div class="col-md-6">
+							<input type="text" class="form-control" name="cardPayAmount"
+								id="cardPayAmount" onkeypress="return isNumberKey(event)"
+								onkeyup="getCardPayAmount()" onblur="getCardPayAmount()" />
+
+							<div id="errcardPayAmount"></div>
+						</div>
+
+					</div>
+				</div>
+
+				<div class="form-group col-md-12">
+					<div class="col-sm-6">
+						<label class="col-md-6 control-label" for="bkashPaymentAmount">
+							bKash Pay Amount </label>
+						<div class="col-md-6">
+							<input type="text" class="form-control" name="bkashPaymentAmount"
+								id="bkashPaymentAmount" value=""
+								onkeypress="return isNumberKey(event)"
+								onkeyup="getBkashPayAmount()" onblur="getBkashPayAmount()" />
+
+							<div id="errbkashPaymentAmount"></div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<label class="col-md-6 control-label" for="bkashTranNo">
+							bKash Transaction No </label>
+						<div class="col-md-6">
+							<input type="text" class="form-control" name="bkashTranNo"
+								id="bkashTranNo" value="" />
+						</div>
+
+					</div>
+				</div>
+
+				<!-- </div> -->
+				<div class="form-group col-md-12">
+					<div class="col-sm-6">
+						<label class="col-md-6 control-label" for="receivedAmount">Cash
+							Received Amount </label>
+						<div class="col-md-6">
+							<input type="text" class="form-control" name="receivedAmount"
+								id="receivedAmount" value=""
+								onkeypress="return isNumberKey(event)"
+								onkeyup="getChangeAmount()" onblur="getChangeAmount()" />
+							<div id="errreceivedAmount"></div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<label class="col-md-6 control-label" for="changeAmount">Cash
+							Change Amount </label>
+						<div class="col-md-6">
+							<input type="text" class="form-control" readonly
+								name="changeAmount" id="changeAmount" value="" />
+						</div>
+					</div>
+				</div>
+
+
+				<div class="col-md-12"></div>
+			</div>
+			<footer class="panel-footer">
+				<div class="row">
+					<div class="col-sm-offset-5">
+						<button class="btn btn-primary" type="submit" id="paymentSubmit">Submit</button>
+						<a href="/pos/pointOfSale/orderManagement"><button
+								class="btn btn-default" type="button" role="button">Close</button></a>
+					</div>
+				</div>
+			</footer>
+		</section>
+	</form>
+</div>
+
+<!-------------------------------- Ending order finalize Modal --------------------------------------------->
+
+
+
+<!----------------------------------------------------- Start Order Finalize Modal ----------------------------------------------------------------------->
+
+
+<div id="modalBillPrintInfo"
+	class="zoom-anim-dialog modal-block modal-block-lg mfp-hide">
+	<!-- class="zoom-anim-dialog modal-block modal-block-sm mfp-hide"> modal-block modal-block-full mfp-hide  -->
+	<!-- class="mb-xs mt-xs mr-xs modal-sizes btn btn-default"  -->
+	<form class="form-horizontal form-bordered" id="formBillPrint"
+		method="post" autocomplete="off"
+		action="/pos/pointOfSale/saveOrderBillPrint"
+		onkeypress="return event.keyCode != 13;">
+		<section class="panel panel-featured panel-featured-primary">
+			<header class="panel-heading">
+				<button class="close modal-dismiss" type="button"
+					id="btnModalEmpListClose">
+					<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
+				</button>
+				<h2 class="panel-title">Bill Print</h2>
+			</header>
+
+			<div class="panel-body">
+
+
+				<div class="col-md-12" id="modalMsgBillPrint" style="text-align: center;"></div>
+
+
+				<input type='hidden' id='modal_encOrderId_bill_print' name='encOrderId' />
+
+				<div class="form-group col-md-12">
+					<div class="col-sm-6">
+						<label class="col-md-6 control-label" for="orderTotalAmountBillPrint">
+							Payable Amount </label>
+						<div class="col-md-6">
+							<!-- <p id="orderTotalAmount"></p> -->
+							<input type="text" class="form-control" readonly
+								name="orderTotalAmount" id="orderTotalAmountBillPrint"/>
+						</div>
+					</div>
+
+					<div class="col-md-6">
+						<label class="col-md-6 control-label" for="netPayableAmountBillPrint">
+							Net Payable <span class="required"> * </span>
+						</label>
+						<div class="col-md-6">
+							<input type="text" required class="form-control" readonly
+								name="netPayableAmount" id="netPayableAmountBillPrint"/>
+						</div>
+					</div>
+
+				</div>
+
+
+				<div class="form-group col-md-12">
+					<div class="col-sm-6">
+						<label class="col-md-6 control-label"> Discount/Gift
+							Amount </label>
+						<div class="col-md-6">
+							<input type="text" class="form-control" name="discountAmount"
+								id="discountAmountBillPrint" 
+								onkeypress="return isNumberKey(event)"
+								onkeyup="getDiscountAmountBillPrint()" />
+
+							<div id="errdiscountAmountBillPrint"></div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<label class="col-md-6 control-label"> Discount/Gift
+							Reason </label>
+						<div class="col-md-6">
+							<input type="text" class="form-control"
+								name="discountReferenceBy" id="discountReferenceByBillPrint" value="" />
+							<%-- <select data-plugin-selectTwo class="form-control" required
+								id="referenceById" name="referenceById">
+								<option value="">Select One</option>
+								<c:forEach items="${employeeList}" var="list">
+									<option
+										<c:if test="${list.employeeId==pointOfSale.referenceById}">selected="selected"</c:if>
+										value="${list.employeeId}">${list.firstName}</option>
+								</c:forEach>
+							</select> --%>
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+			<footer class="panel-footer">
+				<div class="row">
+					<div class="col-sm-offset-5">
+						<button class="btn btn-primary" type="submit" id="billPrintSubmit">Submit</button>
+						<a href="/pos/pointOfSale/orderManagement"><button
+								class="btn btn-default" type="button" role="button">Close</button></a>
+					</div>
+				</div>
+			</footer>
+		</section>
+	</form>
+</div>
+
+<!-------------------------------- Ending bill print Modal --------------------------------------------->
+
+
+
+
+
+
+<%-- 
 <!----------------------------------------------------- Start Registration Id Modal ----------------------------------------------------------------------->
 
 
 <div id="modalMoneyReceiptInfo"
-	class="zoom-anim-dialog modal-block modal-block-sm mfp-hide">
-	<!-- class="zoom-anim-dialog modal-block modal-block-sm mfp-hide"> -->
+	class="zoom-anim-dialog modal-block modal-block-lg mfp-hide">
+	<!-- class="zoom-anim-dialog modal-block modal-block-sm mfp-hide"> modal-block modal-block-full mfp-hide  -->
 	<!-- class="mb-xs mt-xs mr-xs modal-sizes btn btn-default"  -->
 	<form class="" method="post" autocomplete="off"
 			action="/pos/pointOfSale/saveOrderFinalize" id="form"
@@ -409,104 +776,154 @@
 			
 			<input type='hidden' id='modal_encOrderId' name='encOrderId'/>
 
-			<div class="form-group col-md-12">
-				<label class="col-md-6 control-label" for="personId">
-					Payable Amount<span class="required"> * </span>
-				</label>
-				<div class="col-md-6">
-					<!-- <p id="orderTotalAmount"></p> -->
-					<input type="text" required class="form-control" readonly
-						name="orderTotalAmount" id="orderTotalAmount" required
-						value="${pointOfSale.orderTotalAmount}" />
+				<div class="form-group col-md-12">
+					<div class="col-sm-6">
+						<label class="col-md-6 control-label" for="personId">
+							Payable Amount <span class="required"> * </span>
+						</label>
+						<div class="col-md-6">
+							<!-- <p id="orderTotalAmount"></p> -->
+							<input type="text" required class="form-control" readonly
+								name="orderTotalAmount" id="orderTotalAmount" required
+								value="${pointOfSale.orderTotalAmount}" />
+						</div>
+					</div>
+					<div class="col-md-6">
+						<label class="col-md-6 control-label" for="personId"> Net
+							Payable <span class="required"> * </span>
+						</label>
+						<div class="col-md-6">
+							<input type="text" required class="form-control" readonly
+								name="netPayableAmount" id="netPayableAmount"
+								value="${pointOfSale.netPayableAmount}" />
+						</div>
+					</div>
+				</div>
+
+
+
+				<!-- </div> -->
+				<div class="form-group col-md-12">
+					<div class="col-sm-6">
+						<label class="col-md-6 control-label" for="receivedAmount">Received
+							Amount <span class="required"> * </span></label>
+						<div class="col-md-6">
+							<input type="text" class="form-control mandatory"
+								name="receivedAmount" id="receivedAmount" required value=""
+								onkeypress="return isNumberKey(event)"
+								onkeyup="getChangeAmount()" />
+							<div id="errorderPrice"></div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<label class="col-md-6 control-label" for="personId">Change
+							Amount <span class="required"> * </span>
+						</label>
+						<div class="col-md-6">
+							<input type="text" required class="form-control" readonly
+								name="changeAmount" id="changeAmount" value=""
+								onkeypress="return isNumberKey(event)" />
+
+							<div id="errdiscountAmount"></div>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group col-md-12">
+					<div class="col-sm-6">
+						<label class="col-md-6 control-label"> Cash Pay Amount <span
+							class="required"> * </span>
+						</label>
+						<div class="col-md-6">
+							<input type="text" class="form-control mandatory"
+								name="cashPayAmount" id="cashPayAmount" required value=""
+								onkeypress="return isNumberKey(event)" />
+								<!-- onkeyup="getCardPayAmount()" -->
+							<div id="errdiscountAmount"></div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<label class="col-md-6 control-label"> Card Pay Amount <span
+							class="required"> * </span>
+						</label>
+						<div class="col-md-6">
+							<input type="text" class="form-control mandatory"
+								name="cardPayAmount" id="cardPayAmount" required value=""
+								onkeypress="return isNumberKey(event)" />
+								<!-- onkeyup="getCashPayAmount()" -->
+							<div id="errdiscountAmount"></div>
+						</div>
+
+					</div>
+				</div>
+
+				<div class="form-group col-md-12">
+					<div class="col-sm-6">
+						<label class="col-md-6 control-label"> bKash Pay Amount <span
+							class="required"> * </span>
+						</label>
+						<div class="col-md-6">
+							<input type="text" class="form-control mandatory"
+								name="bkashPaymentAmount" id="bkashPaymentAmount" required value=""
+								onkeypress="return isNumberKey(event)" />
+							<div id="errdiscountAmount"></div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<label class="col-md-6 control-label"> bKash Transaction
+							No </label>
+						<div class="col-md-6">
+							<input type="text" class="form-control" name="bkashTranNo"
+								id="bkashTranNo" value="" onkeyup="getCashPayAmount()"
+								onkeypress="return isNumberKey(event)" />
+
+							<div id="errdiscountAmount"></div>
+						</div>
+
+					</div>
+				</div>
+
+				<div class="form-group col-md-12">
+					<div class="col-sm-6">
+						<label class="col-md-6 control-label"> Discount Amount <span
+							class="required"> * </span>
+						</label>
+						<div class="col-md-6">
+							<input type="text" class="form-control mandatory"
+								name="discountAmount" id="discountAmount" required value=""
+								onblur="getDiscountAmount()"
+								onkeypress="return isNumberKey(event)" />
+
+							<div id="errdiscountAmount"></div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<label class="col-md-6 control-label"> Discount Reference By
+						</label>
+						<div class="col-md-6">
+							<input type="text" class="form-control" name="discountReferenceBy"
+								id="discountReferenceBy" value=""/>
+							<select data-plugin-selectTwo class="form-control" required
+								id="referenceById" name="referenceById">
+								<option value="">Select One</option>
+								<c:forEach items="${employeeList}" var="list">
+									<option
+										<c:if test="${list.employeeId==pointOfSale.referenceById}">selected="selected"</c:if>
+										value="${list.employeeId}">${list.firstName}</option>
+								</c:forEach>
+							</select>
+						</div>
+					</div>
+
+				</div>
+
+				<div class="col-md-12">
+					
 				</div>
 			</div>
-			
-		<!-- 	<div class="form-group col-md-12">
-				<label class="col-md-6 control-label" for="receivedAmount">Received
-					Amount</label>
-				<div class="col-md-6">
-					<input type="text" class="form-control mandatory"
-						name="receivedAmount" id="receivedAmount" required
-						value=""
-						onkeypress="return isNumberKey(event)" onkeyup="getChangeAmount()" />
-					<div id="errorderPrice"></div>
-				</div>
-			</div> -->
-			
-			<!-- </div> -->
-			<!-- <div class="col-md-12"> -->
-			<!-- <div class="form-group col-md-12">
-				<label class="col-md-6 control-label" for="personId">Change
-					Amount <span class="required"> * </span>
-				</label>
-				<div class="col-md-6">
-					<input type="text" required class="form-control" readonly
-						name="changeAmount" id="changeAmount"
-						value=""
-						onkeypress="return isNumberKey(event)" />
-
-					<div id="errdiscountAmount"></div>
-				</div>
-			</div> -->
-			
-			<div class="form-group col-md-12">
-				<label class="col-md-6 control-label"> Cash Pay Amount <span
-					class="required"> * </span>
-				</label>
-				<div class="col-md-6">
-					<input type="text" required class="form-control mandatory"
-						name="cashPayAmount" id="cashPayAmount" required
-						value="" onkeyup="getCardPayAmount()"
-						onkeypress="return isNumberKey(event)" />
-
-					<div id="errdiscountAmount"></div>
-				</div>
-			</div>
-			
-			<div class="form-group col-md-12">
-				<label class="col-md-6 control-label"> Card Pay Amount <span
-					class="required"> * </span>
-				</label>
-				<div class="col-md-6">
-					<input type="text" required class="form-control mandatory"
-						name="cardPayAmount" id="cardPayAmount" required
-						value="" onkeyup="getCashPayAmount()"
-						onkeypress="return isNumberKey(event)" />
-
-					<div id="errdiscountAmount"></div>
-				</div>
-			</div>
-
-			<div class="form-group col-md-12">
-				<label class="col-md-6 control-label"> Discount Amount <span
-					class="required"> * </span>
-				</label>
-				<div class="col-md-6">
-					<input type="text" required class="form-control mandatory"
-						name="discountAmount" id="discountAmount" required
-						value="" onkeyup="getDiscountAmount()"
-						onkeypress="return isNumberKey(event)" />
-
-					<div id="errdiscountAmount"></div>
-				</div>
-			</div>
-			
-			<div class="form-group col-md-12">
-				<label class="col-md-6 control-label" for="personId"> Net
-					Payable <span class="required"> * </span>
-				</label>
-				<div class="col-md-6">
-					<!-- <p id="orderTotalAmount"></p> -->
-					<input type="text" required class="form-control" readonly
-						name="netPayableAmount" id="netPayableAmount"
-						value="${pointOfSale.netPayableAmount}" />
-				</div>
-			</div>
-			<!-- </div> -->
-		</div>
 		<footer class="panel-footer">
 			<div class="row">
-				<div class="col-sm-offset-4">
+				<div class="col-sm-offset-5">
 					<button class="btn btn-primary" type="submit">Submit</button>
 					<a href="/pos/pointOfSale/orderManagement"><button
 							class="btn btn-default" type="button" role="button">Close</button></a>
@@ -519,7 +936,7 @@
 
 <!-------------------------------- Ending Modal --------------------------------------------->
 
-
+ --%>
 <!-------------------------------- start modal makers country ------------------------------------------>
 
 <div id="modalOrderInfoList"
@@ -550,9 +967,10 @@
 									<th>Quantity</th>
 									<th>Item Price</th>
 									<th>Sub Total</th>
+									<th>Order Note</th>
 								</tr>
 							</thead>
-							<tbody id="pendingOrderInfoList" style="border-style: inset;">
+							<tbody id="pendingOrderInfoList">
 							</tbody>
 
 						</table>
@@ -572,666 +990,457 @@
 
 <script>
 
-function getCardPayAmount () {
-	var cashPayAmount = $("#cashPayAmount").val();
-	var cardPayAmount = $("#cardPayAmount").val();
-	var orderTotalAmount = $("#orderTotalAmount").val();
-	
-	if (cashPayAmount != '' && cashPayAmount > 0) {
-		var newCardPayAmount = orderTotalAmount - cashPayAmount;
-		$("#cardPayAmount").val(newCardPayAmount);
-	} else {
-		$("#cardPayAmount").val('0');
-	}
-}
 
 
-function getCashPayAmount () {
-	var cardPayAmount = $("#cardPayAmount").val();
-	var cashPayAmount = $("#cashPayAmount").val();
-	var orderTotalAmount = $("#orderTotalAmount").val();
-	
-	if (cardPayAmount != '' && cardPayAmount > 0) {
-		var newCashPayAmount = orderTotalAmount - cardPayAmount;
-		//alert(newCardPayAmount);
-		$("#cashPayAmount").val(newCashPayAmount);
-		
-	} else {
-		$("#cashPayAmount").val('0');
-	}
-}
-
-
-
-function getChangeAmount () {
-	var receivedAmount = $("#receivedAmount").val();
-	//var changeAmount = $("#changeAmount").val();
-	var orderTotalAmount = $("#orderTotalAmount").val();
-		if (receivedAmount != '' && receivedAmount > 0) {
-			var changeAmount = receivedAmount - orderTotalAmount;
-			$("#changeAmount").val(changeAmount);
-		} else {
-			$("#changeAmount").val('0');
-		}
-}
-
-
-function getDiscountAmount () {
-	var discountAmount = $("#discountAmount").val();
-	var orderTotalAmount = $("#orderTotalAmount").val();
-		if (discountAmount != '' && discountAmount > 0) {
-			var newOrderTotalAmount = orderTotalAmount - discountAmount;
-			//alert(newOrderTotalAmount);
-			$("#netPayableAmount").val(newOrderTotalAmount);
-		} else {
-			//alert(orderTotalAmount);
-			$("#netPayableAmount").val(orderTotalAmount);
-		}
-}
-
-
-function getOrderTotalAmount(encOrderId) {
-	$("#modal_encOrderId").val(encOrderId);
-	var link = "/pos/pointOfSale/getOrderTotalAmount";
-	$
-			.ajax({
-				type : "POST",
-				url : link,
-				data : "encOrderId=" + encodeURIComponent(encOrderId),
-				async : true,
-
-				success : function(data) {
-					//alert(data.orderTotalAmount);
-					$("#orderTotalAmount").val(data.orderTotalAmount);
-					$("#netPayableAmount").val(data.orderTotalAmount);
-				}
-			});
-		};
-
-
-function getOrderEditList(encOrderId,employeeId,tableNo) {
+function getOrderEditList(encOrderId,employeeId,tableNo,ownerFoodYn,orderNote) {
 	//alert(encStudentId);
 	var url = "/pos/pointOfSale/getOrderEditList?encOrderId="
-			+ encodeURIComponent(encOrderId) + "&employeeId=" + employeeId + "&tableNo=" + tableNo;
+			+ encodeURIComponent(encOrderId) + "&employeeId=" + employeeId + "&tableNo=" + tableNo + "&ownerFoodYn=" + ownerFoodYn + "&orderNote=" + orderNote;
 	//alert(url);
 	window.location = url;
 }
 
-/* function getOrderEditList(encOrderId) {
 
-	if (!encOrderId == '') {
 
-		var link = "/pos/pointOfSale/getOrderEditList";
+function orderAddList() {
+	var itemId = $("#itemId").val();
+	var quantity = $("#quantity").val();
+	var orderNote = $("#orderNote").val();
+	var trIndex = $("#orderIndex").val();
+	var content = "";
+	var myElem = document.getElementById("encItemId_" + itemId);
+	var totalPrice = "";
+	//alert(quantity)
 
-		$.ajax({
-			type : "POST",
-			url : link,
-			data : "encOrderId=" + encodeURIComponent(encOrderId),
-			async : true,
-
-			success : function(data) {
-				 //alert(data);
-				$("#orderInfoList").html(data);
-			},
-
-			error : function(data) {
-				alert('Error!!!')
-			}
-		});
+	var sl = $("#sl").val();
+	if (sl == '') {
+		sl = 0;
 	}
-};
- */
+	sl = parseInt(sl) + 1;
 
-function cancelOrder(encOrderId) {
-	//alert(encOrderId);
-	var conf = confirm("Do You Want To Cancel This Order ? ");
-	
-	if (conf) {
-		var url = "/pos/pointOfSale/cancelOrder?encOrderId=" + encodeURIComponent(encOrderId);
-		//alert(url);
-		window.location = url;
-	}
-}
+	if (itemId == '') {
+		content = "<div class='alert alert-danger'>"
+				+ "<button class='close' aria-hidden='true' data-dismiss='alert' "
+		+ "type='button'>&times;</button>"
+				+ "<strong>Select Item Name First !</strong>" + "</div>";
 
-function removeTaggedVehicle(encTagId) {
-	var conf = confirm("Do you want to untag this vehicle ? ");
+		$("#msg").html(content);
+		//$("#itemId").focus();
+	} else if (quantity == '') {
+		content = "<div class='alert alert-danger'>"
+				+ "<button class='close' aria-hidden='true' data-dismiss='alert' "
+		+ "type='button'>&times;</button>"
+				+ "<strong>Select Quantity !</strong>" + "</div>";
 
-	if (conf) {
-		var java_base_url = "<%out.print(session.getAttribute("sess_baseurl"));%>";
-		var link = java_base_url+"/v/registration/removeTaggedVehicle?encTagId=" + encodeURIComponent(encTagId);
-		window.location = link;
-	}
-};
-
-
-function getPendingOrderInfoList(encOrderId) {
-
-	if (!encOrderId == '') {
-
-		var link = "/pos/pointOfSale/getPendingOrderInfoList";
-
-		$.ajax({
-			type : "POST",
-			url : link,
-			data : "encOrderId=" + encodeURIComponent(encOrderId),
-			async : true,
-
-			success : function(data) {
-				 //alert(data.orderTotalAmount)
-				$("#pendingOrderInfoList").html(data);
-				//$("#orderTotalAmount").val(data.orderTotalAmount);
-			},
-
-			error : function(data) {
-				alert('Error!!!')
-			}
-		});
-	}
-};
-
-function isNumberKey(evt) {
-    var charCode = (evt.which) ? evt.which : event.keyCode;
-    var errid = "err"+evt.target.id;
-    var msg = '<label class="error" for="'+evt.target.id+'">Please enter a valid number.</label>';
-    if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57) && (charCode < 96 || charCode > 105)) {
-    	$("#"+errid).html(msg);
-        return false;
-    } else {
-    	$("#"+errid).html('');
-        return true;
-    }      
-}
-
-  function orderFinalizeReport(encOrderId) {
-	var url = "/pos/reports/cashReceipt?encOrderId=" + encodeURIComponent(encOrderId) + "&reportCode=" + "101";
-	window.open(url, '_blank');
-
-};  
-
-/* function orderFinalizeReport(encOrderId) {
-alert('hello');
-var link = "/pos/reports/viewreport";
-$.ajax({
-	type : "POST",
-	url : link,
-	data : "encOrderId=" + encodeURIComponent(encOrderId)
-			+ "&reportCode=" + "101",
-	async : true,
-	beforeSend : function(xhr) {
-		// here it is
-		//xhr.setRequestHeader(header, token);
-	},
-	success : function(data) {
-		window.open(url, '_blank');
-	},
-	error : function(data) {
-		alert('Error!!!');
-	}
-});
-}; 
-
-*/
-
-	
-
-<%-- 	function printLearner(encServiceRequestNo) {
-		var java_base_url = "<%out.print(session.getAttribute("sess_baseurl"));%>";
-		var url = java_base_url + "/v/drivingLicense/printLearner?encServiceRequestNo=" + encodeURIComponent(encServiceRequestNo);
-		window.open(url, '_blank');
-
-	} --%>
-
-	function orderAddList() {
-		var itemId = $("#itemId").val();
-		var quantity = $("#quantity").val();
-		var trIndex = $("#orderIndex").val();
-		var content = "";
-		var myElem = document.getElementById("encItemId_" + itemId);
-		var totalPrice = "";
-		//alert(quantity)
-
-		var sl = $("#sl").val();
-		if (sl == '') {
-			sl = 0;
-		}
-		sl = parseInt(sl) + 1;
-
-		if (itemId == '') {
+		$("#msg").html(content);
+		//$("#quantity").focus();
+	} else {
+		
+		/* if (trIndex > 10) {
 			content = "<div class='alert alert-danger'>"
-					+ "<button class='close' aria-hidden='true' data-dismiss='alert' "
-			+ "type='button'>&times;</button>"
-					+ "<strong>Select Item Name First !</strong>" + "</div>";
+				+ "<button class='close' aria-hidden='true' data-dismiss='alert' "
+		+ "type='button'>&times;</button>"
+				+ "<strong>Maximum 10 Orders Can Be Generated In One Receipt !!</strong>" + "</div>"
 
-			$("#msg").html(content);
-			//$("#itemId").focus();
-		} else if (quantity == '') {
-			content = "<div class='alert alert-danger'>"
-					+ "<button class='close' aria-hidden='true' data-dismiss='alert' "
-			+ "type='button'>&times;</button>"
-					+ "<strong>Select Quantity !</strong>" + "</div>";
+		$("#msg").html(content);
+		} else { */
 
-			$("#msg").html(content);
-			//$("#quantity").focus();
+		if (trIndex == '') {
+			var trIndexResult = '0';
 		} else {
-			
-			/* if (trIndex > 10) {
-				content = "<div class='alert alert-danger'>"
-					+ "<button class='close' aria-hidden='true' data-dismiss='alert' "
-			+ "type='button'>&times;</button>"
-					+ "<strong>Maximum 10 Orders Can Be Generated In One Receipt !!</strong>" + "</div>"
-
-			$("#msg").html(content);
-			} else { */
-
-			if (trIndex == '') {
-				var trIndexResult = '0';
-			} else {
-				var trIndexResult = parseInt(trIndex) + 1;
-			}
-
-			var link = "/pos/pointOfSale/getOrderInfoSList";
-			$
-					.ajax({
-						type : "POST",
-						url : link,
-						data : "itemId=" + itemId + "&quantity=" + quantity,
-
-						async : true,
-
-						success : function(data) {
-							$("#orderInfoListNotFound").remove();
-							if (data.mCode == '1111') {
-								//alert(data.orderPrice);
-								/* var subTotal = data.itemPrice * quantity; */
-								//alert(subTotal);
-								var content = "<tr>"
-										+ "<td style='border-style: inset;'>"
-										+ sl
-										+ "<input type='hidden'  name='orderModelList["+ trIndexResult+ "].encItemOrderId' value='' />"
-										+ "</td>"
-										+ "<td style='border-style: inset;'><input type='hidden' id='itemId_" + itemId+ "'" + " name='orderModelList["+ trIndexResult+ "].itemId' value='"+ itemId+ "' />"
-										+ data.itemName
-										+ "</td>"
-										+ "</td>"
-										+ "<td style='border-style: inset;'><input type='hidden' id='itemPrice_" + data.itemPrice+ "'" + " name='orderModelList["+ trIndexResult+ "].itemPrice' value='"+ data.itemPrice+ "' />"
-										+ data.itemPrice
-										+ "</td>"
-										+ "<td style='border-style: inset;'><input type='hidden' id='quantity_"+ quantity+ "'"+ " name='orderModelList["+ trIndexResult+ "].quantity' value='"+ quantity+ "'/>"
-										+ quantity
-										
-										+ "<td style='border-style: inset;'><input type='hidden' id='subTotal_" + data.subTotal+ "'" + " name='orderModelList["+ trIndexResult+ "].subTotal' value='"+ data.subTotal+ "' />"
-										+ data.subTotal
-										+ "</td>"
-										+ "<td style='border-style: inset;'><a href='#' onclick='removetr(this)'><button class='btn btn-xs btn-primary' type='button'>&times;</button></a></td>"
-										/* + "<td>" + "</td>" */
-										+ "</tr>";
-								// alert(content);
-
-								$("#msg").html('');
-								$("#orderInfoList").append(content);
-								$("#orderIndex").val(trIndexResult);
-								//$("#receiptId").val('');
-								$("#sl").val(sl);
-
-								totalPrice = data.orderPrice;
-								//alert(totalPrice);
-								$("#totalPrice").val(totalPrice);
-								
-								
-
-							} else {
-								content = "<div class='alert alert-danger'>"
-										+ "<button class='close' aria-hidden='true' data-dismiss='alert' "
-										+ "type='button'>&times;</button>"
-										+ "<strong>" + data.message
-										+ "</strong>" + "</div>"
-
-								$("#msg").html(content);
-										alert(content)
-							}
-						},
-						error : function(data) {
-							alert('Error!!!')
-						}
-					//}
-					});
-			$("#orderIndex").val(trIndexResult);
+			var trIndexResult = parseInt(trIndex) + 1;
 		}
 
+		var link = "/pos/pointOfSale/getOrderInfoSList";
+		$
+				.ajax({
+					type : "POST",
+					url : link,
+					data : "itemId=" + itemId + "&quantity=" + quantity,
+
+					async : true,
+
+					success : function(data) {
+						$("#orderInfoListNotFound").remove();
+						if (data.mCode == '1111') {
+							//alert(data.orderPrice);
+							/* var subTotal = data.itemPrice * quantity; */
+							//alert(subTotal);
+							var content = "<tr>"
+									+ "<td style='border-style: inset;'>"
+									+ sl
+									+ "<input type='hidden'  name='orderModelList["+ trIndexResult+ "].encItemOrderId' value='' />"
+									+ "</td>"
+									+ "<td style='border-style: inset;'><input type='hidden' id='itemId_" + itemId+ "'" + " name='orderModelList["+ trIndexResult+ "].itemId' value='"+ itemId+ "' />"
+									+ data.itemName
+									+ "</td>"
+									+ "</td>"
+									+ "<td style='border-style: inset;'><input type='hidden' id='itemPrice_" + data.itemPrice+ "'" + " name='orderModelList["+ trIndexResult+ "].itemPrice' value='"+ data.itemPrice+ "' />"
+									+ data.itemPrice
+									+ "</td>"
+									+ "<td style='border-style: inset;'><input type='hidden' id='quantity_"+ quantity+ "'"+ " name='orderModelList["+ trIndexResult+ "].quantity' value='"+ quantity+ "'/>"
+									+ quantity
+									
+									+ "<td style='border-style: inset;'><input type='hidden' id='subTotal_" + data.subTotal+ "'" + " name='orderModelList["+ trIndexResult+ "].subTotal' value='"+ data.subTotal+ "' />"
+									+ data.subTotal
+									+ "</td>"
+									+ "<td style='border-style: inset;'><input type='hidden' id='orderNote_"+ orderNote+ "'"+ " name='orderModelList["+ trIndexResult+ "].orderNote' value='"+ orderNote+ "'/>"
+									+ orderNote
+									
+									+ "</td>"
+									+ "<td style='border-style: inset;'><a href='#' onclick='removetr(this)'><button class='btn btn-xs btn-primary' type='button'>&times;</button></a></td>"
+									/* + "<td>" + "</td>" */
+									+ "</tr>";
+							// alert(content);
+
+							$("#msg").html('');
+							$("#orderInfoList").append(content);
+							$("#orderIndex").val(trIndexResult);
+							//$("#receiptId").val('');
+							$("#sl").val(sl);
+
+							totalPrice = data.orderPrice;
+							//alert(totalPrice);
+							$("#totalPrice").val(totalPrice);
+							
+							
+
+						} else {
+							content = "<div class='alert alert-danger'>"
+									+ "<button class='close' aria-hidden='true' data-dismiss='alert' "
+									+ "type='button'>&times;</button>"
+									+ "<strong>" + data.message
+									+ "</strong>" + "</div>"
+
+							$("#msg").html(content);
+									alert(content)
+						}
+					},
+					error : function(data) {
+						alert('Error!!!')
+					}
+				//}
+				});
+		$("#orderIndex").val(trIndexResult);
 	}
+
+}
+
+
 
 	function removetr(e) {
 		var whichtr = $(e).closest("tr");
 		whichtr.remove();
 	};
 
-	function receiptAddList() {
+	
+		function isNumberKey(evt) {
+		    var charCode = (evt.which) ? evt.which : event.keyCode;
+		    var errid = "err"+evt.target.id;
+		    var msg = '<label class="error" for="'+evt.target.id+'">Please enter a valid number.</label>';
+		    if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57) && (charCode < 96 || charCode > 105)) {
+		    	$("#"+errid).html(msg);
+		        return false;
+		    } else {
+		    	$("#"+errid).html('');
+		        return true;
+		    }      
+		}
 
-		var receiptId = $("#receiptId").val();
-		var trIndex = $("#receiptIndex").val();
-		var content = "";
-		var myElem = document.getElementById("encReceiptId_" + receiptId);
 
-		if (receiptId != '') {
-			if (!isNaN(receiptId)) {
+	function getOrderTotalAmount(encOrderId) {
+		$("#modal_encOrderId").val(encOrderId);
+		var link = "/pos/pointOfSale/getOrderTotalAmount";
+		$
+				.ajax({
+					type : "POST",
+					url : link,
+					data : "encOrderId=" + encodeURIComponent(encOrderId),
+					async : true,
 
-				if (trIndex == '') {
-					var trIndexResult = '0';
+					success : function(data) {
+						//alert(data.orderTotalAmount);
+						$("#orderTotalAmount").val(data.orderTotalAmount);
+						
+						if(data.netPayableAmount == '' || data.netPayableAmount == '0') {
+							$("#netPayableAmount").val(data.orderTotalAmount); 
+						} else {
+							$("#netPayableAmount").val(data.netPayableAmount); 
+						}
+						$("#discountAmount").val(data.discountAmount); 
+						$("#discountReferenceBy").val(data.discountReferenceBy); 
+					}
+				});
+			};
+			
+			
+			function getOrderTotalAmountBillPrint(encOrderId) {
+				$("#modal_encOrderId_bill_print").val(encOrderId);
+				var link = "/pos/pointOfSale/getOrderTotalAmount";
+				$
+						.ajax({
+							type : "POST",
+							url : link,
+							data : "encOrderId=" + encodeURIComponent(encOrderId),
+							async : true,
+
+							success : function(data) {
+								//alert(data.orderTotalAmount);
+								$("#orderTotalAmountBillPrint").val(data.orderTotalAmount);
+								$("#netPayableAmountBillPrint").val(data.orderTotalAmount); 
+							}
+						});
+					};
+					
+					
+					function getDiscountAmountBillPrint () {
+						var orderTotalAmountBillPrint = $("#orderTotalAmountBillPrint").val();
+						var discountAmountBillPrint = $("#discountAmountBillPrint").val();
+						var netPayableAmountBillPrint = $("#netPayableAmountBillPrint").val(); 
+						
+						if (discountAmountBillPrint != '' && parseInt(discountAmountBillPrint) >=0) {
+							
+							if(parseInt(discountAmountBillPrint) > parseInt(orderTotalAmountBillPrint)) {
+								var msg = '<label class="error">Discount can not be greather than total payable amount</label>';
+								$("#modalMsgBillPrint").html(msg);
+								$("#netPayableAmountBillPrint").val(orderTotalAmountBillPrint);
+							} else {
+								$("#modalMsgBillPrint").html('');
+								var newOrderTotalAmountBillPrint = parseInt(orderTotalAmountBillPrint) - parseInt(discountAmountBillPrint);
+								$("#netPayableAmountBillPrint").val(newOrderTotalAmountBillPrint);
+							}
+						} else {
+							$("#modalMsgBillPrint").html('');
+							$("#netPayableAmountBillPrint").val(orderTotalAmountBillPrint);
+						}
+				  }
+
+
+	function getDiscountAmount () {
+			var orderTotalAmount = $("#orderTotalAmount").val();
+			var discountAmount = $("#discountAmount").val();
+			var netPayableAmount = $("#netPayableAmount").val(); 
+			var cashPayAmount = $("#cashPayAmount").val();
+			var cardPayAmount = $("#cardPayAmount").val();
+			var bkashPaymentAmount = $("#bkashPaymentAmount").val();
+		
+			if (discountAmount != '' && parseInt(discountAmount) >=0) {
+				
+				if(parseInt(discountAmount) > parseInt(orderTotalAmount)) {
+					var msg = '<label class="error">Discount can not be greather than total payable amount</label>';
+					$("#modalMsg").html(msg);
+					$("#netPayableAmount").val(orderTotalAmount);
 				} else {
-					var trIndexResult = parseInt(trIndex) + 1;
+					$("#modalMsg").html('');
+					var newOrderTotalAmount = parseInt(orderTotalAmount) - parseInt(discountAmount);
+					$("#netPayableAmount").val(newOrderTotalAmount);
 				}
-
-				if (myElem == null) {
-
-					var link = "/brtais/vdis/registration/getReceiptInfoSList";
-					$
-							.ajax({
-								type : "POST",
-								url : link,
-								data : "receiptId=" + receiptId,
-
-								async : true,
-
-								success : function(data) {
-									$("#receiptInfoListNotFound").remove();
-									if (data.mCode == '1111') {
-										// alert("abcd");
-										var content = "<tr>"
-												+ "<td style='border-style: inset;'><input type='hidden' id='purpose_"
-											+ data.receiptId
-											+ "'"
-											+ " name='receiptList["
-											+ trIndexResult
-											+ "].purpose' value='"
-											+ data.purpose
-											+ "' />"
-												+ data.purpose
-												+ "</td>"
-												+ "<td style='border-style: inset;'><input type='hidden' id='encReceiptId_"
-											+ data.receiptId
-											+ "'"
-											+ " name='receiptList["
-											+ trIndexResult
-											+ "].encReceiptId' value='"
-											+ data.encReceiptId
-											+ "'/>"
-												+ " <input type='hidden' id='receiptId_"
-											+ data.receiptId
-											+ "'"
-											+ " name='receiptList["
-											+ trIndexResult
-											+ "].receiptId' value='"
-											+ data.receiptId
-											+ "'/>"
-												+ data.receiptId
-												+ "</td>"
-
-												+ "<td style='border-style: inset;'><input type='hidden' id='amountWithoutVat_"+data.receiptId+"'"
-											+" name='receiptList["+trIndexResult+"].amountWithoutVat' value='"+data.amountWithoutVat+"'/>"
-
-												+ data.amountWithoutVat
-												+ "</td>"
-												+ "<td style='border-style: inset;'><input type='hidden' id='vatAmount_"
-											+ data.receiptId
-											+ "'"
-											+ " name='receiptList["
-											+ trIndexResult
-											+ "].vatAmount' value='"
-											+ data.vatAmount
-											+ "'/>"
-												+ data.vatAmount
-												+ "</td>"
-												+ "<td style='border-style: inset;'><input type='hidden' id='totalAmount_"
-											+ data.receiptId
-											+ "'"
-											+ " name='receiptList["
-											+ trIndexResult
-											+ "].totalAmount' value='"
-											+ data.totalAmount
-											+ "'/>"
-												+ data.totalAmount
-												+ "</td>"/* + "<td>" */
-												+ "<td style='border-style: inset;'><a href='#' onclick='removetr(this)'><button class='btn btn-xs btn-primary' type='button'>&times;</button></a></td>"
-												+ "</tr>";
-										// alert(content);
-
-										$("#msg").html('');
-										$("#receiptInfoList").append(content);
-										$("#receiptIndex").val(trIndexResult);
-										$("#receiptId").val('');
-
-									} else {
-										content = "<div class='alert alert-danger'>"
-												+ "<button class='close' aria-hidden='true' data-dismiss='alert' "
-											+ "type='button'>&times;</button>"
-												+ "<strong>"
-												+ data.message
-												+ "</strong>" + "</div>"
-
-										$("#msg").html(content);
-									}
-								},
-								error : function(data) {
-									alert('Error!!!')
-								}
-
-							});
-					$("#receiptIndex").val(trIndexResult);
-				} else {
-					content = "<div class='alert alert-danger'>"
-							+ "<button class='close' aria-hidden='true' data-dismiss='alert' "
-						+ "type='button'>&times;</button>"
-							+ "<strong>Select another Receipt ID... </strong>"
-							+ "</div>"
-
-					$("#msg").html(content);
-					$("#receiptId").val('');
-					$("#receiptId").focus();
-				}
-
 			} else {
-				content = "<div class='alert alert-danger'>"
-						+ "<button class='close' aria-hidden='true' data-dismiss='alert' "
-					+ "type='button'>&times;</button>"
-						+ "<strong>Invalid Reciept Id... </strong>" + "</div>"
-
-				$("#msg").html(content);
-				$("#receiptId").val('');
-				$("#receiptId").focus();
+				$("#modalMsg").html('');
+				$("#netPayableAmount").val(orderTotalAmount);
 			}
-
-		}
-	}
-
-	/* function isNumberKey(evt) {
-	 var charCode = (evt.which) ? evt.which : event.keyCode;
-	 var errid = "err"+evt.target.id;
-	 var msg = '<label class="error" for="'+evt.target.id+'">Please enter a valid number.</label>';
-	 if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57) && (charCode < 96 || charCode > 105)) {
-	 $("#"+errid).html(msg);
-	 return false;
-	 } else {
-	 $("#"+errid).html('');
-	 return true;
-	 }      
-	 } */
-
-	function totalEffortCalc() {
-		var min = parseFloat(0);
-		var totalHour = parseInt(0);
-		var totalMin = parseInt(0);
-		var strH = '';
-		var strM = '';
-
-		$('input[id^="totalHour_"]').each(function() {
-			console.log($(this).val());
-			var hm = $(this).val().split(':');
-			totalHour = totalHour + parseInt(hm[0]);
-			totalMin = totalMin + parseInt(hm[1]);
-		});
-
-		if (totalMin > 59) {
-			min = totalMin / 60;
-			totalHour = totalHour
-					+ Math.round(parseInt(min.toString().split('.')[0]));
-			totalMin = Math.round(parseFloat('0.'
-					+ min.toString().split('.')[1]) * 60);
-		}
-
-		if (totalHour.toString().length < 1) {
-			strH = '00';
-		} else if (totalHour.toString().length == 1) {
-			strH = '0' + totalHour.toString();
+			
+			getCashPayAmount();
+			getCardPayAmount();
+			getBkashPayAmount();
+	  }
+	  
+	  
+	function getChangeAmount () {
+		var receivedAmount = $("#receivedAmount").val();
+		var cashPayAmount = $("#cashPayAmount").val();
+		
+		if(receivedAmount !='') {
+		
+		if(cashPayAmount =='') {
+			var msg = '<label class="error">Enter cash pay amount first</label>';
+			$("#modalMsg").html(msg);
 		} else {
-			strH = totalHour.toString();
-		}
-		if (totalMin.toString().length < 1) {
-			strM = '00';
-		} else if (totalMin.toString().length == 1) {
-			strM = '0' + totalMin.toString();
+		
+			if (receivedAmount != '' && parseInt(receivedAmount) > 0) {
+				if(parseInt(receivedAmount) < parseInt(cashPayAmount)) {
+					var msg = '<label class="error">Received amount  can not be lower than cash pay amount</label>';
+					$("#modalMsg").html(msg);
+					$("#changeAmount").val('');
+				} else {
+					$("#modalMsg").html('');
+				var changeAmount = parseInt(receivedAmount) - parseInt(cashPayAmount);
+				$("#changeAmount").val(changeAmount);
+				}
+				
+			} else {
+				$("#modalMsg").html('');
+				$("#changeAmount").val('');
+			}
+		  }
 		} else {
-			strM = totalMin.toString();
+			$("#modalMsg").html('');
+			$("#changeAmount").val('');
 		}
-		$("#totalefforthour").html(strH + ':' + strM + ' Hour');
 	}
 
-	function newData() {
 
-		$("#newdatarow").show();
-		/* $("#projectId").val('');
-		$("#taskTypeId").val(''); */
-		$("#taskDesc").val('');
-		//$("#startTime").val('');
-		//$("#endTime").val('');
-		$("#totalHour_").val('00:00');
-		$("#noOfDefect").val('');
-		$("#defectDesc").val('');
-
+	function getCashPayAmount () {
+		var netPayableAmount = $("#netPayableAmount").val(); 
+		var cashPayAmount = $("#cashPayAmount").val();
+		var cardPayAmount = $("#cardPayAmount").val();
+		var bkashPaymentAmount = $("#bkashPaymentAmount").val();
+		
+	if (cashPayAmount != '' && parseInt(cashPayAmount) >=0) {
+		if(cardPayAmount=='') {
+			cardPayAmount = '0';
+		}
+		if(bkashPaymentAmount=='') {
+			bkashPaymentAmount = '0';
+		}
+		cashPayAmount = parseInt(cashPayAmount)+ parseInt(cardPayAmount) + parseInt(bkashPaymentAmount);
+		if (parseInt(cashPayAmount) != parseInt(netPayableAmount)) {
+			var msg = '<label class="error">Cash, card and bkash pay amount must be equal with net pay amount</label>';
+			$("#modalMsg").html(msg);
+		} else {
+			getChangeAmount();
+		}
+	  }
 	}
 
-	function cancelnewdata() {
 
-		$("#newdatarow").hide();
-		//$("#taskDate").val('');
-		//$("#projectId").val('');
-		//$("#taskTypeId").val('');
-		$("#taskDesc").val('');
-		//$("#startTime").val('');
-		//$("#endTime").val('');
-		$("#totalHour_").val('00:00');
-		$("#noOfDefect").val('');
-		$("#defectDesc").val('');
+
+	function getCardPayAmount () {
+		var netPayableAmount = $("#netPayableAmount").val(); 
+		var cashPayAmount = $("#cashPayAmount").val();
+		var cardPayAmount = $("#cardPayAmount").val();
+		var bkashPaymentAmount = $("#bkashPaymentAmount").val();
+		
+		if (cardPayAmount != '' && parseInt(cardPayAmount) >=0) {
+			if(cashPayAmount == '') {
+				var msg = '<label class="error">Enter cash pay amount first</label>';
+				$("#modalMsg").html(msg);
+			} else {
+				if(bkashPaymentAmount == '') {
+					cardPayAmount = parseInt(cashPayAmount)+ parseInt(cardPayAmount);
+					if(parseInt(cardPayAmount) != parseInt(netPayableAmount)) {
+						var msg = '<label class="error">Cash and card pay amount must be equal with net pay amount</label>';
+						$("#modalMsg").html(msg);
+					} else {
+						$("#modalMsg").html('');
+					}
+				} else {
+					cardPayAmount = parseInt(cashPayAmount)+ parseInt(cardPayAmount) + parseInt(bkashPaymentAmount);
+					if(parseInt(cardPayAmount) != parseInt(netPayableAmount)) {
+						var msg = '<label class="error">Cash,card and bkash pay amount must be equal with net pay amount</label>';
+						$("#modalMsg").html(msg);
+					} else {
+						$("#modalMsg").html('');
+					}
+				}
+			}
+		}
 	}
 
-	function getTimeDiff() {
-		var taskDate = $("#taskDate").val();
-		var startTime = $("#startTime").val();
-		var endTime = $("#endTime").val();
 
-		if (taskDate != '' && startTime != '' && endTime != '') {
+	function getBkashPayAmount () {
+		var netPayableAmount = $("#netPayableAmount").val(); 
+		var cashPayAmount = $("#cashPayAmount").val();
+		var cardPayAmount = $("#cardPayAmount").val();
+		var bkashPaymentAmount = $("#bkashPaymentAmount").val();
+		
+		if (bkashPaymentAmount != '' && parseInt(bkashPaymentAmount) >=0) {
+			if(cashPayAmount == '') {
+				var msg = '<label class="error">Enter cash pay amount first</label>';
+				$("#modalMsg").html(msg);
+			} else {
+				if(cardPayAmount == '') {
+					bkashPaymentAmount = parseInt(cashPayAmount)+ parseInt(bkashPaymentAmount);
+					if(parseInt(bkashPaymentAmount) != parseInt(netPayableAmount)) {
+						var msg = '<label class="error">Cash and bkash pay amount must be equal with net pay amount</label>';
+						$("#modalMsg").html(msg);
+					} else {
+						$("#modalMsg").html('');
+					}
+				} else {
+					bkashPaymentAmount = parseInt(cashPayAmount)+ parseInt(cardPayAmount) + parseInt(bkashPaymentAmount);
+					if(parseInt(bkashPaymentAmount) != parseInt(netPayableAmount)) {
+						var msg = '<label class="error">Cash,card and bkash pay amount must be equal with net pay amount</label>';
+						$("#modalMsg").html(msg);
+					} else {
+						$("#modalMsg").html('');
+					}
+				}
+			}
+		}
+	};
 
-			var token = $("meta[name='_csrf']").attr("content");
-			var header = $("meta[name='_csrf_header']").attr("content");
+	function cancelOrder(encOrderId) {
+		//alert(encOrderId);
+		var conf = confirm("Do You Want To Cancel This Order ? ");
+		
+		if (conf) {
+			var url = "/pos/pointOfSale/cancelOrder?encOrderId=" + encodeURIComponent(encOrderId);
+			//alert(url);
+			window.location = url;
+		}
+	};
 
-			var link = "/cbms/effortTracking/getTimeDifferent";
+	function orderProcessComplete(encOrderId) {
+		//alert(encOrderId);
+		var conf = confirm("Do You Want To Remove This Order From The List ? ");
+		
+		if (conf) {
+			var url = "/pos/pointOfSale/orderProcessComplete?encOrderId=" + encodeURIComponent(encOrderId);
+			//alert(url);
+			window.location = url;
+		}
+	}
 
-			var totalhour = parseFloat(0);
+	function getPendingOrderInfoList(encOrderId) {
 
-			$('input[id^="totalHour_"]').each(function() {
-				totalhour = totalhour + parseFloat($(this).val());
-			});
+		if (!encOrderId == '') {
 
-			//alert(totalhour);
+			var link = "/pos/pointOfSale/getPendingOrderInfoList";
 
 			$.ajax({
 				type : "POST",
 				url : link,
-				data : "taskDate=" + encodeURIComponent(taskDate)
-						+ "&startTime=" + startTime + "&endTime=" + endTime,
+				data : "encOrderId=" + encodeURIComponent(encOrderId),
 				async : true,
-				beforeSend : function(xhr) {
-					// here it is
-					xhr.setRequestHeader(header, token);
-				},
-				success : function(data) {
-					var listTotalHour = parseFloat(0);
-					if (data.totalHour != '') {
-						listTotalHour = parseFloat(data.totalHour);
-					}
 
-					$("#totalHour_").val(data.totalHour);
-					/*
-					totalhour = totalhour + listTotalHour;
-					//alert(totalhour);
-					var h = 'hour';
-					if (totalhour > 1) {
-						h = 'hours';
-					}
-					$("#totalefforthour").html(totalhour.toFixed(2) + ' ' + h);
-					 */
-					totalEffortCalc();
+				success : function(data) {
+					 //alert(data.orderTotalAmount)
+					$("#pendingOrderInfoList").html(data);
+					//$("#orderTotalAmount").val(data.orderTotalAmount);
 				},
+
 				error : function(data) {
-					alert('Error!!!');
+					alert('Error!!!')
 				}
 			});
 		}
-	}
+	};
 
-	function getTimeDiffEdit(effortId) {
-		var taskDate = $("#taskDate").val();
-		var startTime = $("#startTime_" + effortId).val();
-		var endTime = $("#endTime_" + effortId).val();
 
-		if (taskDate != '' && startTime != '' && endTime != '') {
 
-			var token = $("meta[name='_csrf']").attr("content");
-			var header = $("meta[name='_csrf_header']").attr("content");
+	  function printKitchenQT(encOrderId) {
+		var url = "/pos/reports/printKitchenQT?encOrderId=" + encodeURIComponent(encOrderId) + "&reportCode=" + "501";
+		window.open(url, '_blank');
 
-			var link = "/cbms/effortTracking/getTimeDifferent";
+	};  
 
-			var totalhour = parseFloat(0);
 
-			$('input[id^="totalHour_"]').each(function() {
-				totalhour = totalhour + parseFloat($(this).val());
-			});
+	function customerMoneyReceipt(encOrderId) {
+		//alert(encOrderId);
+		var url = "/pos/reports/customerMoneyReceipt?encOrderId=" + encodeURIComponent(encOrderId) + "&reportCode=" + "103";
+		window.open(url, '_blank');
 
-			//alert(totalhour);
+	};  
+	
+	function customerBillCopy(encOrderId) {
+		//alert(encOrderId);
+		var url = "/pos/reports/customerMoneyReceipt?encOrderId=" + encodeURIComponent(encOrderId) + "&reportCode=" + "104";
+		window.open(url, '_blank');
 
-			$.ajax({
-				type : "POST",
-				url : link,
-				data : "taskDate=" + encodeURIComponent(taskDate)
-						+ "&startTime=" + startTime + "&endTime=" + endTime,
-				async : true,
-				beforeSend : function(xhr) {
-					// here it is
-					xhr.setRequestHeader(header, token);
-				},
-				success : function(data) {
-					var listTotalHour = parseFloat(0);
-					if (data.totalHour != '') {
-						listTotalHour = parseFloat(data.totalHour);
-					}
-					$("#totalHour_" + effortId).val(data.totalHour);
-					/*
-					totalhour = totalhour + listTotalHour;
-					//alert(totalhour);
-					var h = 'hour';
-					if (totalhour > 1) {
-						h = 'hours';
-					}
-					$("#totalefforthour").html(totalhour.toFixed(2) + ' ' + h);
-					 */
-					totalEffortCalc();
-				},
-				error : function(data) {
-					alert('Error!!!');
-				}
-			});
-		}
-	}
-
+	};
+	
+	
 	function saveNewData() {
 		//alert('hello');
 		var itemId = $("#itemId").val();
@@ -1308,7 +1517,7 @@ $.ajax({
 					});
 		}
 	};
-
+	
 	function getItemConfigList() {
 
 		var itemId = $("#itemId").val();
@@ -1367,78 +1576,7 @@ $.ajax({
 			}
 		});
 
-	}
-
-	/* function saveNewData() {
-		//alert('hello');
-		var inventoryTypeId = $("#inventoryTypeId").val();
-		var productId = $("#productId").val();
-		var quantity = $("#quantity").val();
-		var unitId = $("#unitId").val();
-		var price = $("#price").val();
-		var employeeId = $("#employeeId").val();
-		var msg = "";
-
-		 alert(inventoryTypeId);
-		alert(productId);
-		alert(quantity);
-		alert(unitId);
-		alert(price);
-		alert(employeeId);
-		
-		if (inventoryTypeId == '') {
-			alert("Please Select Inventory Type !!!");
-		} else {
-			alert('HELLO');
-			//var link = "/cbms/effortTracking/saveEffortTrackingInfo";
-			var link = "/pos/inventory/saveStoreProduct";
-			alert(link);
-			$.ajax({type : "POST",
-						url : link,
-
-						
-						data : "inventoryTypeId=" + inventoryTypeId 
-						+ "&productId=" + productId 
-						+ "&quantity=" + quantity 
-						+ "&unitId=" + unitId
-						+ "&price=" + price 
-						+ "&employeeId=" + employeeId,
-
-						async : true,
-
-						success : function(data) {
-							alert(data.mCode);
-							if (data.mCode == '1111') {
-								//cancelnewdata();
-								//getEffortList();
-								alert('HELLO');
-								msg = '<div class="alert alert-success">'
-										+ '<button class="close" aria-hidden="true" data-dismiss="alert"'
-							+'type="button">x</button>'
-										+ '<strong>' + data.message
-										+ '</strong></div>';
-								$("#effortSearchButton").click();
-
-							} else {
-
-								msg = '<div class="alert alert-danger">'
-										+ '<button class="close" aria-hidden="true" data-dismiss="alert"'
-					+'type="button">x</button>'
-										+ '<strong>' + data.message
-										+ '</strong></div>';
-
-							}
-							alert(msg);
-							$("#msg").html(msg);
-						},
-
-						error : function(data) {
-							alert('Error!!!')
-						}
-					});
-		}
-	} */
-
+	};
 	function editOldData(itmId) {
 		alert(itmId);
 		var productId = $("#productId_" + itmId).show();
@@ -1510,7 +1648,7 @@ $.ajax({
 		$("#clear_" + effortId).hide();
 		$("#edit_" + effortId).show();
 	};
-	b
+	
 
 	function saveUpdateData(effortId) {
 
@@ -1586,7 +1724,55 @@ $.ajax({
 					});
 		}
 	}
-</script>
+	
+		
+	
+	window.onload = function() {
+		window.jQuery();
+		
+		$("#paymentSubmit").click(function(e) {
+			e.preventDefault();  // stop form from submitting right away
+			var error = false;
+			
+			var cashPayAmount = $("#cashPayAmount").val();
+			if(cashPayAmount =='') {
+				var msg = '<label class="error">Cash amount must be required</label>';
+				$("#modalMsg").html(msg);
+			}
+			
+			 $('#modalMsg').find('.error').each(function() {
+				 error = true;
+			    });
+			 
+			if (!error) { 
+				$('#formExtra').submit();
+			} else {
+				e.preventDefault();  
+			}
+			});
+		
+		$("#billPrintSubmit").click(function(e) {
+			e.preventDefault();  // stop form from submitting right away
+			var error = false;
+			
+			 $('#modalMsgBillPrint').find('.error').each(function() {
+				 error = true;
+			    });
+			 
+			if (!error) { 
+				$('#formBillPrint').submit();
+			} else {
+				e.preventDefault();  
+			}
+			});
+		
+		
+		
+		
+	};
+
+
+	</script>
 <script
 	src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <!-- end: page -->

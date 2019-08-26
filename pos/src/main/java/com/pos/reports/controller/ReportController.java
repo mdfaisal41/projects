@@ -136,6 +136,67 @@ public class ReportController {
 		}
 	}
 	
+	@RequestMapping(value = "printKitchenQT", method = RequestMethod.GET)
+	public ModelAndView printKitchenQT(ModelAndView modelAndView, @ModelAttribute("reportModel") ReportModel reportModel,
+			BindingResult result, HttpSession session, HttpServletRequest request, HttpServletResponse response,
+			final RedirectAttributes redirectAttributes)
+			throws ClassNotFoundException, JRException, IOException, SQLException, Exception {
+
+		JasperReportsPdfView pdf = new JasperReportsPdfView();
+		JasperReportsXlsView xls = new JasperReportsXlsView();
+		Map<String, Object> params = new HashMap<String, Object>();
+		ReportModel oReportDetails = new ReportModel();
+
+		//System.out.println("order id " + reportModel.getEncOrderId());
+
+		// reportModel.setReportCode("101");
+		
+		if (reportModel.getReportCode().equals("501")) {
+			reportModel.setViewType("1");
+			oReportDetails = reportService.searchReportDetails(reportModel);
+			JRDataSource dataSource = reportService.kitchenQTReportData(reportModel);
+			// params.put("advanceGivenByName",
+			// reportModel.getAdvanceGivenByName());
+			/*params.put("fromDate", reportModel.getFromDate());
+			params.put("toDate", reportModel.getToDate());*/
+			params.put("dataSource", dataSource);
+		}
+		else {
+			return null;
+		}
+		ReportModel oReportModel = new ReportModel();
+		oReportModel = reportService.updateItemWiseKitchenQT(reportModel);
+
+		if (reportModel.getViewType().equals("1")) {
+			pdf.setReportDataKey("dataSource");
+			pdf.setUrl(oReportDetails.getJesperName());
+			pdf.setApplicationContext(appContext);
+			return new ModelAndView(pdf, params);
+
+		} else if (reportModel.getViewType().equals("2")) {
+			xls.setReportDataKey("dataSource");
+			xls.setUrl(oReportDetails.getJesperName());
+			xls.setApplicationContext(appContext);
+			return new ModelAndView(xls, params);
+		} else if (reportModel.getViewType().equals("3")) {
+
+			reportService.viewPdfReport(oReportDetails.getJesperName(), request, response, params);
+			// reportService.viewPdfReport(oReportDetails.getJesperName(),
+			// request, response, params);
+
+			// modelAndView.setViewName("reports//complain//dailyFault.jasper");
+			return modelAndView;
+		} else if (reportModel.getViewType().equals("4")) {
+
+			// reportService.viewExcelReport(oReportDetails.getJesperName(),
+			// request, response, params);
+
+			return new ModelAndView(xls, params);
+		} else {
+			return null;
+		}
+	}
+	
 
 	@RequestMapping(value = "cashReceipt", method = RequestMethod.GET)
 	public ModelAndView cashReceipt(ModelAndView modelAndView, @ModelAttribute("reportModel") ReportModel reportModel,
@@ -209,6 +270,82 @@ public class ReportController {
 		} else {
 			return null;
 		}
+	};
+	
+	@RequestMapping(value = "customerMoneyReceipt", method = RequestMethod.GET)
+	public ModelAndView customerMoneyReceipt(ModelAndView modelAndView, @ModelAttribute("reportModel") ReportModel reportModel,
+			BindingResult result, HttpSession session, HttpServletRequest request, HttpServletResponse response,
+			final RedirectAttributes redirectAttributes)
+			throws ClassNotFoundException, JRException, IOException, SQLException, Exception {
+
+		JasperReportsPdfView pdf = new JasperReportsPdfView();
+		JasperReportsXlsView xls = new JasperReportsXlsView();
+		Map<String, Object> params = new HashMap<String, Object>();
+		ReportModel oReportDetails = new ReportModel();
+
+		//System.out.println("order id " + reportModel.getEncOrderId());
+
+		// reportModel.setReportCode("101");
+		
+	if (reportModel.getReportCode().equals("103")) {
+		reportModel.setViewType("1");
+		oReportDetails = reportService.searchReportDetails(reportModel);
+		JRDataSource dataSource = reportService.customerMoneyReceiptData(reportModel);
+		// params.put("advanceGivenByName",
+		// reportModel.getAdvanceGivenByName());
+		
+		//System.out.println("from date " + reportModel.getFromDate());
+		//System.out.println("to date " + reportModel.getToDate());
+		
+		//params.put("fromDate", reportModel.getFromDate());
+		//params.put("toDate", reportModel.getToDate());
+		params.put("dataSource", dataSource);
+		
+	} 	else if (reportModel.getReportCode().equals("104")) {
+		reportModel.setViewType("1");
+		oReportDetails = reportService.searchReportDetails(reportModel);
+		JRDataSource dataSource = reportService.customerMoneyReceiptData(reportModel);
+		// params.put("advanceGivenByName",
+		// reportModel.getAdvanceGivenByName());
+		
+		//System.out.println("from date " + reportModel.getFromDate());
+		//System.out.println("to date " + reportModel.getToDate());
+		
+		//params.put("fromDate", reportModel.getFromDate());
+		//params.put("toDate", reportModel.getToDate());
+		params.put("dataSource", dataSource);
+		
+	}	else {
+		return null;
+	}
+		if (reportModel.getViewType().equals("1")) {
+			pdf.setReportDataKey("dataSource");
+			pdf.setUrl(oReportDetails.getJesperName());
+			pdf.setApplicationContext(appContext);
+			return new ModelAndView(pdf, params);
+
+		} else if (reportModel.getViewType().equals("2")) {
+			xls.setReportDataKey("dataSource");
+			xls.setUrl(oReportDetails.getJesperName());
+			xls.setApplicationContext(appContext);
+			return new ModelAndView(xls, params);
+		} else if (reportModel.getViewType().equals("3")) {
+
+			reportService.viewPdfReport(oReportDetails.getJesperName(), request, response, params);
+			// reportService.viewPdfReport(oReportDetails.getJesperName(),
+			// request, response, params);
+
+			// modelAndView.setViewName("reports//complain//dailyFault.jasper");
+			return modelAndView;
+		} else if (reportModel.getViewType().equals("4")) {
+
+			// reportService.viewExcelReport(oReportDetails.getJesperName(),
+			// request, response, params);
+
+			return new ModelAndView(xls, params);
+		} else {
+			return null;
+		}
 	}
 
 	@RequestMapping(value = "viewreport", method = RequestMethod.POST)
@@ -237,12 +374,12 @@ public class ReportController {
 			params.put("dataSource", dataSource);
 
 		} else if (reportModel.getReportCode().equals("101")) {
-			reportModel.setViewType("1");
+			//reportModel.setViewType("1");
 			oReportDetails = reportService.searchReportDetails(reportModel);
 			String path = request.getSession().getServletContext().getRealPath("/WEB-INF/reports/posReport/");
 			String reportPath = path.replace("\\", "/");
 			
-			//System.out.println("SUBREPORT_DIR " + reportPath + "/");
+			System.out.println("SUBREPORT_DIR " + reportPath + "/");
 			params.put("SUBREPORT_DIR", reportPath + "/");
 			
 			//System.out.println("order Id " + oCipherUtils.decrypt(reportModel.getEncOrderId()));
@@ -263,6 +400,20 @@ public class ReportController {
 			
 			params.put("fromDate", reportModel.getFromDate());
 			params.put("toDate", reportModel.getToDate());
+			params.put("dataSource", dataSource);
+			
+		} else if (reportModel.getReportCode().equals("103")) {
+			reportModel.setViewType("1");
+			oReportDetails = reportService.searchReportDetails(reportModel);
+			JRDataSource dataSource = reportService.customerMoneyReceiptData(reportModel);
+			// params.put("advanceGivenByName",
+			// reportModel.getAdvanceGivenByName());
+			
+			//System.out.println("from date " + reportModel.getFromDate());
+			//System.out.println("to date " + reportModel.getToDate());
+			
+			//params.put("fromDate", reportModel.getFromDate());
+			//params.put("toDate", reportModel.getToDate());
 			params.put("dataSource", dataSource);
 			
 		} else if (reportModel.getReportCode().equals("301")) {
@@ -314,7 +465,6 @@ public class ReportController {
 
 			reportService.viewPdfReport(oReportDetails.getJesperName(), request, response, params);
 			// request, response, params);
-
 			// modelAndView.setViewName("reports//complain//dailyFault.jasper");
 			return modelAndView;
 		} else if (reportModel.getViewType().equals("4")) {

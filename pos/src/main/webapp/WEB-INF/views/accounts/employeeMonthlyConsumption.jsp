@@ -316,7 +316,6 @@
 	        return true;
 	    }      
 	}
-
 	function goToNext(e, next) {
 		var key;
 		if (window.event)
@@ -324,14 +323,11 @@
 		else
 			key = e.which; //firefox
 		if (key == 13) {
-
 			document.getElementById(next).focus();
 			return false;
-
 		} else
 			return true;
 	}
-
 	function getEmployeeInfo(encEmpId,empName,designationName) {
 		var link = "/pos/accounts/empMonthlyConsumption/getEmpMonthlyConsumptionList?encEmployeeId="
 				+ encodeURIComponent(encEmpId) + "&employeeName=" + empName + "&designation=" + designationName;

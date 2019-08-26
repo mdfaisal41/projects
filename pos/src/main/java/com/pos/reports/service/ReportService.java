@@ -26,4 +26,10 @@ public interface ReportService {
 	
 	public String viewPdfReport(String fileName, HttpServletRequest request, HttpServletResponse response,
 			Map parameters) throws JRException, IOException, SQLException, ClassNotFoundException, Exception;
+	
+	public JRDataSource kitchenQTReportData(ReportModel reportModel);
+	
+	public JRDataSource customerMoneyReceiptData(ReportModel reportModel);
+	
+	public ReportModel updateItemWiseKitchenQT(ReportModel reportModel);
 }

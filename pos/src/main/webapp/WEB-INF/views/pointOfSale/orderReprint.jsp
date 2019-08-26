@@ -116,7 +116,7 @@
 
 					<div class="col-lg-12">
 						<div class="col-sm-6 form-group">
-							<label class="col-md-5 col-sm-3 control-label"> Order No
+							<label class="col-md-5 col-sm-3 control-label"> Order ID
 							</label>
 							<div class="col-md-7 col-sm-7 col-xs-12">
 								<input type="text" class="form-control" name="orderId"
@@ -176,12 +176,14 @@
 								<thead>
 									<tr style="border-style: inset;">
 										<th style="border-style: inset;">#</th>
+										<th style="border-style: inset;">Order ID</th>
 										<th style="border-style: inset;">Order No</th>
-										<th style="border-style: inset;">Item Name</th>
-										<th style="border-style: inset;">Quantity</th>
-										<th style="border-style: inset;">Item Price</th>
-										<th style="border-style: inset;">Update By</th>
-										<th style="border-style: inset;">Date</th>
+										<th style="border-style: inset;">Order Date</th>
+										<th style="border-style: inset;">Table No</th>
+										<th style="border-style: inset;">Served By</th>
+										<th style="border-style: inset;">Paid Amount</th>
+										<th style="border-style: inset;">Received By</th>
+										<th style="border-style: inset;">Update Date</th>
 										<th style="border-style: inset;">Action</th>
 									</tr>
 								</thead>
@@ -199,14 +201,16 @@
 													%>
 												</td>
 												<td style="border-style: inset;">${list.orderId}</td>
-												<td style="border-style: inset;">${list.itemName}</td>
-												<td style="border-style: inset;">${list.quantity}</td>
-												<td style="border-style: inset;">${list.orderPrice}</td>
+												<td style="border-style: inset;">${list.orderNo}</td>
+												<td style="border-style: inset;">${list.orderDate}</td>
+												<td style="border-style: inset;">${list.tableNo}</td>
+												<td style="border-style: inset;">${list.servedBy}</td>
+												<td style="border-style: inset;">${list.netPayableAmount}</td>
 												<td style="border-style: inset;">${list.updateBy}</td>
 												<td style="border-style: inset;">${list.updateDate}</td>
 												<td style="border-style: inset;">
 													<button class="btn btn-primary" type="button"
-														onclick="orderFinalizeReport('${list.encOrderId}')">Print</button>
+														onclick="customerMoneyReceipt('${list.encOrderId}')">Print</button>
 												</td>
 											</tr>
 										</c:forEach>
@@ -290,6 +294,13 @@
 
 
 <script>
+
+function customerMoneyReceipt(encOrderId) {
+	//alert(encOrderId);
+	var url = "/pos/reports/customerMoneyReceipt?encOrderId=" + encodeURIComponent(encOrderId) + "&reportCode=" + "103";
+	window.open(url, '_blank');
+
+};  
 
 function orderFinalizeReport(encOrderId) {
 	var url = "/pos/reports/cashReceipt?encOrderId=" + encodeURIComponent(encOrderId) + "&reportCode=" + "101";

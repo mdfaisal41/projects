@@ -4,9 +4,7 @@
 
 
 <style>
-
 th { white-space: nowrap; }
-
 </style>
 
 <header class="page-header">
@@ -185,15 +183,11 @@ th { white-space: nowrap; }
 <script src = "https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 
 <script>
-
 	
 	
-
 window.onload = function load() {
 	$("#consumeHistoryDataTable").DataTable();
 }
-
-
 /* $(document).ready(function() {
     $('#consumeHistoryDataTable').DataTable( {
         "footerCallback": function ( row, data, start, end, display ) {
@@ -230,9 +224,5 @@ window.onload = function load() {
         }
     } );
 } ); */
-
-
-
-
 	
 </script>

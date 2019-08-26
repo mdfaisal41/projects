@@ -7,18 +7,43 @@ public class OrderModel {
 	private String quantity;
 	private String itemPrice;
 	private String subTotal;
-	
+	private String orderNote;
 	
 	public OrderModel() {
 	}
 
 
-	public OrderModel(String encItemOrderId, String itemId, String quantity, String itemPrice, String subTotal) {
+	
+	
+public OrderModel(String encItemOrderId, String itemId, String quantity, String itemPrice, String subTotal,
+			String orderNote) {
 		this.encItemOrderId = encItemOrderId;
 		this.itemId = itemId;
 		this.quantity = quantity;
 		this.itemPrice = itemPrice;
 		this.subTotal = subTotal;
+		this.orderNote = orderNote;
+	}
+
+
+
+
+/*	public OrderModel(String encItemOrderId, String itemId, String quantity, String itemPrice, String subTotal) {
+		this.encItemOrderId = encItemOrderId;
+		this.itemId = itemId;
+		this.quantity = quantity;
+		this.itemPrice = itemPrice;
+		this.subTotal = subTotal;
+	}*/
+
+
+	public String getOrderNote() {
+		return orderNote;
+	}
+
+
+	public void setOrderNote(String orderNote) {
+		this.orderNote = orderNote;
 	}
 
 

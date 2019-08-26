@@ -38,7 +38,6 @@
 
 				<%
 					List<MenuInfo> sEmployeeManagementMenuInfo = (List<MenuInfo>) session.getAttribute("sEmployeeManagement");
-
 					if (!sEmployeeManagementMenuInfo.isEmpty()) {
 				%>
 
@@ -56,7 +55,6 @@
 
 						<%
 							Iterator it = sEmployeeManagementMenuInfo.iterator();
-
 								while (it.hasNext()) {
 									MenuInfo sEmployeeManagementMenuInfoList = (MenuInfo) it.next();
 						%>
@@ -88,7 +86,6 @@
 
 				<%
 					List<MenuInfo> sInventoryMenuInfo = (List<MenuInfo>) session.getAttribute("sInventory");
-
 					if (!sInventoryMenuInfo.isEmpty()) {
 				%>
 
@@ -112,7 +109,6 @@
 
 						<%
 							Iterator it = sInventoryMenuInfo.iterator();
-
 								while (it.hasNext()) {
 									MenuInfo sInventoryMenuInfoList = (MenuInfo) it.next();
 						%>
@@ -146,7 +142,6 @@
 
 				<%
 					List<MenuInfo> sPointOfSaleMenuInfo = (List<MenuInfo>) session.getAttribute("sPointOfSale");
-
 					if (!sPointOfSaleMenuInfo.isEmpty()) {
 				%>
 
@@ -169,7 +164,6 @@
 
 						<%
 							Iterator it = sPointOfSaleMenuInfo.iterator();
-
 								while (it.hasNext()) {
 									MenuInfo sPointOfSaleMenuInfoList = (MenuInfo) it.next();
 						%>
@@ -202,7 +196,6 @@
 
 				<%
 					List<MenuInfo> sUserManagementMenuInfo = (List<MenuInfo>) session.getAttribute("sUserManagement");
-
 					if (!sUserManagementMenuInfo.isEmpty()) {
 				%>
 
@@ -227,7 +220,6 @@
 
 						<%
 							Iterator it = sUserManagementMenuInfo.iterator();
-
 								while (it.hasNext()) {
 									MenuInfo sUserManagementMenuInfoList = (MenuInfo) it.next();
 						%>
@@ -261,7 +253,6 @@
 
 				<%
 					List<MenuInfo> sVenueReservationMenuInfo = (List<MenuInfo>) session.getAttribute("sVenueReservation");
-
 					if (!sVenueReservationMenuInfo.isEmpty()) {
 				%>
 
@@ -280,7 +271,6 @@
 
 						<%
 							Iterator it = sVenueReservationMenuInfo.iterator();
-
 								while (it.hasNext()) {
 									MenuInfo sVenueReservationMenuInfoList = (MenuInfo) it.next();
 						%>
@@ -313,7 +303,6 @@
 
 				<%
 					List<MenuInfo> sProgramManagementMenuInfo = (List<MenuInfo>) session.getAttribute("sProgramManagement");
-
 					if (!sProgramManagementMenuInfo.isEmpty()) {
 				%>
 
@@ -332,7 +321,6 @@
 
 						<%
 							Iterator it = sProgramManagementMenuInfo.iterator();
-
 								while (it.hasNext()) {
 									MenuInfo sProgramManagementMenuInfoList = (MenuInfo) it.next();
 						%>
@@ -364,7 +352,6 @@
 
 				<%
 					List<MenuInfo> sMembershipMenuInfo = (List<MenuInfo>) session.getAttribute("sMembership");
-
 					if (!sMembershipMenuInfo.isEmpty()) {
 				%>
 
@@ -382,7 +369,6 @@
 
 						<%
 							Iterator it = sMembershipMenuInfo.iterator();
-
 								while (it.hasNext()) {
 									MenuInfo sMembershipMenuInfoList = (MenuInfo) it.next();
 						%>
@@ -414,7 +400,6 @@
 
 				<%
 					List<MenuInfo> sKidsZoneMenuInfo = (List<MenuInfo>) session.getAttribute("sKidsZone");
-
 					if (!sKidsZoneMenuInfo.isEmpty()) {
 				%>
 
@@ -433,7 +418,6 @@
 
 						<%
 							Iterator it = sKidsZoneMenuInfo.iterator();
-
 								while (it.hasNext()) {
 									MenuInfo sKidsZoneMenuInfoList = (MenuInfo) it.next();
 						%>
@@ -465,7 +449,6 @@
 
 				<%
 					List<MenuInfo> sReportsMenuInfo = (List<MenuInfo>) session.getAttribute("sReports");
-
 					if (!sReportsMenuInfo.isEmpty()) {
 				%>
 
@@ -487,7 +470,6 @@
 
 						<%
 							Iterator it = sReportsMenuInfo.iterator();
-
 								while (it.hasNext()) {
 									MenuInfo sReportsMenuInfoList = (MenuInfo) it.next();
 						%>
@@ -520,7 +502,6 @@
 
 				<%
 					List<MenuInfo> sAccountsMenuInfo = (List<MenuInfo>) session.getAttribute("sAccounts");
-
 					if (!sAccountsMenuInfo.isEmpty()) {
 				%>
 
@@ -544,7 +525,6 @@
 
 						<%
 							Iterator it = sAccountsMenuInfo.iterator();
-
 								while (it.hasNext()) {
 									MenuInfo sAccountsMenuInfoList = (MenuInfo) it.next();
 						%>
