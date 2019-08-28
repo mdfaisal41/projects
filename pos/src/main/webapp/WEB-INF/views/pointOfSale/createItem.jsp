@@ -64,18 +64,10 @@
 								<label class="col-md-6 control-label" for="itemName">Item
 									Name <span class="required"> * </span> </label>
 								<div class="col-md-6">
-									<div class="input-group mb-md">
-										<input type="hidden" name="encItemId" id="encItemId"
-											value="${pointOfSale.encItemId}"> <input type="text"
-											required class="form-control mandatory" name="itemName"
-											id="itemName" value="${pointOfSale.itemName}"> <span
-											class="input-group-btn"> <a onclick="getItemList()"
-											class="btn btn-mg btn-primary modal-with-move-anim"
-											type="submit" href="#modalItemList"> <i
-												class="fa fa-search"></i>
-										</a>
-										</span>
-									</div>
+									<input type="hidden" name="encItemId" id="encItemId"
+										value="${pointOfSale.encItemId}"> <input type="text"
+										required class="form-control mandatory" name="itemName"
+										id="itemName" value="${pointOfSale.itemName}">
 
 								</div>
 							</div>
@@ -96,7 +88,7 @@
 				</div>
 				<footer class="panel-footer">
 					<div class="row">
-						<div class="btn_div col-sm-offset-0 ">
+						<div class="col-sm-offset-5">
 							<button class="btn btn-sm btn btn-animate btn-animate-side btn btn-primary" 
 							type="submit"> <i class="fa fa-save"> </i> Save</button>
 							<a href="createItem"><button
@@ -110,11 +102,96 @@
 
 			</section>
 		</form>
+	</div>
+		<div class="col-lg-12">
+		<form class="form-horizontal form-bordered" id="form"
+			autocomplete="off" action="/pos/pointOfSale/saveOrder" method="post">
+
+			<!-- start: page -->
+			<section class="panel panel-featured panel-featured-primary">
+				<header class="panel-heading">
+					<h2 class="panel-title">Item List</h2>
+				</header>
+
+				<div class="panel-body">
+					<div class="row">
+						<div class="table-responsive">
+							<table id="datatable-default"
+								class="table table-striped table-condensed table-hover mb-none">
+								<thead>
+									<tr>
+										<th>#</th>
+										<th style="text-align: center;">Item Code</th>
+										<th>Item Name</th>
+										<th style="text-align: center;">Item Price</th>
+										<th style="text-align: center;">Edit</th>
+									</tr>
+								</thead>
+								<tbody>
+									<%
+										int i = 1;
+									%>
+									<c:if test="${!empty itemList}">
+
+										<c:forEach items="${itemList}" var="list">
+											<tr>
+												<td>
+													<%
+														out.print(i);
+																i++;
+													%>
+												</td>
+												<td style="text-align: center;">${list.itemCode}</td>
+												<td>${list.itemName}</td>
+												<td style="text-align: center;">${list.itemPrice}</td>
+												<td style="text-align: center;">
+													<button type="button" class="btn btn-primary"
+														onclick="getItemInfo('${list.encItemId}','${list.itemName}','${list.itemPrice}')">
+														<i class="fa fa-edit"></i>
+													</button>
+												</td>
+											</tr>
+										</c:forEach>
+									</c:if>
+									<c:if test="${! empty pendingOrderListNotFound}">
+										<tr>
+											<td colspan="6"><p>${itemListNotFound}</p></td>
+											<td style="display: none;"></td>
+											<td style="display: none;"></td>
+											<td style="display: none;"></td>
+											<td style="display: none;"></td>
+											<td style="display: none;"></td>
+										</tr>
+									</c:if>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
 
 
+				<footer class="panel-footer">
+					<div class="row"></div>
+				</footer>
+
+			</section>
+
+		</form>
+		<!-- end: page -->
 
 	</div>
 </div>
+
+<script>
+function getItemInfo(encItemId,itemName,itemPrice) {
+	if (encItemId != '') {
+		$("#encItemId").val(encItemId);
+		$("#itemName").val(itemName);
+		$("#itemPrice").val(itemPrice);
+	}
+};
+
+</script>
 
 <!-------------------------------- start modal vehicle class ------------------------------------------>
 

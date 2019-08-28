@@ -41,6 +41,43 @@ public class PointOfSaleController {
 
 	@RequestMapping(value = "createItem", method = RequestMethod.GET)
 	public ModelAndView createItem(@ModelAttribute PointOfSale pointOfSale, HttpSession session,
+			LookupModel lookupModel, final RedirectAttributes redirectAttributes) throws Exception {
+		
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+			
+			String menuId = "M0201";
+			MenuInfo menuInfo = loginService.checkUserAuthorization((String) session.getAttribute("employeeid"),
+					menuId);
+			
+			if (menuInfo.getMenuId().equals(menuId)) {
+				
+			ModelAndView mav = new ModelAndView();
+			List<PointOfSale> oItemList = pointOfSaleService.getItemList(pointOfSale);
+			
+			if (oItemList.size() > 0) {
+				//System.out.println("size " + oItemList.size());
+				mav.addObject("itemList", oItemList);
+			} else {
+				mav.addObject("itemListNotFound", "No Item Found!");
+			}
+			
+			
+			mav.setViewName("createItem");
+			return mav;
+			
+			  } else {
+					redirectAttributes.addFlashAttribute("message", "You are not authorized for this Page !");
+					redirectAttributes.addFlashAttribute("mCode", "0000");
+					return new ModelAndView("redirect:/");
+				}
+		} else {
+			return new ModelAndView("login");
+		}
+	}
+	
+	
+	/*@RequestMapping(value = "createItem", method = RequestMethod.GET)
+	public ModelAndView createItem(@ModelAttribute PointOfSale pointOfSale, HttpSession session,
 			LookupModel lookupModel, final RedirectAttributes redirectAttributes) {
 		
 		if (session.getAttribute("logonSuccessYN") == "Y") {
@@ -64,7 +101,7 @@ public class PointOfSaleController {
 		} else {
 			return new ModelAndView("login");
 		}
-	}
+	}*/
 	
 
 	@RequestMapping(value = "saveItem", method = RequestMethod.POST)
@@ -80,7 +117,7 @@ public class PointOfSaleController {
 				redirectAttributes.addFlashAttribute("message", oPointOfSale.getMessage());
 				redirectAttributes.addFlashAttribute("mCode", oPointOfSale.getmCode());
 
-				redirectAttributes.addFlashAttribute("pointOfSale", pointOfSale);
+				//redirectAttributes.addFlashAttribute("pointOfSale", pointOfSale);
 				return new ModelAndView("redirect:/pointOfSale/createItem");
 			} catch (Exception e) {
 				e.printStackTrace();

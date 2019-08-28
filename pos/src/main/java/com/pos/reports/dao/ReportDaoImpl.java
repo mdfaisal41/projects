@@ -210,7 +210,8 @@ public class ReportDaoImpl implements ReportDao{
 			sBuilder.append(" (SELECT ITEM_NAME FROM L_ITEM WHERE ITEM_ID = OM.ITEM_ID) ITEM_NAME, ");
 			sBuilder.append(" QUANTITY, ");
 			sBuilder.append(" ITEM_PRICE, ");
-			sBuilder.append(" UPDATE_BY, ");
+			sBuilder.append(" SUB_TOTAL, ");
+			sBuilder.append(" (SELECT KNOWN_AS FROM EMPLOYEE WHERE EMPLOYEE_ID = OM.UPDATE_BY) UPDATE_BY, ");
 			sBuilder.append(" TO_CHAR(UPDATE_DATE,'DD/MM/YYYY') UPDATE_DATE ");
 			sBuilder.append(" FROM ITEM_ORDER OM ");
 			sBuilder.append(" WHERE TRUNC(UPDATE_DATE) BETWEEN TO_DATE(:fromDate,'DD/MM/YYYY') AND TO_DATE(:toDate,'DD/MM/YYYY') ");
@@ -241,6 +242,7 @@ public class ReportDaoImpl implements ReportDao{
 				oReportModel.setItemName(oRemoveNull.nullRemove(String.valueOf(row.get("ITEM_NAME"))));
 				oReportModel.setQuantity(oRemoveNull.nullRemove(String.valueOf(row.get("QUANTITY"))));
 				oReportModel.setItemPrice(Integer.parseInt(oRemoveNull.nullRemove(String.valueOf(row.get("ITEM_PRICE")))));
+				oReportModel.setSubTotalCount(Integer.parseInt(oRemoveNull.nullRemove(String.valueOf(row.get("SUB_TOTAL")))));
 				oReportModel.setUpdateBy(oRemoveNull.nullRemove(String.valueOf(row.get("UPDATE_BY"))));
 				oReportModel.setUpdateDate(oRemoveNull.nullRemove(String.valueOf(row.get("UPDATE_DATE"))));
 				

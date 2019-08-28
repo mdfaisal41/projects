@@ -12,6 +12,7 @@ public class ReportModel {
 	private String itemName;
 	private String quantity;
 	private int itemPrice;
+	private int subTotalCount;
 	private String updateBy;
 	private String updateDate;
 	
@@ -63,6 +64,12 @@ public class ReportModel {
 	private String ownerFoodConsumeCost;
 	
 	
+	public int getSubTotalCount() {
+		return subTotalCount;
+	}
+	public void setSubTotalCount(int subTotalCount) {
+		this.subTotalCount = subTotalCount;
+	}
 	public String getOwnerFoodConsumeCost() {
 		return ownerFoodConsumeCost;
 	}

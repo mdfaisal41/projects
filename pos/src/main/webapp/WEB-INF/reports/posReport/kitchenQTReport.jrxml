@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="kitchenQTReport" pageWidth="595" pageHeight="2000" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="kitchenQTReport" pageWidth="595" pageHeight="1500" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
 	<property name="ireport.zoom" value="1.2100000000000029"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -33,7 +33,8 @@
 		<band height="230">
 			<staticText>
 				<reportElement stretchType="RelativeToTallestObject" x="0" y="191" width="315" height="38"/>
-				<box leftPadding="2" rightPadding="2">
+				<box>
+					<topPen lineWidth="0.25"/>
 					<leftPen lineWidth="0.25"/>
 					<bottomPen lineWidth="0.25"/>
 				</box>
@@ -43,8 +44,10 @@
 				<text><![CDATA[ITEM NAME ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement stretchType="RelativeToTallestObject" x="315" y="190" width="77" height="39"/>
-				<box leftPadding="1" rightPadding="1">
+				<reportElement stretchType="RelativeToTallestObject" x="315" y="190" width="66" height="39"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
 					<bottomPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
@@ -117,7 +120,7 @@
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement stretchType="RelativeToTallestObject" x="392" y="191" width="163" height="38" isPrintWhenDetailOverflows="true"/>
+				<reportElement stretchType="RelativeToTallestObject" x="381" y="191" width="174" height="38" isPrintWhenDetailOverflows="true"/>
 				<box>
 					<topPen lineWidth="0.25"/>
 					<leftPen lineWidth="0.25"/>
@@ -180,9 +183,10 @@
 		<band height="39" splitType="Stretch">
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="315" height="38" isPrintWhenDetailOverflows="true"/>
-				<box leftPadding="2" rightPadding="2">
+				<box>
 					<leftPen lineWidth="0.25"/>
 					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
 				</box>
 				<textElement verticalAlignment="Middle">
 					<font size="30" isBold="true"/>
@@ -190,8 +194,8 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{itemName}+ " "]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="315" y="-1" width="77" height="39" isPrintWhenDetailOverflows="true"/>
-				<box leftPadding="1" rightPadding="1">
+				<reportElement stretchType="RelativeToTallestObject" x="315" y="-1" width="66" height="39" isPrintWhenDetailOverflows="true"/>
+				<box>
 					<bottomPen lineWidth="0.25"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
@@ -201,7 +205,7 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{quantity}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="392" y="0" width="163" height="38" isPrintWhenDetailOverflows="true"/>
+				<reportElement stretchType="RelativeToTallestObject" x="381" y="0" width="174" height="38" isPrintWhenDetailOverflows="true"/>
 				<box>
 					<leftPen lineWidth="0.25"/>
 					<bottomPen lineWidth="0.25"/>
