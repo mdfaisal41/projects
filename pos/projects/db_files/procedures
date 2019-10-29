@@ -759,3 +759,177 @@ END;
 /
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//======== ADD   30.10.2019
+
+
+
+/* Formatted on 10/30/2019 12:31:17 AM (QP5 v5.149.1003.31008) */
+CREATE OR REPLACE PROCEDURE POS.PRO_ORDER_FINALIZE (
+   P_ORDER_ID                    VARCHAR2,
+   P_PAYABLE_AMOUNT              VARCHAR2,
+   P_NET_PAY_AMOUNT              VARCHAR2,
+   P_RECEIVED_AMOUNT             VARCHAR2,
+   P_CHANGE_AMOUNT               VARCHAR2,
+   P_CASH_PAY_AMOUNT             VARCHAR2,
+   P_CARD_PAY_AMOUNT             VARCHAR2,
+   P_BKASH_PAYMENT_AMOUNT        VARCHAR2,
+   P_BKASH_TRAN_NO               VARCHAR2,
+   P_DISCOUNT_AMOUNT             VARCHAR2,
+   P_DISCOUNT_REFERENCE_BY       VARCHAR2,
+   P_BILL_PRINT_YN               VARCHAR2,
+   P_UPDATE_BY                   VARCHAR2,
+   P_MESSAGE                 OUT VARCHAR2,
+   P_MESSAGE_CODE            OUT VARCHAR2)
+AS
+   V_COUNT          NUMBER;
+   V_MESSAGE        VARCHAR2 (5000);
+   V_MESSAGE_CODE   VARCHAR2 (5000);
+BEGIN
+   IF P_ORDER_ID IS NOT NULL
+   THEN
+      SELECT COUNT (ORDER_ID)
+        INTO V_COUNT
+        FROM ORDER_MANAGEMENT
+       WHERE ORDER_ID = P_ORDER_ID;
+
+
+      IF V_COUNT > 0
+      THEN
+         --  add    29.10.2019
+         IF P_PAYABLE_AMOUNT IS NULL OR P_PAYABLE_AMOUNT <= 0
+         THEN
+            P_MESSAGE_CODE := '0000';
+            P_MESSAGE :=
+               'PAYABLE AMOUNT CAN NOT BE EMPTY AND IT MUST BE POSITIVE AMOUNT !!';
+            RETURN;
+         END IF;
+
+         --  add    29.10.2019
+         IF NVL (P_PAYABLE_AMOUNT, 0) <>
+               NVL (P_NET_PAY_AMOUNT, 0) + NVL (P_DISCOUNT_AMOUNT, 0)
+         THEN
+            P_MESSAGE_CODE := '0000';
+            P_MESSAGE :=
+               'NET PAYABLE AMOUNT AND DISCOUNT AMOUNT  MUST BE EQUAL TO PAYABLE AMOUNT !!';
+            RETURN;
+         END IF;
+
+         IF P_BILL_PRINT_YN IS NOT NULL AND P_BILL_PRINT_YN = 'Y'
+         THEN
+            BEGIN
+               UPDATE ORDER_MANAGEMENT
+                  SET PAYABLE_AMOUNT = NVL (P_PAYABLE_AMOUNT, 0),
+                      NET_PAY_AMOUNT = NVL (P_NET_PAY_AMOUNT, 0),
+                      DISCOUNT_AMOUNT = NVL (P_DISCOUNT_AMOUNT, 0),
+                      DISCOUNT_REFERENCE_BY = P_DISCOUNT_REFERENCE_BY,
+                      BILL_PRINT_YN = P_BILL_PRINT_YN,
+                      UPDATE_BY = P_UPDATE_BY,
+                      UPDATE_DATE = SYSDATE
+                WHERE ORDER_ID = P_ORDER_ID;
+
+               P_MESSAGE_CODE := '1111';
+               P_MESSAGE := 'BILL CREATE SUCCESSFULLY   !!!';
+            EXCEPTION
+               WHEN OTHERS
+               THEN
+                  P_MESSAGE := ' ERROR IN BILL CREATION !!!';
+                  P_MESSAGE_CODE := '0000';
+                  ROLLBACK;
+                  RETURN;
+            END;
+         ELSE
+            BEGIN
+               --  add    29.10.2019
+               IF NVL (P_PAYABLE_AMOUNT, 0) <>
+                       NVL (P_DISCOUNT_AMOUNT, 0)
+                     + NVL (P_CASH_PAY_AMOUNT, 0)
+                     + NVL (P_CARD_PAY_AMOUNT, 0)
+                     + NVL (P_BKASH_PAYMENT_AMOUNT, 0)
+               THEN
+                  P_MESSAGE_CODE := '0000';
+                  P_MESSAGE :=
+                     'DISCOUNTAMOUNT,  CASH PAY AMOUNT ,  CARD PAY AMOUNT AND BKASH PAY AMOUNT  MUST BE EQUAL TO PAYABLE AMOUNT !!';
+                  RETURN;
+               END IF;
+
+
+
+               UPDATE ORDER_MANAGEMENT
+                  SET PAYABLE_AMOUNT = NVL (P_PAYABLE_AMOUNT, 0),
+                      NET_PAY_AMOUNT = NVL (P_NET_PAY_AMOUNT, 0),
+                      RECEIVED_AMOUNT = NVL (P_RECEIVED_AMOUNT, 0),
+                      CHANGE_AMOUNT = NVL (P_CHANGE_AMOUNT, 0),
+                      CASH_PAY_AMOUNT = NVL (P_CASH_PAY_AMOUNT, 0),
+                      CARD_PAY_AMOUNT = NVL (P_CARD_PAY_AMOUNT, 0),
+                      BKASH_PAYMENT_AMOUNT = NVL (P_BKASH_PAYMENT_AMOUNT, 0),
+                      BKASH_TRAN_NO = P_BKASH_TRAN_NO,
+                      DISCOUNT_AMOUNT = NVL (P_DISCOUNT_AMOUNT, 0),
+                      DISCOUNT_REFERENCE_BY = P_DISCOUNT_REFERENCE_BY,
+                      FINALIZED_YN = 'Y',
+                      UPDATE_BY = P_UPDATE_BY,
+                      UPDATE_DATE = SYSDATE
+                WHERE ORDER_ID = P_ORDER_ID;
+
+               P_MESSAGE_CODE := '1111';
+               P_MESSAGE := 'DATA  FINALIZED SUCCESSFULLY   !!!';
+            EXCEPTION
+               WHEN OTHERS
+               THEN
+                  P_MESSAGE := ' ERROR IN FINALIZE !!!';
+                  P_MESSAGE_CODE := '0000';
+                  ROLLBACK;
+                  RETURN;
+            END;
+
+            --   ADD IN 24.09.2019
+            BEGIN
+               PRO_ITEM_ORDER_INGRE_SAVE (P_ORDER_ID,
+                                          P_UPDATE_BY,
+                                          V_MESSAGE,
+                                          V_MESSAGE_CODE);
+
+               IF V_MESSAGE_CODE <> '1111'
+               THEN
+                  P_MESSAGE_CODE := V_MESSAGE_CODE;
+                  P_MESSAGE := V_MESSAGE;
+                  ROLLBACK;
+                  RETURN;
+               END IF;
+            END;
+         END IF;
+      ELSE
+         P_MESSAGE_CODE := '0000';
+         P_MESSAGE := 'NO DATA FOUND FOR FINALIZE !!';
+         RETURN;
+      END IF;
+   ELSE
+      P_MESSAGE_CODE := '0000';
+      P_MESSAGE := 'ERROR OCCURED IN FINALIZE   !!!';
+      RETURN;
+   END IF;
+END;
+/
