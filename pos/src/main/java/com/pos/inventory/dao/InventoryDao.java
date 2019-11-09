@@ -7,7 +7,7 @@ import com.pos.lookup.model.LookupModel;
 
 public interface InventoryDao {
 
-	public List<Inventory> getProductList(Inventory inventory) throws Exception;
+	public List<Inventory> getIngredientsList(Inventory inventory) throws Exception;
 	
 	public Inventory getProductInfo(Inventory inventory) throws Exception;
 	

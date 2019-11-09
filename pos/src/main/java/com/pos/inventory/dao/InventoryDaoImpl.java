@@ -31,9 +31,9 @@ public class InventoryDaoImpl implements InventoryDao{
 	RemoveNull oRemoveNull = new RemoveNull();
 
 	
-	public List<Inventory> getProductList(Inventory inventory) throws Exception {
+	public List<Inventory> getIngredientsList(Inventory inventory) throws Exception {
 		jdbcTemplate = new JdbcTemplate(dataSource);
-		List<Inventory> oProductList = new ArrayList<Inventory>();
+		List<Inventory> oIngredientsList = new ArrayList<Inventory>();
 
 		NamedParameterJdbcTemplate npjt = new NamedParameterJdbcTemplate(jdbcTemplate);
 
@@ -56,14 +56,14 @@ public class InventoryDaoImpl implements InventoryDao{
 			oInventory.setProductName(oRemoveNull.nullRemove(String.valueOf(row.get("PRODUCT_NAME"))));
 			oInventory.setUnitId(oRemoveNull.nullRemove(String.valueOf(row.get("UNIT_ID"))));
 			oInventory.setUnitName(oRemoveNull.nullRemove(String.valueOf(row.get("UNIT_NAME"))));
-			oProductList.add(oInventory);
+			oIngredientsList.add(oInventory);
 
 			// System.out.println("abc"+
 			// oCipherUtils.encrypt(String.valueOf(row.get("EMPLOYEE_ID"))));
 
 		}
 
-		return oProductList;
+		return oIngredientsList;
 	}
 	
 	public Inventory saveIngredients(Inventory inventory) {

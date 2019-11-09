@@ -58,7 +58,7 @@
 
 
 		<form class="form-horizontal form-bordered" id="form"
-			autocomplete="off" action="/pos/pointOfSale/saveOrder" method="post">
+			autocomplete="off" action="/pos/pointOfSale/saveOrder" method="post" onkeypress="return event.keyCode != 13;">
 
 			<!-- start: page -->
 			<section class="panel panel-featured panel-featured-primary">
@@ -154,7 +154,7 @@
 							<label class="control-label col-md-6 col-sm-6 col-xs-12" for="">Quantity</label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
 								<input type="text" class="form-control mandatory"
-									onblur="orderAddList()" name="quantity" id="quantity"
+									name="quantity" id="quantity"
 									onkeydown="return isNumberKey(event)"
 									value="${pointOfSale.quantity}">
 
@@ -476,7 +476,7 @@
 		<section class="panel panel-featured panel-featured-primary">
 			<header class="panel-heading">
 				<button class="close modal-dismiss" type="button"
-					id="btnModalEmpListClose">
+					id="btnModalEmpListClose" onclick="clearFinalizeModal()">
 					<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 				</button>
 				<h2 class="panel-title">Customer Payment</h2>
@@ -641,6 +641,22 @@
 	</form>
 </div>
 
+<script>
+function clearFinalizeModal () {
+	//alert('hello');
+$("#orderTotalAmount").val('');
+$("#netPayableAmount").val('');
+$("#discountAmount").val('');
+$("#discountReferenceBy").val('');
+$("#cashPayAmount").val('');
+$("#cardPayAmount").val('');
+$("#bkashPaymentAmount").val('');
+$("#bkashTranNo").val('');
+$("#receivedAmount").val('');
+$("#changeAmount").val('');
+}
+</script>
+
 <!-------------------------------- Ending order finalize Modal --------------------------------------------->
 
 
@@ -659,7 +675,7 @@
 		<section class="panel panel-featured panel-featured-primary">
 			<header class="panel-heading">
 				<button class="close modal-dismiss" type="button"
-					id="btnModalEmpListClose">
+					id="btnModalEmpListClose" onclick="clearBillPrintModal()">
 					<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 				</button>
 				<h2 class="panel-title">Bill Print</h2>
@@ -743,6 +759,16 @@
 		</section>
 	</form>
 </div>
+
+<script>
+function clearBillPrintModal (){
+	//alert('hello');
+	$("#orderTotalAmount").val('');
+	$("#netPayableAmount").val('');
+	$("#discountAmountBillPrint").val('');
+	$("#discountReferenceByBillPrint").val('');
+}
+</script>
 
 <!-------------------------------- Ending bill print Modal --------------------------------------------->
 
@@ -988,6 +1014,16 @@
 <%-- <input type="hidden" name="updateDate" id="updateDate"
 	value="${inventory.updateDate}"> --%>
 
+<script type="text/javascript">
+ var quantity = document.getElementById("quantity");
+//alert(quantity);
+quantity.addEventListener("keydown", function (e) {
+    if (e.keyCode === 13) {  //checks whether the pressed key is "Enter"
+    	orderAddList();
+    }
+});
+</script>
+
 <script>
 
 
@@ -1003,6 +1039,9 @@ function getOrderEditList(encOrderId,employeeId,tableNo,ownerFoodYn,orderNote) {
 
 
 function orderAddList() {
+	//alert('hello');
+	var tableNo = $("#tableNo").val();
+	var employeeId = $("#employeeId").val();
 	var itemId = $("#itemId").val();
 	var quantity = $("#quantity").val();
 	var orderNote = $("#orderNote").val();
@@ -1018,7 +1057,24 @@ function orderAddList() {
 	}
 	sl = parseInt(sl) + 1;
 
-	if (itemId == '') {
+	if (employeeId == '') {
+		content = "<div class='alert alert-danger'>"
+				+ "<button class='close' aria-hidden='true' data-dismiss='alert' "
+		+ "type='button'>&times;</button>"
+				+ "<strong>Select Waiter Name First !</strong>" + "</div>";
+
+		$("#msg").html(content);
+		
+	} else if (tableNo == '') {
+		content = "<div class='alert alert-danger'>"
+				+ "<button class='close' aria-hidden='true' data-dismiss='alert' "
+		+ "type='button'>&times;</button>"
+				+ "<strong>Enter Table No First !</strong>" + "</div>";
+
+		$("#msg").html(content);
+		//$("#itemId").focus();
+	
+	} else if (itemId == '') {
 		content = "<div class='alert alert-danger'>"
 				+ "<button class='close' aria-hidden='true' data-dismiss='alert' "
 		+ "type='button'>&times;</button>"

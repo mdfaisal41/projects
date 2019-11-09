@@ -69,7 +69,7 @@
 											value="${inventory.encProductId}"> <input type="text"
 											required class="form-control mandatory" name="productName"
 											id="productName" value="${inventory.productName}"> <span
-											class="input-group-btn"> <a onclick="getProductList()"
+											class="input-group-btn"> <a onclick="getIngredientsList()"
 											class="btn btn-mg btn-primary modal-with-move-anim"
 											type="submit" href="#modalProductList"> <i
 												class="fa fa-search"></i>
@@ -112,8 +112,83 @@
 
 			</section>
 		</form>
+	</div>
+	
+	<div class="col-lg-12">
+		<form class="form-horizontal form-bordered" id="form"
+			autocomplete="off" action="/pos/pointOfSale/saveOrder" method="post">
+
+			<!-- start: page -->
+			<section class="panel panel-featured panel-featured-primary">
+				<header class="panel-heading">
+					<h2 class="panel-title">Ingredients List</h2>
+				</header>
+
+				<div class="panel-body">
+					<div class="row">
+						<div class="table-responsive">
+							<table id="datatable-default"
+								class="table table-striped table-condensed table-hover mb-none">
+								<thead>
+									<tr>
+										<th>#</th>
+										<th style="text-align: center;">Ingredient Code</th>
+										<th>Ingredient Name</th>
+										<th style="text-align: center;">Unit</th>
+										<th style="text-align: center;">Edit</th>
+									</tr>
+								</thead>
+								<tbody>
+									<%
+										int i = 1;
+									%>
+									<c:if test="${!empty ingredientsList}">
+
+										<c:forEach items="${ingredientsList}" var="list">
+											<tr>
+												<td>
+													<%
+														out.print(i);
+																i++;
+													%>
+												</td>
+												<td style="text-align: center;">${list.productCode}</td>
+												<td>${list.productName}</td>
+												<td style="text-align: center;">${list.unitName}</td>
+												<td style="text-align: center;">
+													<button type="button" class="btn btn-primary"
+														onclick="getItemInfo('${list.encProductId}','${list.productName}','${list.unitName}')">
+														<i class="fa fa-edit"></i>
+													</button>
+												</td>
+											</tr>
+										</c:forEach>
+									</c:if>
+									<c:if test="${! empty ingredientsListNotFound}">
+										<tr>
+											<td colspan="6"><p>${ingredientsListNotFound}</p></td>
+											<td style="display: none;"></td>
+											<td style="display: none;"></td>
+											<td style="display: none;"></td>
+											<td style="display: none;"></td>
+											<td style="display: none;"></td>
+										</tr>
+									</c:if>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
 
 
+				<footer class="panel-footer">
+					<div class="row"></div>
+				</footer>
+
+			</section>
+
+		</form>
+		<!-- end: page -->
 
 	</div>
 </div>
@@ -147,7 +222,7 @@
 									<th>Unit</th>
 								</tr>
 							</thead>
-							<tbody id="productList" style="border-style: inset;">
+							<tbody id="ingredientsList" style="border-style: inset;">
 							</tbody>
 						</table>
 					</div>
@@ -166,9 +241,9 @@
 	src="<c:url value="/resources/javascripts/googleapi.jquery.min.js" />"></script>
 <script>
 
-function getProductList() {
+function getIngredientsList() {
 
-	var link = "/pos/inventory/getProductList";
+	var link = "/pos/inventory/getIngredientsList";
 
 	$.ajax({
 		type : "POST",
@@ -177,7 +252,7 @@ function getProductList() {
 
 		success : function(data) {
 			//alert('ssssss!!!')
-			$("#productList").html(data);
+			$("#ingredientsList").html(data);
 		},
 
 		error : function(data) {

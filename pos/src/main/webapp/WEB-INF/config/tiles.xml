@@ -61,9 +61,9 @@
 			value="/WEB-INF/views/inventory/createIngredients.jsp" />
 	</definition>
 
-	<definition name="productList" extends="null.definition">
+	<definition name="ingredientsList" extends="null.definition">
 		<put-attribute name="body"
-			value="/WEB-INF/views/inventory/productList.jsp" />
+			value="/WEB-INF/views/inventory/ingredientsList.jsp" />
 	</definition>
 
 	<definition name="storeProduct" extends="base.definition">
@@ -99,6 +99,12 @@
 		<put-attribute name="title" value="Wastage" />
 		<put-attribute name="body"
 			value="/WEB-INF/views/inventory/wastage.jsp" />
+	</definition>
+	
+	<definition name="storeManagementView" extends="base.definition">
+		<put-attribute name="title" value="Product View" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/inventory/storeManagementView.jsp" />
 	</definition>
 
 	<!-- inventory end -->

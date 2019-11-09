@@ -6,7 +6,7 @@ import com.pos.inventory.model.Inventory;
 
 public interface InventoryService {
 
-	public List<Inventory> getProductList(Inventory inventory) throws Exception;
+	public List<Inventory> getIngredientsList(Inventory inventory) throws Exception;
 	
 	public Inventory getProductInfo(Inventory inventory) throws Exception;
 	

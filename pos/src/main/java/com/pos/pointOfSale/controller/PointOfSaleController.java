@@ -334,7 +334,7 @@ public class PointOfSaleController {
 			redirectAttributes.addFlashAttribute("message", oPointOfSale.getMessage());
 			redirectAttributes.addFlashAttribute("mCode", oPointOfSale.getmCode());
 
-			redirectAttributes.addFlashAttribute("pointOfSale", oPointOfSale);
+			//redirectAttributes.addFlashAttribute("pointOfSale", oPointOfSale);
 
 			return new ModelAndView("redirect:/pointOfSale/orderManagement");
 		} else {
@@ -581,7 +581,7 @@ public class PointOfSaleController {
 	public ModelAndView cancelOrder(@ModelAttribute PointOfSale pointOfSale, HttpSession session,
 			final RedirectAttributes redirectAttributes, HttpServletRequest request) {
 		if (session.getAttribute("logonSuccessYN") == "Y") {
-			System.out.println("entrance " + pointOfSale.getEncOrderId());
+			//System.out.println("entrance " + pointOfSale.getEncOrderId());
 			try {
 				pointOfSale.setUpdateBy((String) session.getAttribute("employeeid"));
 				PointOfSale oPointOfSale = new PointOfSale();
@@ -591,7 +591,7 @@ public class PointOfSaleController {
 				redirectAttributes.addFlashAttribute("message", oPointOfSale.getMessage());
 				redirectAttributes.addFlashAttribute("mCode", oPointOfSale.getmCode());
 
-				redirectAttributes.addFlashAttribute("pointOfSale", pointOfSale);
+				//redirectAttributes.addFlashAttribute("pointOfSale", pointOfSale);
 				return new ModelAndView("redirect:/pointOfSale/orderManagement");
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -682,7 +682,7 @@ public class PointOfSaleController {
 				redirectAttributes.addFlashAttribute("message", oPointOfSale.getMessage());
 				redirectAttributes.addFlashAttribute("mCode", oPointOfSale.getmCode());
 
-				redirectAttributes.addFlashAttribute("pointOfSale", pointOfSale);
+				//redirectAttributes.addFlashAttribute("pointOfSale", pointOfSale);
 				return new ModelAndView("redirect:/pointOfSale/orderManagement");
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -869,7 +869,7 @@ public class PointOfSaleController {
 				redirectAttributes.addFlashAttribute("message", oPointOfSale.getMessage());
 				redirectAttributes.addFlashAttribute("mCode", oPointOfSale.getmCode());
 
-				redirectAttributes.addFlashAttribute("pointOfSale", pointOfSale);
+				//redirectAttributes.addFlashAttribute("pointOfSale", pointOfSale);
 				return new ModelAndView("redirect:/pointOfSale/orderManagement");
 			} catch (Exception e) {
 				e.printStackTrace();

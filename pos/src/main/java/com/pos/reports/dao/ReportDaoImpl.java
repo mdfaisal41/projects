@@ -206,7 +206,7 @@ public class ReportDaoImpl implements ReportDao{
 			NamedParameterJdbcTemplate npjt = new NamedParameterJdbcTemplate(jdbcTemplate);
 			StringBuilder sBuilder = new StringBuilder();
 
-			sBuilder.append(" SELECT ORDER_ID, ");
+			/*sBuilder.append(" SELECT ORDER_ID, ");
 			sBuilder.append(" (SELECT ITEM_NAME FROM L_ITEM WHERE ITEM_ID = OM.ITEM_ID) ITEM_NAME, ");
 			sBuilder.append(" QUANTITY, ");
 			sBuilder.append(" ITEM_PRICE, ");
@@ -214,7 +214,19 @@ public class ReportDaoImpl implements ReportDao{
 			sBuilder.append(" (SELECT KNOWN_AS FROM EMPLOYEE WHERE EMPLOYEE_ID = OM.UPDATE_BY) UPDATE_BY, ");
 			sBuilder.append(" TO_CHAR(UPDATE_DATE,'DD/MM/YYYY') UPDATE_DATE ");
 			sBuilder.append(" FROM ITEM_ORDER OM ");
-			sBuilder.append(" WHERE TRUNC(UPDATE_DATE) BETWEEN TO_DATE(:fromDate,'DD/MM/YYYY') AND TO_DATE(:toDate,'DD/MM/YYYY') ");
+			sBuilder.append(" WHERE TRUNC(UPDATE_DATE) BETWEEN TO_DATE(:fromDate,'DD/MM/YYYY') AND TO_DATE(:toDate,'DD/MM/YYYY') ");*/
+			
+			
+			sBuilder.append(" SELECT IO.ORDER_ID, ");
+			sBuilder.append(" (SELECT ITEM_NAME FROM L_ITEM WHERE ITEM_ID = IO.ITEM_ID)ITEM_NAME, ");
+			sBuilder.append(" IO.QUANTITY, ");
+			sBuilder.append(" IO.ITEM_PRICE, ");
+			sBuilder.append(" IO.SUB_TOTAL, ");
+			sBuilder.append(" (SELECT KNOWN_AS FROM EMPLOYEE WHERE EMPLOYEE_ID = OM.UPDATE_BY) UPDATE_BY, ");
+			sBuilder.append(" TO_CHAR (IO.UPDATE_DATE, 'DD/MM/YYYY') UPDATE_DATE ");
+			sBuilder.append(" FROM ITEM_ORDER IO, ORDER_MANAGEMENT OM ");
+			sBuilder.append(" WHERE IO.ORDER_ID = OM.ORDER_ID AND OM.FINALIZED_YN = 'Y' ");
+			sBuilder.append(" AND TRUNC (IO.UPDATE_DATE) BETWEEN TO_DATE (:fromDate, 'DD/MM/YYYY')AND TO_DATE (:toDate, 'DD/MM/YYYY') ");
 
 			MapSqlParameterSource paramSource = new MapSqlParameterSource();
 			

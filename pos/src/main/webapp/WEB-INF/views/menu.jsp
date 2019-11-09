@@ -99,7 +99,11 @@
 								.equals("/pos/inventory/otherInventory")
 						|| request.getAttribute("javax.servlet.forward.request_uri")
 								.equals("/pos/inventory/wastageView")
-								|| request.getAttribute("javax.servlet.forward.request_uri")
+						|| request.getAttribute("javax.servlet.forward.request_uri")
+								.equals("/pos/inventory/wastage")
+						|| request.getAttribute("javax.servlet.forward.request_uri")
+								.equals("/pos/inventory/storeManagementView")
+						|| request.getAttribute("javax.servlet.forward.request_uri")
 								.equals("/pos/inventory/wastage")) {
 					out.print(" nav-expanded nav-active");
 				}%>">

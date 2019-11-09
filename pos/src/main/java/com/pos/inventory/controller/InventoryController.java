@@ -42,7 +42,7 @@ public class InventoryController {
 
 	@RequestMapping(value = "createIngredients", method = RequestMethod.GET)
 	public ModelAndView createProduct(@ModelAttribute Inventory inventory, HttpSession session,
-			LookupModel lookupModel, final RedirectAttributes redirectAttributes) {
+			LookupModel lookupModel, final RedirectAttributes redirectAttributes) throws Exception {
 		
 		String menuId = "M0101";
 		MenuInfo menuInfo = loginService.checkUserAuthorization((String) session.getAttribute("employeeid"),
@@ -52,6 +52,18 @@ public class InventoryController {
 		
 		if (session.getAttribute("logonSuccessYN") == "Y") {
 			ModelAndView mav = new ModelAndView();
+			
+			List<Inventory> oIngredientsList = inventoryService.getIngredientsList(inventory);
+
+			// System.out.println("em id "+hrInfo.getEmployeeId());
+			// System.out.println("depart id "+hrInfo.getDepartmentId());
+
+			if (oIngredientsList.size() > 0) {
+				// System.out.println("size "+oProductList.size());
+				mav.addObject("ingredientsList", oIngredientsList);
+			} else {
+				mav.addObject("ingredientsListNotFound", "No Ingredients Found!");
+			}
 
 			mav.setViewName("createIngredients");
 			mav.addObject("unitList", lookupService.unitList(lookupModel));
@@ -69,21 +81,21 @@ public class InventoryController {
 	}
 	
 
-	@RequestMapping(value = "getProductList", method = RequestMethod.POST)
+	@RequestMapping(value = "getIngredientsList", method = RequestMethod.POST)
 	public ModelAndView getProductList(@ModelAttribute Inventory inventory, HttpSession session) throws Exception {
 
 		if (session.getAttribute("logonSuccessYN") == "Y") {
-			ModelAndView mav = new ModelAndView("productList");
-			List<Inventory> oProductList = inventoryService.getProductList(inventory);
+			ModelAndView mav = new ModelAndView("ingredientsList");
+			List<Inventory> oIngredientsList = inventoryService.getIngredientsList(inventory);
 
 			// System.out.println("em id "+hrInfo.getEmployeeId());
 			// System.out.println("depart id "+hrInfo.getDepartmentId());
 
-			if (oProductList.size() > 0) {
+			if (oIngredientsList.size() > 0) {
 				// System.out.println("size "+oProductList.size());
-				mav.addObject("productList", oProductList);
+				mav.addObject("ingredientsList", oIngredientsList);
 			} else {
-				mav.addObject("productNotFound", "No Product Found!");
+				mav.addObject("ingredientsListNotFound", "No Ingredients Found!");
 			}
 
 			return mav;
@@ -792,6 +804,37 @@ public class InventoryController {
 		}
 
 		return new ModelAndView("redirect:/inventory/wastage");
+	}
+	
+	@RequestMapping(value = "storeManagementView", method = RequestMethod.GET)
+	public ModelAndView storeManagementView(@ModelAttribute Inventory inventory, HttpSession session,
+			LookupModel lookupModel, final RedirectAttributes redirectAttributes) {
+		
+		String menuId = "M0106";
+		MenuInfo menuInfo = loginService.checkUserAuthorization((String) session.getAttribute("employeeid"),
+				menuId);
+		
+		if (menuInfo.getMenuId().equals(menuId)) {
+		
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+			ModelAndView mav = new ModelAndView();
+
+			mav.setViewName("storeManagementView");
+			mav.addObject("unitList", lookupService.unitList(lookupModel));
+			mav.addObject("productList", lookupService.productList(lookupModel));
+			mav.addObject("employeeList", lookupService.employeeList(lookupModel));
+			mav.addObject("inventoryTypeList", lookupService.inventoryTypeList(lookupModel));
+			return mav;
+			
+		  } else {
+				redirectAttributes.addFlashAttribute("message", "You are not authorized for this Page !");
+				redirectAttributes.addFlashAttribute("mCode", "0000");
+				return new ModelAndView("redirect:/");
+			}
+		} else {
+			return new ModelAndView("login");
+
+		}
 	}
 
 }
