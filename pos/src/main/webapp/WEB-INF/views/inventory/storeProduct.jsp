@@ -17,7 +17,7 @@
 		<ol class="breadcrumbs">
 			<li><a href="/pos/"> &nbsp;<i class="fa fa-home"></i></a></li>
 			<li><span>Inventory &nbsp;</span></li>
-			<li><span>Store Ingredients &nbsp;</span></li>
+			<li><span>Store Inventory Ingredients &nbsp;</span></li>
 		</ol>
 	</div>
 </header>
@@ -67,7 +67,7 @@
 			<!-- start: page -->
 			<section class="panel panel-featured panel-featured-primary">
 				<header class="panel-heading">
-					<h2 class="panel-title">Store Ingredients</h2>
+					<h2 class="panel-title">Store Inventory Ingredients</h2>
 				</header>
 				<div class="panel-body">
 					<br />
@@ -239,7 +239,7 @@
 
 		<section class="panel panel-featured panel-featured-primary">
 			<header class="panel-heading">
-				<h2 class="panel-title">Store Ingredients List</h2>
+				<h2 class="panel-title">Store Inventory Ingredients List</h2>
 
 				<div class="panel-actions" id="resultDiv">
 					<p id="result"></p>
@@ -490,16 +490,16 @@ function isNumberKey(evt) {
 	
 	function totalPriceCalc () {
 		var inventoryTypeId = $("#inventoryTypeId").val();
-		var inventoryDate = $("#inventoryDate").val();
+		//var inventoryDate = $("#inventoryDate").val();
 		//alert(inventoryTypeId);
-		//alert(updateDate);
+		//alert(inventoryDate);
 			
 			var link = "/pos/inventory/getPriceSum";
 			//alert(link);
 			$.ajax({
 				type : "POST",
 				url : link,
-				data : "inventoryTypeId=" + inventoryTypeId + "&inventoryDate=" + inventoryDate,
+				data : "inventoryTypeId=" + inventoryTypeId,
 				async : true,
 				success : function(data) {
 					//alert(data.priceSum);

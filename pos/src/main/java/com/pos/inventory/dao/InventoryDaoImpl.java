@@ -297,7 +297,7 @@ public class InventoryDaoImpl implements InventoryDao{
 
 		StringBuilder sBuilder = new StringBuilder();
 		sBuilder.append(" SELECT SUM (PRICE) SUM_PRICE FROM INVENTORY_MASTER WHERE INVENTORY_TYPE_ID = :inventoryTypeId ");
-		sBuilder.append(" AND TRUNC (INVENTORY_DATE) = TO_DATE (:inventoryDate, 'DD/MM/YYYY') ");
+		sBuilder.append(" AND TRUNC (INVENTORY_DATE) = TRUNC(SYSDATE) ");
 
 		MapSqlParameterSource paramSource = new MapSqlParameterSource();
 		paramSource.addValue("inventoryTypeId", inventory.getInventoryTypeId());
@@ -389,6 +389,7 @@ public class InventoryDaoImpl implements InventoryDao{
 			Map<String, Object> inParamMap = new HashMap<String, Object>();
 
 			inParamMap.put("P_WASTAGE_ID", oCipherUtils.decrypt(inventory.getEncWastageId()));
+			inParamMap.put("P_INVENTORY_TYPE_ID", inventory.getInventoryTypeId());
 			inParamMap.put("P_INGREDIENTS_ID", inventory.getProductId());
 			inParamMap.put("P_ITEM_ID", inventory.getItemId());
 			inParamMap.put("P_QUANTITY", inventory.getQuantity());
@@ -421,6 +422,7 @@ public class InventoryDaoImpl implements InventoryDao{
 		StringBuilder sBuilder = new StringBuilder();
 		sBuilder.append(" SELECT WASTAGE_ID, ");
 		sBuilder.append(" INGREDIENTS_ID, ");
+		sBuilder.append(" INVENTORY_TYPE_ID, ");
 		sBuilder.append(" (SELECT PRODUCT_NAME  FROM L_PRODUCT  WHERE PRODUCT_ID = W.INGREDIENTS_ID) INGREDIENTS_NAME, ");
 		sBuilder.append(" ITEM_ID, ");
 		sBuilder.append(" (SELECT ITEM_NAME FROM L_ITEM WHERE ITEM_ID = W.ITEM_ID) ITEM_NAME, ");
@@ -429,7 +431,9 @@ public class InventoryDaoImpl implements InventoryDao{
 		sBuilder.append(" (SELECT UNIT_NAME FROM L_UNIT WHERE UNIT_ID = W.UNIT_ID) UNIT_NAME, ");
 		sBuilder.append(" PRICE_AMOUNT, ");
 		sBuilder.append(" UPDATE_BY, ");
-		sBuilder.append(" TO_CHAR(UPDATE_DATE,'DD/MM/YYYY') UPDATE_DATE ");
+		sBuilder.append(" TO_CHAR(UPDATE_DATE,'DD/MM/YYYY') UPDATE_DATE, ");
+		//sBuilder.append(" TO_CHAR(WASTAGE_DATE,'DD/MM/YYYY') WASTAGE_DATE, ");
+		sBuilder.append(" CASE WHEN TRUNC (UPDATE_DATE) < TRUNC(SYSDATE) THEN 'N' ELSE 'Y' END WASTAGE_SYSDATE_YN ");
 		sBuilder.append(" FROM WASTAGE W ");
 		sBuilder.append(" WHERE TRUNC (UPDATE_DATE) BETWEEN TO_DATE (:fromDate, 'dd/mm/yyyy') AND  TO_DATE (:toDate, 'dd/mm/yyyy') ");
 
@@ -457,6 +461,7 @@ public class InventoryDaoImpl implements InventoryDao{
 			oInventory.setEncWastageId(oRemoveNull.nullRemove(oCipherUtils.encrypt((String.valueOf(row.get("WASTAGE_ID"))))));
 			oInventory.setWastageId(oRemoveNull.nullRemove((String.valueOf(row.get("WASTAGE_ID")))));
 			oInventory.setProductId(oRemoveNull.nullRemove((String.valueOf(row.get("INGREDIENTS_ID")))));
+			oInventory.setInventoryTypeId(oRemoveNull.nullRemove((String.valueOf(row.get("INVENTORY_TYPE_ID")))));
 			oInventory.setProductName(oRemoveNull.nullRemove((String.valueOf(row.get("INGREDIENTS_NAME")))));
 			oInventory.setItemId(oRemoveNull.nullRemove((String.valueOf(row.get("ITEM_ID")))));
 			oInventory.setItemName(oRemoveNull.nullRemove((String.valueOf(row.get("ITEM_NAME")))));
@@ -465,6 +470,8 @@ public class InventoryDaoImpl implements InventoryDao{
 			oInventory.setUnitName(oRemoveNull.nullRemove((String.valueOf(row.get("UNIT_NAME")))));
 			oInventory.setPrice(oRemoveNull.nullRemove((String.valueOf(row.get("PRICE_AMOUNT")))));
 			oInventory.setUpdateDate(oRemoveNull.nullRemove((String.valueOf(row.get("UPDATE_DATE")))));
+			oInventory.setWastageDate(oRemoveNull.nullRemove((String.valueOf(row.get("WASTAGE_DATE")))));
+			oInventory.setWastageSysdateYn(oRemoveNull.nullRemove((String.valueOf(row.get("WASTAGE_SYSDATE_YN")))));
 			oInventory.setEmployeeId(oRemoveNull.nullRemove((String.valueOf(row.get("UPDATE_BY")))));
 			oWastageViewList.add(oInventory);
 		}
@@ -480,6 +487,7 @@ public class InventoryDaoImpl implements InventoryDao{
 
 		sBuilder.append(" SELECT WASTAGE_ID, ");
 		sBuilder.append(" INGREDIENTS_ID, ");
+		sBuilder.append(" INVENTORY_TYPE_ID, ");
 		sBuilder.append(" ITEM_ID, ");
 		sBuilder.append(" QUANTITY, ");
 		sBuilder.append(" UNIT_ID, ");
@@ -497,6 +505,7 @@ public class InventoryDaoImpl implements InventoryDao{
 		for (@SuppressWarnings("rawtypes")
 		Map row : rows) {
 			oInventory.setEncWastageId(oCipherUtils.encrypt(String.valueOf(row.get("WASTAGE_ID"))));
+			oInventory.setInventoryTypeId(oRemoveNull.nullRemove((String.valueOf(row.get("INVENTORY_TYPE_ID")))));
 			oInventory.setProductId(oRemoveNull.nullRemove(String.valueOf(row.get("INGREDIENTS_ID"))));
 			oInventory.setItemId(oRemoveNull.nullRemove(String.valueOf(row.get("ITEM_ID"))));
 			oInventory.setQuantity(oRemoveNull.nullRemove(String.valueOf(row.get("QUANTITY"))));
@@ -505,6 +514,225 @@ public class InventoryDaoImpl implements InventoryDao{
 		}
 
 		return oInventory;
+	}
+
+	public Inventory saveKitchenIngredients(Inventory inventory) {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+		Inventory oInventory = new Inventory();
+		try {
+			simpleJdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("PRO_KITCHEN_INGREDIENTS_SAVE");
+			Map<String, Object> inParamMap = new HashMap<String, Object>();
+			
+			inParamMap.put("P_INVENTORY_ID", oCipherUtils.decrypt(oRemoveNull.nullRemove(inventory.getEncInventoryId())));
+			inParamMap.put("P_INVENTORY_TYPE_ID", inventory.getInventoryTypeId());
+			inParamMap.put("P_PRODUCT_ID", inventory.getProductId());
+			inParamMap.put("P_UNIT_ID", inventory.getUnitId());
+			inParamMap.put("P_UNIT_PRICE", inventory.getUnitPrice());
+			inParamMap.put("P_QUANTITY", inventory.getQuantity());
+			inParamMap.put("P_PRICE", inventory.getPrice());
+			inParamMap.put("P_ADVANCE_AMOUNT", inventory.getAdvanceAmount());
+			inParamMap.put("P_EMPLOYEE_ID", inventory.getEmployeeId());
+			inParamMap.put("P_UPDATE_BY", inventory.getUpdateBy());
+			inParamMap.put("P_SUPPLIER_ID", inventory.getSupplierId());
+			
+			System.out.println("inventory.getUnitPrice() " + inventory.getUnitPrice());
+			System.out.println("inventory.getPrice() " + inventory.getPrice());
+			System.out.println("inventory.getAdvanceAmount() " + inventory.getAdvanceAmount());
+			
+
+			Map<String, Object> outParamMap = simpleJdbcCall.execute(new MapSqlParameterSource().addValues(inParamMap));
+
+			oInventory.setMessage((String) outParamMap.get("P_MESSAGE"));
+			oInventory.setmCode((String) outParamMap.get("P_MESSAGE_CODE"));
+			//oInventory.setInventoryDate((String) outParamMap.get("O_INVENTORY_DATE"));
+			//System.out.println("studentId " + oStudent.getStudeP_INVENTORY_IDntId());
+		} catch (Exception ex) {
+			oInventory.setMessage("Error Saving Record !!!");
+			oInventory.setmCode("0000");
+			ex.printStackTrace();
+		}
+		return oInventory;
+
+	}
+
+	public Inventory saveStoreIngredients(Inventory inventory) {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+		Inventory oInventory = new Inventory();
+		try {
+			simpleJdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("PRO_STORE_INGREDIENTS_SAVE");
+			Map<String, Object> inParamMap = new HashMap<String, Object>();
+			
+			inParamMap.put("P_STORE_ID", oCipherUtils.decrypt(oRemoveNull.nullRemove(inventory.getEncStoreId())));
+			inParamMap.put("P_INVENTORY_TYPE_ID", inventory.getInventoryTypeId());
+			inParamMap.put("P_PRODUCT_ID", inventory.getProductId());
+			inParamMap.put("P_UNIT_ID", inventory.getUnitId());
+			//inParamMap.put("P_UNIT_PRICE", inventory.getUnitPrice());
+			inParamMap.put("P_QUANTITY", inventory.getQuantity());
+			//inParamMap.put("P_PRICE", inventory.getPrice());
+			inParamMap.put("P_ADVANCE_AMOUNT", inventory.getAdvanceAmount());
+			//inParamMap.put("P_EMPLOYEE_ID", inventory.getEmployeeId());
+			inParamMap.put("P_UPDATE_BY", inventory.getUpdateBy());
+			inParamMap.put("P_SUPPLIER_ID", inventory.getSupplierId());
+			
+			System.out.println("inventory.getUnitPrice() " + inventory.getUnitPrice());
+			System.out.println("inventory.getPrice() " + inventory.getPrice());
+			System.out.println("inventory.getAdvanceAmount() " + inventory.getAdvanceAmount());
+			
+
+			Map<String, Object> outParamMap = simpleJdbcCall.execute(new MapSqlParameterSource().addValues(inParamMap));
+
+			oInventory.setMessage((String) outParamMap.get("P_MESSAGE"));
+			oInventory.setmCode((String) outParamMap.get("P_MESSAGE_CODE"));
+			//oInventory.setInventoryDate((String) outParamMap.get("O_INVENTORY_DATE"));
+			//System.out.println("studentId " + oStudent.getStudeP_INVENTORY_IDntId());
+		} catch (Exception ex) {
+			oInventory.setMessage("Error Saving Record !!!");
+			oInventory.setmCode("0000");
+			ex.printStackTrace();
+		}
+		return oInventory;
+	}
+
+	public List<Inventory> getStoreInventoryList(Inventory inventory) {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+		List<Inventory> oInventoryList = new ArrayList<Inventory>();
+
+		NamedParameterJdbcTemplate npjt = new NamedParameterJdbcTemplate(jdbcTemplate);
+
+		StringBuilder sBuilder = new StringBuilder();
+		sBuilder.append(" SELECT STORE_ID, ");
+		sBuilder.append(" TO_CHAR (STORE_DATE, 'DD/MM/YYYY') STORE_DATE, ");
+		sBuilder.append(" (SELECT INVENTORY_TYPE_NAME FROM L_INVENTORY_TYPE WHERE INVENTORY_TYPE_ID = M.INVENTORY_TYPE_ID) INVENTORY_TYPE_NAME, ");
+		sBuilder.append(" (SELECT PRODUCT_NAME FROM L_PRODUCT WHERE PRODUCT_ID = M.PRODUCT_ID) PRODUCT_NAME, ");
+		sBuilder.append(" (SELECT UNIT_NAME FROM L_UNIT WHERE UNIT_ID = M.UNIT_ID) UNIT_NAME, ");
+		sBuilder.append(" QUANTITY, ");
+		sBuilder.append(" SMALL_UNIT, ");
+		sBuilder.append(" UPDATE_BY, ");
+		sBuilder.append(" TO_CHAR (UPDATE_DATE, 'DD/MM/YYYY') UPDATE_DATE, ");
+		sBuilder.append(" CASE WHEN TRUNC(STORE_DATE) < TRUNC(SYSDATE) THEN 'N' ELSE 'Y' END STORE_DATE_YN ");
+		sBuilder.append(" FROM STORE_MANAGEMENT M ");
+		sBuilder.append(" WHERE TRUNC (STORE_DATE) = TRUNC (SYSDATE) ");
+		//sBuilder.append(" AND INVENTORY_TYPE_ID NOT IN (206) ");
+		//sBuilder.append(" AND TRUNC(INVENTORY_DATE) = TO_DATE(:inventoryDate,'DD/MM/YYYY') ");
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource();
+		//paramSource.addValue("inventoryTypeId", inventory.getInventoryTypeId());
+		//paramSource.addValue("inventoryDate", inventory.getInventoryDate());
+		
+		sBuilder.append(" ORDER BY STORE_DATE DESC ");
+		
+		//System.out.println(sBuilder);
+
+		List<Map<String, Object>> rows = npjt.queryForList(sBuilder.toString(), paramSource);
+
+		for (@SuppressWarnings("rawtypes")
+		Map row : rows) {
+			Inventory oInventory = new Inventory();
+			oInventory.setEncStoreId(oCipherUtils.encrypt(oRemoveNull.nullRemove(String.valueOf(row.get("STORE_ID")))));
+			oInventory.setStoreDate(oRemoveNull.nullRemove(String.valueOf(row.get("STORE_DATE"))));
+			oInventory.setInventoryTypeName(oRemoveNull.nullRemove(String.valueOf(row.get("INVENTORY_TYPE_NAME"))));
+			oInventory.setProductName(oRemoveNull.nullRemove(String.valueOf(row.get("PRODUCT_NAME"))));
+			oInventory.setUnitName(oRemoveNull.nullRemove(String.valueOf(row.get("UNIT_NAME"))));
+			oInventory.setQuantity(oRemoveNull.nullRemove(String.valueOf(row.get("QUANTITY"))));
+			oInventory.setSmallUnit(oRemoveNull.nullRemove(String.valueOf(row.get("SMALL_UNIT"))));
+			oInventory.setUpdateBy(oRemoveNull.nullRemove(String.valueOf(row.get("UPDATE_BY"))));
+			oInventory.setUpdateDate(oRemoveNull.nullRemove(String.valueOf(row.get("UPDATE_DATE"))));
+			oInventory.setStoreDateYn(oRemoveNull.nullRemove(String.valueOf(row.get("STORE_DATE_YN"))));
+			oInventoryList.add(oInventory);
+		}
+		return oInventoryList;
+	}
+
+	public Inventory getStoredIngredientsInfo(Inventory inventory) throws Exception {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+		Inventory oInventory = new Inventory();
+
+		NamedParameterJdbcTemplate npjt = new NamedParameterJdbcTemplate(jdbcTemplate);
+
+		StringBuilder sBuilder = new StringBuilder();
+		sBuilder.append(" SELECT STORE_ID, ");
+		sBuilder.append(" STORE_DATE, ");
+		sBuilder.append(" INVENTORY_TYPE_ID, ");
+		sBuilder.append(" PRODUCT_ID, ");
+		sBuilder.append(" UNIT_ID, ");
+		sBuilder.append(" QUANTITY, ");
+		sBuilder.append(" SMALL_UNIT, ");
+		sBuilder.append(" UPDATE_BY, ");
+		sBuilder.append(" UPDATE_DATE ");
+		sBuilder.append(" FROM STORE_MANAGEMENT ");
+		sBuilder.append(" WHERE STORE_ID = :encStoreId ");
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource();
+		paramSource.addValue("encStoreId", oCipherUtils.decrypt(oRemoveNull.nullRemove(inventory.getEncStoreId())));
+		
+		System.out.println("encStoreId "+ oCipherUtils.decrypt(oRemoveNull.nullRemove(inventory.getEncStoreId())));
+
+		List<Map<String, Object>> rows = npjt.queryForList(sBuilder.toString(), paramSource);
+
+		for (@SuppressWarnings("rawtypes")
+		Map row : rows) {
+			oInventory.setEncStoreId(oCipherUtils.encrypt(oRemoveNull.nullRemove(String.valueOf(row.get("STORE_ID")))));
+			oInventory.setStoreId(oRemoveNull.nullRemove(String.valueOf(row.get("STORE_ID"))));
+			oInventory.setStoreDate(oRemoveNull.nullRemove(String.valueOf(row.get("STORE_DATE"))));
+			oInventory.setInventoryTypeId(oRemoveNull.nullRemove(String.valueOf(row.get("INVENTORY_TYPE_ID"))));
+			oInventory.setProductId(oRemoveNull.nullRemove(String.valueOf(row.get("PRODUCT_ID"))));
+			oInventory.setUnitId(oRemoveNull.nullRemove(String.valueOf(row.get("UNIT_ID"))));
+			oInventory.setQuantity(oRemoveNull.nullRemove(String.valueOf(row.get("QUANTITY"))));
+			oInventory.setEmployeeId(oRemoveNull.nullRemove(String.valueOf(row.get("EMPLOYEE_ID"))));
+		
+		}
+		return oInventory;
+	}
+	
+	
+
+
+	@Override
+	public List<Inventory> getStoreHistoryList(Inventory inventory) throws Exception {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+		List<Inventory> oStoreHistoryList = new ArrayList<Inventory>();
+
+		NamedParameterJdbcTemplate npjt = new NamedParameterJdbcTemplate(jdbcTemplate);
+
+		StringBuilder sBuilder = new StringBuilder();
+		sBuilder.append(" SELECT STORE_ID, ");
+		sBuilder.append(" TO_CHAR (STORE_DATE, 'DD/MM/YYYY') STORE_DATE, ");
+		sBuilder.append(" (SELECT INVENTORY_TYPE_NAME FROM L_INVENTORY_TYPE WHERE INVENTORY_TYPE_ID = M.INVENTORY_TYPE_ID) INVENTORY_TYPE_NAME, ");
+		sBuilder.append(" (SELECT PRODUCT_NAME FROM L_PRODUCT WHERE PRODUCT_ID = M.PRODUCT_ID) PRODUCT_NAME, ");
+		sBuilder.append(" (SELECT UNIT_NAME FROM L_UNIT WHERE UNIT_ID = M.UNIT_ID) UNIT_NAME, ");
+		sBuilder.append(" QUANTITY, ");
+		sBuilder.append(" SMALL_UNIT, ");
+		sBuilder.append(" UPDATE_BY, ");
+		sBuilder.append(" TO_CHAR (UPDATE_DATE, 'DD/MM/YYYY') UPDATE_DATE ");
+		sBuilder.append(" FROM STORE_MANAGEMENT M ");
+		sBuilder.append(" WHERE TRUNC (STORE_DATE) BETWEEN TO_DATE (:fromDate, 'dd/mm/yyyy') AND  TO_DATE (:toDate, 'dd/mm/yyyy') ");
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource();
+		paramSource.addValue("fromDate", inventory.getFromDate());
+		paramSource.addValue("toDate", inventory.getToDate());
+		
+		sBuilder.append(" ORDER BY STORE_DATE DESC ");
+		
+		//System.out.println(sBuilder);
+
+		List<Map<String, Object>> rows = npjt.queryForList(sBuilder.toString(), paramSource);
+
+		for (@SuppressWarnings("rawtypes")
+		Map row : rows) {
+			Inventory oInventory = new Inventory();
+			oInventory.setEncStoreId(oCipherUtils.encrypt(oRemoveNull.nullRemove(String.valueOf(row.get("STORE_ID")))));
+			oInventory.setStoreDate(oRemoveNull.nullRemove(String.valueOf(row.get("STORE_DATE"))));
+			oInventory.setInventoryTypeName(oRemoveNull.nullRemove(String.valueOf(row.get("INVENTORY_TYPE_NAME"))));
+			oInventory.setProductName(oRemoveNull.nullRemove(String.valueOf(row.get("PRODUCT_NAME"))));
+			oInventory.setUnitName(oRemoveNull.nullRemove(String.valueOf(row.get("UNIT_NAME"))));
+			oInventory.setQuantity(oRemoveNull.nullRemove(String.valueOf(row.get("QUANTITY"))));
+			oInventory.setSmallUnit(oRemoveNull.nullRemove(String.valueOf(row.get("SMALL_UNIT"))));
+			oInventory.setUpdateBy(oRemoveNull.nullRemove(String.valueOf(row.get("UPDATE_BY"))));
+			oInventory.setUpdateDate(oRemoveNull.nullRemove(String.valueOf(row.get("UPDATE_DATE"))));
+			oInventory.setStoreDateYn(oRemoveNull.nullRemove(String.valueOf(row.get("STORE_DATE_YN"))));
+			oStoreHistoryList.add(oInventory);
+		}
+		return oStoreHistoryList;
 	}
 
 }

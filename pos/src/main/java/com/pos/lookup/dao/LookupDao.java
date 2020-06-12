@@ -38,4 +38,6 @@ public interface LookupDao {
 	public List<LookupModel> allowanceDeducCategoryListForEmpConsume();
 	
 	public List<LookupModel> supplierList(LookupModel lookupModel);
+	
+	public List<LookupModel> customerList(LookupModel lookupModel);
 }

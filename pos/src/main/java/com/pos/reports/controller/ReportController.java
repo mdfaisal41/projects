@@ -48,6 +48,19 @@ public class ReportController {
 	private ReportService reportService;
 	@Autowired
 	private ApplicationContext appContext;
+	
+		
+	@RequestMapping(value = "stockSummaryReport", method = RequestMethod.GET)
+	public ModelAndView stockReport(HttpSession session) {
+		// System.out.println("hello");
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+			ModelAndView mav = new ModelAndView();
+			mav.setViewName("stockSummaryReport");
+			return mav;
+		} else {
+			return new ModelAndView("login");
+		}
+	}
 
 	@RequestMapping(value = "inventoryReport", method = RequestMethod.GET)
 	public ModelAndView inventoryReport(@ModelAttribute PointOfSale pointOfSale, HttpSession session,
@@ -282,37 +295,38 @@ public class ReportController {
 		JasperReportsXlsView xls = new JasperReportsXlsView();
 		Map<String, Object> params = new HashMap<String, Object>();
 		ReportModel oReportDetails = new ReportModel();
-
-		//System.out.println("order id " + reportModel.getEncOrderId());
+		ReportModel oReport = new ReportModel();
+		reportModel.setEmployeeId((String)session.getAttribute("employeeid"));
+		System.out.println("EmployeeId " + oReport.getEmployeeId());
 
 		// reportModel.setReportCode("101");
 		
 	if (reportModel.getReportCode().equals("103")) {
 		reportModel.setViewType("1");
 		oReportDetails = reportService.searchReportDetails(reportModel);
+		oReport = reportService.getShopInfo(reportModel);
 		JRDataSource dataSource = reportService.customerMoneyReceiptData(reportModel);
-		// params.put("advanceGivenByName",
-		// reportModel.getAdvanceGivenByName());
+
+		params.put("shopName", oReport.getShopName());
+		params.put("shopAddress", oReport.getShopAddress());
+		params.put("phoneNo", oReport.getPhoneNo());
+		params.put("email", oReport.getEmail());
 		
-		//System.out.println("from date " + reportModel.getFromDate());
-		//System.out.println("to date " + reportModel.getToDate());
-		
-		//params.put("fromDate", reportModel.getFromDate());
-		//params.put("toDate", reportModel.getToDate());
 		params.put("dataSource", dataSource);
 		
 	} 	else if (reportModel.getReportCode().equals("104")) {
 		reportModel.setViewType("1");
 		oReportDetails = reportService.searchReportDetails(reportModel);
+		oReport = reportService.getShopInfo(reportModel);
 		JRDataSource dataSource = reportService.customerMoneyReceiptData(reportModel);
-		// params.put("advanceGivenByName",
-		// reportModel.getAdvanceGivenByName());
-		
-		//System.out.println("from date " + reportModel.getFromDate());
-		//System.out.println("to date " + reportModel.getToDate());
-		
-		//params.put("fromDate", reportModel.getFromDate());
-		//params.put("toDate", reportModel.getToDate());
+
+
+		params.put("shopName", oReport.getShopName());
+		params.put("shopAddress", oReport.getShopAddress());
+		params.put("phoneNo", oReport.getPhoneNo());
+		params.put("email", oReport.getEmail());
+
+
 		params.put("dataSource", dataSource);
 		
 	}	else {
@@ -359,6 +373,9 @@ public class ReportController {
 		JasperReportsXlsView xls = new JasperReportsXlsView();
 		Map<String, Object> params = new HashMap<String, Object>();
 		ReportModel oReportDetails = new ReportModel();
+		ReportModel oReport = new ReportModel();
+		reportModel.setEmployeeId((String)session.getAttribute("employeeid"));
+		System.out.println("EmployeeId " + oReport.getEmployeeId());
 
 		//System.out.println("ReportCode " + reportModel.getReportCode());
 
@@ -366,6 +383,7 @@ public class ReportController {
 		if (reportModel.getReportCode().equals("201")) {
 			reportModel.setViewType("1");
 			oReportDetails = reportService.searchReportDetails(reportModel);
+			//oReport = reportService.getShopInfo(reportModel);
 			JRDataSource dataSource = reportService.inventoryReportData(reportModel);
 			// params.put("advanceGivenByName",
 			// reportModel.getAdvanceGivenByName());
@@ -391,12 +409,32 @@ public class ReportController {
 		} else if (reportModel.getReportCode().equals("102")) {
 			reportModel.setViewType("1");
 			oReportDetails = reportService.searchReportDetails(reportModel);
+			oReport = reportService.getShopInfo(reportModel);
 			JRDataSource dataSource = reportService.posReportData(reportModel);
 			// params.put("advanceGivenByName",
 			// reportModel.getAdvanceGivenByName());
 			
-			//System.out.println("from date " + reportModel.getFromDate());
-			//System.out.println("to date " + reportModel.getToDate());
+
+			//System.out.println("item id " + reportModel.getItemId());
+			ReportModel oReportModel = new ReportModel();
+			oReportModel = reportService.posReportSumData(reportModel);
+			
+			System.out.println("CashPayAmount " + oReportModel.getCashPaySum());
+			System.out.println("CardPayAmount " + oReportModel.getCardPaySum());
+			System.out.println("bkashPayAmount " + oReportModel.getBkashPaySum());
+			
+			
+			params.put("shopName", oReport.getShopName());
+			params.put("shopAddress", oReport.getShopAddress());
+			params.put("phoneNo", oReport.getPhoneNo());
+			params.put("email", oReport.getEmail());
+			
+			
+			params.put("orderId", oReportModel.getOrderId());
+			params.put("discountSum", oReportModel.getDiscountSum());
+			params.put("bkashPaySum", oReportModel.getBkashPaySum());
+			params.put("cashPaySum", oReportModel.getCashPaySum());
+			params.put("cardPaySum", oReportModel.getCardPaySum());
 			
 			params.put("fromDate", reportModel.getFromDate());
 			params.put("toDate", reportModel.getToDate());
@@ -445,6 +483,27 @@ public class ReportController {
 			params.put("month", reportModel.getMonth());
 			
 			reportModel.setViewType("3");
+		} else if (reportModel.getReportCode().equals("601")) {
+			reportModel.setViewType("1");
+			oReport = reportService.getShopInfo(reportModel);
+			oReportDetails = reportService.searchReportDetails(reportModel);
+			
+			System.out.println("oReportDetails.getJesperName() " + oReportDetails.getJesperName());
+			
+			JRDataSource dataSource = reportService.stockSummaryReportData(reportModel);
+			//JRDataSource dataSource = reportService.posReportData(reportModel);
+			
+			//System.out.println("from date " + reportModel.getFromDate());
+			//System.out.println("to date " + reportModel.getToDate());
+			
+			params.put("shopName", oReport.getShopName());
+			params.put("shopAddress", oReport.getShopAddress());
+			params.put("phoneNo", oReport.getPhoneNo());
+			params.put("email", oReport.getEmail());
+			
+			params.put("fromDate", reportModel.getFromDate());
+			//params.put("toDate", reportModel.getToDate());
+			params.put("dataSource", dataSource);
 		}
 		else {
 			return null;

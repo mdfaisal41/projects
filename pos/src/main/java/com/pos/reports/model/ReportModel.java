@@ -13,6 +13,8 @@ public class ReportModel {
 	private String quantity;
 	private int itemPrice;
 	private int subTotalCount;
+	private Double reportItemPrice;
+	private Double reportSubTotalCount;
 	private String updateBy;
 	private String updateDate;
 	
@@ -22,6 +24,7 @@ public class ReportModel {
 	private String productId;
 	private String productName;
 	private String unitName;
+	private String employeeId;
 	private String employeeName;
 	private String fromDate;
 	private String toDate;
@@ -64,6 +67,90 @@ public class ReportModel {
 	private String ownerFoodConsumeCost;
 	
 	
+	private Double discountSum;
+	private Double cardPaySum;
+	private Double cashPaySum;
+	private Double bkashPaySum;
+	
+	private String shopName;
+	private String shopAddress;
+	private String phoneNo;
+	private String email;
+	
+	
+	private String stockDate;
+	private String stockIn;
+	private String stockOut;
+	private String itemOrderProduct;
+	private String wastage;
+	
+	
+	public String getEmployeeId() {
+		return employeeId;
+	}
+	public void setEmployeeId(String employeeId) {
+		this.employeeId = employeeId;
+	}
+	public String getShopName() {
+		return shopName;
+	}
+	public void setShopName(String shopName) {
+		this.shopName = shopName;
+	}
+	public String getShopAddress() {
+		return shopAddress;
+	}
+	public void setShopAddress(String shopAddress) {
+		this.shopAddress = shopAddress;
+	}
+	public String getPhoneNo() {
+		return phoneNo;
+	}
+	public void setPhoneNo(String phoneNo) {
+		this.phoneNo = phoneNo;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public Double getReportItemPrice() {
+		return reportItemPrice;
+	}
+	public void setReportItemPrice(Double reportItemPrice) {
+		this.reportItemPrice = reportItemPrice;
+	}
+	public Double getReportSubTotalCount() {
+		return reportSubTotalCount;
+	}
+	public void setReportSubTotalCount(Double reportSubTotalCount) {
+		this.reportSubTotalCount = reportSubTotalCount;
+	}
+	public Double getDiscountSum() {
+		return discountSum;
+	}
+	public void setDiscountSum(Double discountSum) {
+		this.discountSum = discountSum;
+	}
+	public Double getCardPaySum() {
+		return cardPaySum;
+	}
+	public void setCardPaySum(Double cardPaySum) {
+		this.cardPaySum = cardPaySum;
+	}
+	public Double getCashPaySum() {
+		return cashPaySum;
+	}
+	public void setCashPaySum(Double cashPaySum) {
+		this.cashPaySum = cashPaySum;
+	}
+	public Double getBkashPaySum() {
+		return bkashPaySum;
+	}
+	public void setBkashPaySum(Double bkashPaySum) {
+		this.bkashPaySum = bkashPaySum;
+	}
 	public int getSubTotalCount() {
 		return subTotalCount;
 	}
@@ -395,6 +482,36 @@ public class ReportModel {
 	}
 	public void setEmployeeSalary(String employeeSalary) {
 		this.employeeSalary = employeeSalary;
+	}
+	public String getStockDate() {
+		return stockDate;
+	}
+	public void setStockDate(String stockDate) {
+		this.stockDate = stockDate;
+	}
+	public String getStockIn() {
+		return stockIn;
+	}
+	public void setStockIn(String stockIn) {
+		this.stockIn = stockIn;
+	}
+	public String getStockOut() {
+		return stockOut;
+	}
+	public void setStockOut(String stockOut) {
+		this.stockOut = stockOut;
+	}
+	public String getItemOrderProduct() {
+		return itemOrderProduct;
+	}
+	public void setItemOrderProduct(String itemOrderProduct) {
+		this.itemOrderProduct = itemOrderProduct;
+	}
+	public String getWastage() {
+		return wastage;
+	}
+	public void setWastage(String wastage) {
+		this.wastage = wastage;
 	}
 	
 	

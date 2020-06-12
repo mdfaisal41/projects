@@ -67,7 +67,33 @@
 				</header>
 				<div class="panel-body">
 					<br />
+					<div class="form-group col-md-12">
 
+						<div class="col-sm-6 form-group">
+							<label class="control-label col-md-6 col-sm-6 col-xs-12">Owner
+								Food</label>
+							<div class="col-md-6 col-sm-6 col-xs-12">
+								<select class="form-control" id="ownerFoodYn" name="ownerFoodYn">
+									<option
+										<c:if test="${pointOfSale.ownerFoodYn == 'N'}">selected = "selected" </c:if>
+										value="N">NO</option>
+									<option
+										<c:if test="${pointOfSale.ownerFoodYn == 'Y'}">selected = "selected" </c:if>
+										value="Y">YES</option>
+								</select>
+							</div>
+						</div>
+
+						<div class="col-sm-6 form-group">
+							<label class="control-label col-md-6 col-sm-6 col-xs-12"
+								for="orderNote">Item Note</label>
+							<div class="col-md-6 col-sm-6 col-xs-12">
+								<input type="text" class="form-control" id="orderNote"
+									maxlength="500" value="${pointOfSale.orderNote}">
+							</div>
+						</div>
+
+					</div>
 
 					<div class="form-group col-md-12">
 
@@ -91,12 +117,12 @@
 
 						<div class="col-sm-6 form-group">
 							<label class="control-label col-md-6 col-sm-6 col-xs-12"
-								for="tableNo">Table No</label>
+								for="tableNo">Table No <span class="required">*</span></label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
 								<input type="text" required class="form-control mandatory"
 									name="tableNo" id="tableNo"
 									onkeydown="return isNumberKey(event)"
-									value="${pointOfSale.tableNo}">
+									value="${pointOfSale.tableNo}" onblur="getDuplicteTable(this.value)">
 
 								<div id="errtableNo"></div>
 
@@ -104,43 +130,48 @@
 						</div>
 
 					</div>
+					
+					<script>
+					 function getDuplicteTable (tableNo) {
+						var encOrderId = $("#encOrderId").val();
+						//alert(encOrderId);
+						if (tableNo != '' && encOrderId == '') {
+							//alert(tableNo);
+							var link = "/pos/pointOfSale/getDuplicteTable";
+							var errMessage = '<label class="error">Order pending in table no '+ tableNo+'</label>';
+							$
+									.ajax({
+										type : "POST",
+										url : link,
+										data : "tableNo=" + tableNo,
+										async : true,
 
-					<div class="form-group col-md-12">
+										success : function(data) {
+											//alert(data.countDuplicateTable);
+											if (data.countDuplicateTable > 0) {
+												$("#tableNo").val('');
+												$("#errtableNo").html(errMessage);
+											} else {
+												$("#errtableNo").html('');
+											}
+											//$("#orderTotalAmountBillPrint").val(data.orderTotalAmount);
+											//$("#netPayableAmountBillPrint").val(data.orderTotalAmount); 
+										}
+									});
+						}
+					} 
+					</script>
 
-						<div class="col-sm-6 form-group">
-							<label class="control-label col-md-6 col-sm-6 col-xs-12">Owner
-								Food</label>
-							<div class="col-md-6 col-sm-6 col-xs-12">
-								<select class="form-control" id="ownerFoodYn" name="ownerFoodYn">
-									<option
-										<c:if test="${pointOfSale.ownerFoodYn == 'N'}">selected = "selected" </c:if>
-										value="N">NO</option>
-									<option
-										<c:if test="${pointOfSale.ownerFoodYn == 'Y'}">selected = "selected" </c:if>
-										value="Y">YES</option>
-								</select>
-							</div>
-						</div>
-
-						<div class="col-sm-6 form-group">
-							<label class="control-label col-md-6 col-sm-6 col-xs-12"
-								for="orderNote">Order Note</label>
-							<div class="col-md-6 col-sm-6 col-xs-12">
-								<input type="text" class="form-control" 
-									id="orderNote" maxlength="500" value="${pointOfSale.orderNote}">
-							</div>
-						</div>
-
-					</div>
+					
 
 					<div class="form-group col-md-12">
 
 						<div class="col-sm-6 form-group">
 							<label class="control-label col-md-6 col-sm-6 col-xs-12">Item
-								Name</label>
+								Name <c:if test="${pointOfSale.encOrderId == null}"><span class="required">*</span></c:if></label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
 								<select data-plugin-selectTwo class="form-control" id="itemId"
-									name="itemId">
+									name="itemId" <c:if test="${pointOfSale.encOrderId == null}"> required="required" </c:if>>
 									<option value="">Select One</option>
 									<c:forEach items="${itemList}" var="list">
 										<option value="${list.itemId}">${list.itemName}</option>
@@ -151,10 +182,12 @@
 
 
 						<div class="col-sm-6 form-group">
-							<label class="control-label col-md-6 col-sm-6 col-xs-12" for="">Quantity</label>
+							<label class="control-label col-md-6 col-sm-6 col-xs-12" for="">Quantity 
+							<c:if test="${pointOfSale.encOrderId == null}"><span class="required">*</span></c:if></label>
 							<div class="col-md-6 col-sm-6 col-xs-12">
-								<input type="text" class="form-control mandatory"
-									name="quantity" id="quantity"
+								<input type="text" class="form-control <c:if test="${pointOfSale.encOrderId == null}">mandatory</c:if>"
+									name="quantity" id="quantity" 
+									<c:if test="${pointOfSale.encOrderId == null}"> required="required" </c:if>
 									onkeydown="return isNumberKey(event)"
 									value="${pointOfSale.quantity}">
 
@@ -375,12 +408,12 @@
 															<i class="fa fa-edit"></i>
 														</button>
 													</c:if></td>
-												<td><c:if test="${list.finalizedYn == 'N'}">
+												<td><%-- <c:if test="${list.finalizedYn == 'N'}"> --%>
 														<button type="button" class="btn btn-warning"
 															onclick="printKitchenQT('${list.encOrderId}')">
 															<i class="fa fa-print"></i>
 														</button>
-													</c:if></td>
+													<%-- </c:if> --%></td>
 
 												<td style="text-align: center;" nowrap><c:choose>
 														<c:when test="${list.billPrintYn == 'N' && list.finalizedYn == 'N'}">
@@ -628,12 +661,81 @@
 
 				<div class="col-md-12"></div>
 			</div>
+			
+			<header class="panel-heading">
+				<h2 class="panel-title">Due Section</h2>
+			</header>
+			<div class="panel-body">
+
+
+				<!-- <div class="col-md-12" id="modalMsg" style="text-align: center;"></div> -->
+
+
+				<input type='hidden' id='modal_encOrderId' name='encOrderId' />
+
+				<div class="form-group col-md-12">
+					<div class="col-sm-6">
+						<label class="col-md-6 control-label" for="">
+							Due Customer <span class="required"> * </span></label>
+						<div class="col-md-6">
+							<select class="form-control" id="dueCustomerYn" name="dueCustomerYn" onchange="getDueCustomerDetails(this.value)">
+									<option value="N">NO</option>
+									<option value="Y">YES</option>
+								</select>
+						</div>
+					</div>
+
+					<div class="col-md-6" style="display: none" id="customerNameDiv">
+						<label class="col-md-6 control-label" for="dueCustomerId">
+							Customer Name <span class="required"> * </span>
+						</label>
+						<div class="col-md-6">
+							<select class="form-control" name="dueCustomerId"
+								id="dueCustomerId" onchange="getDueDepositeAmount(this.value)">
+								<option value="">Please Select One</option>
+								<c:forEach items="${customerList}" var="list">
+									<option value="${list.dueCustomerId}">${list.customerName}</option>
+								</c:forEach>
+							</select>
+						</div>
+					</div>
+
+				</div>
+
+
+				<div class="form-group col-md-12" style="display: none" id="customerDueDetailDiv">
+					<div class="col-sm-6">
+						<label class="col-md-6 control-label"> Due/Deposite
+							Amount <span class="required"> * </span></label>
+						<div class="col-md-6">
+							<input type="text" class="form-control"
+								id="dueAmount" value="" readonly/>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<label class="col-md-6 control-label"> Paid Amount <span class="required"> * </span></label>
+						<div class="col-md-6">
+							<input type="text" class="form-control"
+								name="paidAmount" id="paidAmount"/>
+						</div>
+					</div>
+
+				</div>
+
+				<div class="col-md-12"></div>
+			</div>
+
+			<!-- <input type="text" class="form-control"
+								name="billPrintYn" id="billPrintYn"/> -->
 			<footer class="panel-footer">
 				<div class="row">
 					<div class="col-sm-offset-5">
 						<button class="btn btn-primary" type="submit" id="paymentSubmit">Submit</button>
 						<a href="/pos/pointOfSale/orderManagement"><button
 								class="btn btn-default" type="button" role="button">Close</button></a>
+						<a href="/pos/pointOfSale/dueCustomer"><button
+								class="btn btn-default" type="button" role="button">Add
+								Due Customer</button></a>
 					</div>
 				</div>
 			</footer>
@@ -642,6 +744,38 @@
 </div>
 
 <script>
+
+function getDueDepositeAmount(dueCustomerId) {
+	//alert(dueCustomerId);
+	var link = "/pos/pointOfSale/getDueDepositeAmount";
+	$
+			.ajax({
+				type : "POST",
+				url : link,
+				data : "dueCustomerId=" + dueCustomerId,
+				async : true,
+
+				success : function(data) {
+					$("#dueAmount").val(data.dueAmount);
+				}
+			});
+	
+}
+
+ function getDueCustomerDetails(dueCustomerYn) {
+	//alert(dueCustomerYn);
+	if (dueCustomerYn == 'Y') {
+		$("#customerNameDiv").show();
+		$("#customerDueDetailDiv").show();
+		$("#customerName").attr(required, true);
+		$("#modalMsg").html('');
+	} else {
+		$("#customerNameDiv").hide();
+		$("#customerDueDetailDiv").hide();
+	}
+	
+};
+
 function clearFinalizeModal () {
 	//alert('hello');
 $("#orderTotalAmount").val('');
@@ -661,7 +795,7 @@ $("#changeAmount").val('');
 
 
 
-<!----------------------------------------------------- Start Order Finalize Modal ----------------------------------------------------------------------->
+<!----------------------------------------------------- Start bill print Modal ----------------------------------------------------------------------->
 
 
 <div id="modalBillPrintInfo"
@@ -773,196 +907,6 @@ function clearBillPrintModal (){
 <!-------------------------------- Ending bill print Modal --------------------------------------------->
 
 
-
-
-
-
-<%-- 
-<!----------------------------------------------------- Start Registration Id Modal ----------------------------------------------------------------------->
-
-
-<div id="modalMoneyReceiptInfo"
-	class="zoom-anim-dialog modal-block modal-block-lg mfp-hide">
-	<!-- class="zoom-anim-dialog modal-block modal-block-sm mfp-hide"> modal-block modal-block-full mfp-hide  -->
-	<!-- class="mb-xs mt-xs mr-xs modal-sizes btn btn-default"  -->
-	<form class="" method="post" autocomplete="off"
-			action="/pos/pointOfSale/saveOrderFinalize" id="form"
-			onkeypress="return event.keyCode != 13;">
-	<section class="panel panel-featured panel-featured-primary">
-		<header class="panel-heading">
-			<button class="close modal-dismiss" type="button"
-				id="btnModalEmpListClose">
-				<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
-			</button>
-			<h2 class="panel-title">Customer Payment</h2>
-		</header>
-
-		<div class="panel-body">
-			<!-- <div class="col-md-12"> -->
-			
-			<input type='hidden' id='modal_encOrderId' name='encOrderId'/>
-
-				<div class="form-group col-md-12">
-					<div class="col-sm-6">
-						<label class="col-md-6 control-label" for="personId">
-							Payable Amount <span class="required"> * </span>
-						</label>
-						<div class="col-md-6">
-							<!-- <p id="orderTotalAmount"></p> -->
-							<input type="text" required class="form-control" readonly
-								name="orderTotalAmount" id="orderTotalAmount" required
-								value="${pointOfSale.orderTotalAmount}" />
-						</div>
-					</div>
-					<div class="col-md-6">
-						<label class="col-md-6 control-label" for="personId"> Net
-							Payable <span class="required"> * </span>
-						</label>
-						<div class="col-md-6">
-							<input type="text" required class="form-control" readonly
-								name="netPayableAmount" id="netPayableAmount"
-								value="${pointOfSale.netPayableAmount}" />
-						</div>
-					</div>
-				</div>
-
-
-
-				<!-- </div> -->
-				<div class="form-group col-md-12">
-					<div class="col-sm-6">
-						<label class="col-md-6 control-label" for="receivedAmount">Received
-							Amount <span class="required"> * </span></label>
-						<div class="col-md-6">
-							<input type="text" class="form-control mandatory"
-								name="receivedAmount" id="receivedAmount" required value=""
-								onkeypress="return isNumberKey(event)"
-								onkeyup="getChangeAmount()" />
-							<div id="errorderPrice"></div>
-						</div>
-					</div>
-					<div class="col-sm-6">
-						<label class="col-md-6 control-label" for="personId">Change
-							Amount <span class="required"> * </span>
-						</label>
-						<div class="col-md-6">
-							<input type="text" required class="form-control" readonly
-								name="changeAmount" id="changeAmount" value=""
-								onkeypress="return isNumberKey(event)" />
-
-							<div id="errdiscountAmount"></div>
-						</div>
-					</div>
-				</div>
-
-				<div class="form-group col-md-12">
-					<div class="col-sm-6">
-						<label class="col-md-6 control-label"> Cash Pay Amount <span
-							class="required"> * </span>
-						</label>
-						<div class="col-md-6">
-							<input type="text" class="form-control mandatory"
-								name="cashPayAmount" id="cashPayAmount" required value=""
-								onkeypress="return isNumberKey(event)" />
-								<!-- onkeyup="getCardPayAmount()" -->
-							<div id="errdiscountAmount"></div>
-						</div>
-					</div>
-					<div class="col-sm-6">
-						<label class="col-md-6 control-label"> Card Pay Amount <span
-							class="required"> * </span>
-						</label>
-						<div class="col-md-6">
-							<input type="text" class="form-control mandatory"
-								name="cardPayAmount" id="cardPayAmount" required value=""
-								onkeypress="return isNumberKey(event)" />
-								<!-- onkeyup="getCashPayAmount()" -->
-							<div id="errdiscountAmount"></div>
-						</div>
-
-					</div>
-				</div>
-
-				<div class="form-group col-md-12">
-					<div class="col-sm-6">
-						<label class="col-md-6 control-label"> bKash Pay Amount <span
-							class="required"> * </span>
-						</label>
-						<div class="col-md-6">
-							<input type="text" class="form-control mandatory"
-								name="bkashPaymentAmount" id="bkashPaymentAmount" required value=""
-								onkeypress="return isNumberKey(event)" />
-							<div id="errdiscountAmount"></div>
-						</div>
-					</div>
-					<div class="col-sm-6">
-						<label class="col-md-6 control-label"> bKash Transaction
-							No </label>
-						<div class="col-md-6">
-							<input type="text" class="form-control" name="bkashTranNo"
-								id="bkashTranNo" value="" onkeyup="getCashPayAmount()"
-								onkeypress="return isNumberKey(event)" />
-
-							<div id="errdiscountAmount"></div>
-						</div>
-
-					</div>
-				</div>
-
-				<div class="form-group col-md-12">
-					<div class="col-sm-6">
-						<label class="col-md-6 control-label"> Discount Amount <span
-							class="required"> * </span>
-						</label>
-						<div class="col-md-6">
-							<input type="text" class="form-control mandatory"
-								name="discountAmount" id="discountAmount" required value=""
-								onblur="getDiscountAmount()"
-								onkeypress="return isNumberKey(event)" />
-
-							<div id="errdiscountAmount"></div>
-						</div>
-					</div>
-					<div class="col-md-6">
-						<label class="col-md-6 control-label"> Discount Reference By
-						</label>
-						<div class="col-md-6">
-							<input type="text" class="form-control" name="discountReferenceBy"
-								id="discountReferenceBy" value=""/>
-							<select data-plugin-selectTwo class="form-control" required
-								id="referenceById" name="referenceById">
-								<option value="">Select One</option>
-								<c:forEach items="${employeeList}" var="list">
-									<option
-										<c:if test="${list.employeeId==pointOfSale.referenceById}">selected="selected"</c:if>
-										value="${list.employeeId}">${list.firstName}</option>
-								</c:forEach>
-							</select>
-						</div>
-					</div>
-
-				</div>
-
-				<div class="col-md-12">
-					
-				</div>
-			</div>
-		<footer class="panel-footer">
-			<div class="row">
-				<div class="col-sm-offset-5">
-					<button class="btn btn-primary" type="submit">Submit</button>
-					<a href="/pos/pointOfSale/orderManagement"><button
-							class="btn btn-default" type="button" role="button">Close</button></a>
-				</div>
-			</div>
-		</footer>
-	</section>
-	</form>
-</div>
-
-<!-------------------------------- Ending Modal --------------------------------------------->
-
- --%>
 <!-------------------------------- start modal makers country ------------------------------------------>
 
 <div id="modalOrderInfoList"
@@ -1305,9 +1249,10 @@ function orderAddList() {
 	function getChangeAmount () {
 		var receivedAmount = $("#receivedAmount").val();
 		var cashPayAmount = $("#cashPayAmount").val();
+		var dueCustomerYn = $("#dueCustomerYn").val();
 		
+		if (dueCustomerYn == 'N') {
 		if(receivedAmount !='') {
-		
 		if(cashPayAmount =='') {
 			var msg = '<label class="error">Enter cash pay amount first</label>';
 			$("#modalMsg").html(msg);
@@ -1333,6 +1278,7 @@ function orderAddList() {
 			$("#modalMsg").html('');
 			$("#changeAmount").val('');
 		}
+		}
 	}
 
 
@@ -1341,7 +1287,10 @@ function orderAddList() {
 		var cashPayAmount = $("#cashPayAmount").val();
 		var cardPayAmount = $("#cardPayAmount").val();
 		var bkashPaymentAmount = $("#bkashPaymentAmount").val();
+		var dueCustomerYn = $("#dueCustomerYn").val();
 		
+		//alert(dueCustomerYn);
+		 if (dueCustomerYn == 'N') {
 	if (cashPayAmount != '' && parseInt(cashPayAmount) >=0) {
 		if(cardPayAmount=='') {
 			cardPayAmount = '0';
@@ -1357,6 +1306,8 @@ function orderAddList() {
 			getChangeAmount();
 		}
 	  }
+		 }
+	
 	}
 
 
@@ -1366,7 +1317,10 @@ function orderAddList() {
 		var cashPayAmount = $("#cashPayAmount").val();
 		var cardPayAmount = $("#cardPayAmount").val();
 		var bkashPaymentAmount = $("#bkashPaymentAmount").val();
+		var dueCustomerYn = $("#dueCustomerYn").val();
 		
+		
+		if (dueCustomerYn == 'N') {
 		if (cardPayAmount != '' && parseInt(cardPayAmount) >=0) {
 			if(cashPayAmount == '') {
 				var msg = '<label class="error">Enter cash pay amount first</label>';
@@ -1391,6 +1345,7 @@ function orderAddList() {
 				}
 			}
 		}
+		}
 	}
 
 
@@ -1399,7 +1354,10 @@ function orderAddList() {
 		var cashPayAmount = $("#cashPayAmount").val();
 		var cardPayAmount = $("#cardPayAmount").val();
 		var bkashPaymentAmount = $("#bkashPaymentAmount").val();
+		var dueCustomerYn = $("#dueCustomerYn").val();
 		
+		
+		if (dueCustomerYn == 'N') {
 		if (bkashPaymentAmount != '' && parseInt(bkashPaymentAmount) >=0) {
 			if(cashPayAmount == '') {
 				var msg = '<label class="error">Enter cash pay amount first</label>';
@@ -1423,6 +1381,7 @@ function orderAddList() {
 					}
 				}
 			}
+		}
 		}
 	};
 
@@ -1786,11 +1745,95 @@ function orderAddList() {
 	window.onload = function() {
 		window.jQuery();
 		
-		$("#paymentSubmit").click(function(e) {
+ 		$("#paymentSubmit").click(function(e) {
 			e.preventDefault();  // stop form from submitting right away
 			var error = false;
 			
 			var cashPayAmount = $("#cashPayAmount").val();
+			var dueCustomerYn = $("#dueCustomerYn").val();
+			var dueCustomerId = $("#dueCustomerId").val();
+			var dueAmount = $("#dueAmount").val();
+			var paidAmount = $("#paidAmount").val();
+			
+			
+
+			if(dueCustomerYn =='Y') {
+				if (dueCustomerId == '') {
+					var msg = '<label class="error">Select Customer !</label>';
+					$("#modalMsg").html(msg);
+					$('#modalMsg').find('.error').each(function() {
+						 error = true;
+					    });
+					
+					 if (!error) { 
+						$('#formExtra').submit();
+					} else {
+						e.preventDefault();  
+					}
+				} else if (dueAmount == '') {
+					var msg = '<label class="error">Due Amount Cannot Be Empty !</label>';
+					$("#modalMsg").html(msg);
+					$('#modalMsg').find('.error').each(function() {
+						 error = true;
+					    });
+					
+					 if (!error) { 
+						$('#formExtra').submit();
+					} else {
+						e.preventDefault();  
+					}
+				} else if (paidAmount == '') {
+					var msg = '<label class="error">Enter Paid Amount !</label>';
+					$("#modalMsg").html(msg);
+					$('#modalMsg').find('.error').each(function() {
+						 error = true;
+					    });
+					
+					 if (!error) { 
+						$('#formExtra').submit();
+					} else {
+						e.preventDefault();  
+					}
+				}
+				//e.preventDefault();
+				
+			} else if (cashPayAmount =='') {
+				var msg = '<label class="error">Cash amount must be required</label>';
+				$("#modalMsg").html(msg);
+				
+				 $('#modalMsg').find('.error').each(function() {
+					 error = true;
+				    });
+				
+				 if (!error) { 
+					$('#formExtra').submit();
+				} else {
+					e.preventDefault();  
+				}
+			} else {
+				$('#modalMsg').find('.error').each(function() {
+					 error = true;
+				    });
+				
+				 if (!error) { 
+					$('#formExtra').submit();
+				} else {
+					e.preventDefault();  
+				}
+			
+			}
+			}); 
+
+/* 		$("#paymentSubmit").click(function(e) {
+			e.preventDefault();  // stop form from submitting right away
+			var error = false;
+			
+			var cashPayAmount = $("#cashPayAmount").val();
+			//var dueCustomerYn = $("#dueCustomerYn").val();
+			//var dueCustomerId = $("#dueCustomerId").val();
+			//var dueAmount = $("#dueAmount").val();
+			//var paidAmount = $("#paidAmount").val();
+
 			if(cashPayAmount =='') {
 				var msg = '<label class="error">Cash amount must be required</label>';
 				$("#modalMsg").html(msg);
@@ -1799,15 +1842,16 @@ function orderAddList() {
 			 $('#modalMsg').find('.error').each(function() {
 				 error = true;
 			    });
-			 
+			
 			if (!error) { 
 				$('#formExtra').submit();
 			} else {
 				e.preventDefault();  
 			}
-			});
+			
+			}); */
 		
-		$("#billPrintSubmit").click(function(e) {
+		/* $("#billPrintSubmit").click(function(e) {
 			e.preventDefault();  // stop form from submitting right away
 			var error = false;
 			
@@ -1820,12 +1864,27 @@ function orderAddList() {
 			} else {
 				e.preventDefault();  
 			}
-			});
+			}); */
 		
 		
 		
 		
 	};
+	
+	$("#billPrintSubmit").click(function(e) {
+		e.preventDefault();  // stop form from submitting right away
+		var error = false;
+		
+		 $('#modalMsgBillPrint').find('.error').each(function() {
+			 error = true;
+		    });
+		 
+		if (!error) { 
+			$('#formBillPrint').submit();
+		} else {
+			e.preventDefault();  
+		}
+		});
 
 
 	</script>

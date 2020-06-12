@@ -85,12 +85,31 @@
 
 				<div class="panel-body">
 					<div class="form-group col-lg-12">
+					<div class="col-md-6">
+							<div class="form-group">
+								<label class="col-md-5 col-sm-3 control-label">Inventory Type</label>
+								<div class="col-md-7 col-sm-7 col-xs-12">
+									<select data-plugin-selectTwo class="form-control" id="inventoryTypeId"
+										name="inventoryTypeId" onchange="getProductDisable()">
+										<option value="">Select One</option>
+										<c:forEach items="${inventoryTypeList}" var="list">
+											<option
+												<c:if test="${list.inventoryTypeId==inventory.inventoryTypeId}">selected="selected"</c:if>
+												value="${list.inventoryTypeId}">${list.inventoryTypeName}</option>
+										</c:forEach>
+									</select>
+								</div>
+							</div>
+						</div>
 						<div class="col-md-6">
 							<div class="form-group">
 								<label class="col-md-5 col-sm-3 control-label">Item Name</label>
 								<div class="col-md-7 col-sm-7 col-xs-12">
 									<select data-plugin-selectTwo class="form-control" id="itemId"
-										name="itemId">
+										name="itemId" onchange="getProductDisable()"
+										<c:if test="${inventory.productId != null}">
+										disabled
+										</c:if>>
 										<option value="">Select One</option>
 										<c:forEach items="${itemList}" var="list">
 											<option
@@ -101,14 +120,53 @@
 								</div>
 							</div>
 						</div>
+						
+						<script type="text/javascript">
+						
+						function getProductDisable() {
+							//alert("hello");
+							
+							var itemId = $("#itemId").val();
+							var productId = $("#productId").val();
+							
+							if (itemId != '') {
+								$("#productId").attr("disabled",true);
+							} else {
+								$("#productId").attr("disabled",false);
+							}
+						}
+						
+						function getItemDisable() {
+							//alert("hello");
+							
+							var itemId = $("#itemId").val();
+							var productId = $("#productId").val();
+							
+							
+							if (productId != '') {
+								$("#itemId").attr("disabled",true);
+							} else {
+								$("#itemId").attr("disabled",false);
+							}
+						}
+						
+						</script>
 
-						<div class="col-md-6">
+						
+					</div>
+
+					<div class="form-group col-lg-12">
+					<div class="col-md-6">
 							<div class="form-group">
 								<label class="col-md-5 col-sm-3 control-label"
 									for="vehicleClassId">Product Name</label>
 								<div class="col-md-7 col-sm-7 col-xs-12">
 									<select data-plugin-selectTwo class="form-control"
-										name="productId" id="productId">
+										name="productId" id="productId" onchange="getItemDisable()" 
+										<c:if test="${inventory.itemId != null}">
+										disabled
+										</c:if>
+										>
 										<option value="">Please Select One</option>
 										<c:forEach items="${productList}" var="list">
 											<option
@@ -119,9 +177,6 @@
 								</div>
 							</div>
 						</div>
-					</div>
-
-					<div class="form-group col-lg-12">
 						<div class="col-md-6">
 							<div class="form-group">
 								<label class="col-md-5 col-sm-3 control-label">Quantity
@@ -137,7 +192,11 @@
 							</div>
 						</div>
 
-						<div class="col-md-6">
+						
+					</div>
+
+					<div class="form-group col-lg-12">
+					<div class="col-md-6">
 							<div class="form-group">
 								<label class="col-md-5 col-sm-3 control-label"
 									for="vehicleClassId">Unit</label>
@@ -154,9 +213,6 @@
 								</div>
 							</div>
 						</div>
-					</div>
-
-					<div class="form-group col-lg-12">
 						<div class="col-md-6">
 							<div class="form-group">
 								<label class="col-md-5 col-sm-3 control-label"

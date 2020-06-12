@@ -14,10 +14,23 @@ public class LookupModel {
 	private String itemName;
 	private String id;
 	private String name;
+	private String dueCustomerId;
+	private String customerName;
 	
 	
 	
-	
+	public String getDueCustomerId() {
+		return dueCustomerId;
+	}
+	public void setDueCustomerId(String dueCustomerId) {
+		this.dueCustomerId = dueCustomerId;
+	}
+	public String getCustomerName() {
+		return customerName;
+	}
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
 	public String getId() {
 		return id;
 	}

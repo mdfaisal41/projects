@@ -36,9 +36,59 @@ public class Inventory {
 	private String fromDate;
 	private String toDate;
 	private String encWastageId;
+	private String wastageDate;
+	private String wastageSysdateYn;
+	
+	private String storeId;
+	private String encStoreId;
+	private String storeDate;
+	private String smallUnit;
+	private String storeDateYn;
 	
 	
 	
+	public String getStoreDateYn() {
+		return storeDateYn;
+	}
+	public void setStoreDateYn(String storeDateYn) {
+		this.storeDateYn = storeDateYn;
+	}
+	public String getSmallUnit() {
+		return smallUnit;
+	}
+	public void setSmallUnit(String smallUnit) {
+		this.smallUnit = smallUnit;
+	}
+	public String getStoreDate() {
+		return storeDate;
+	}
+	public void setStoreDate(String storeDate) {
+		this.storeDate = storeDate;
+	}
+	public String getStoreId() {
+		return storeId;
+	}
+	public void setStoreId(String storeId) {
+		this.storeId = storeId;
+	}
+	public String getEncStoreId() {
+		return encStoreId;
+	}
+	public void setEncStoreId(String encStoreId) {
+		this.encStoreId = encStoreId;
+	}
+	public String getWastageDate() {
+		return wastageDate;
+	}
+	public void setWastageDate(String wastageDate) {
+		this.wastageDate = wastageDate;
+	}
+	public String getWastageSysdateYn() {
+		return wastageSysdateYn;
+	}
+	public void setWastageSysdateYn(String wastageSysdateYn) {
+		this.wastageSysdateYn = wastageSysdateYn;
+	}
 	public String getUnitPrice() {
 		return unitPrice;
 	}

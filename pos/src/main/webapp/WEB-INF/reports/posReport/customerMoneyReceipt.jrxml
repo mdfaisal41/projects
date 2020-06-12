@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="customerMoneyReceipt" pageWidth="595" pageHeight="1500" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
-	<property name="ireport.zoom" value="1.1000000000000039"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.zoom" value="1.9487171000000076"/>
+	<property name="ireport.x" value="144"/>
+	<property name="ireport.y" value="815"/>
 	<parameter name="encOrderId" class="java.lang.String">
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
+	<parameter name="shopName" class="java.lang.String"/>
+	<parameter name="shopAddress" class="java.lang.String"/>
+	<parameter name="phoneNo" class="java.lang.String"/>
+	<parameter name="email" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -29,32 +33,18 @@
 	<title>
 		<band height="134">
 			<staticText>
-				<reportElement x="0" y="78" width="555" height="24"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
+				<reportElement x="0" y="78" width="185" height="24"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="18"/>
 				</textElement>
-				<text><![CDATA[E-mail : terracottafaridpur@gmail.com]]></text>
+				<text><![CDATA[E-mail : ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="55" width="555" height="24"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
+				<reportElement x="0" y="55" width="237" height="24"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="18"/>
 				</textElement>
-				<text><![CDATA[Phone - 01732448855]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="32" width="555" height="24"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="18" isBold="false"/>
-				</textElement>
-				<text><![CDATA[100, Jheeltuli, Faridpur-7800]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="0" width="555" height="33"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="24" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Terracotta Restaurant]]></text>
+				<text><![CDATA[Phone : ]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="102" width="555" height="31"/>
@@ -66,6 +56,34 @@
 			<line>
 				<reportElement x="0" y="101" width="555" height="1"/>
 			</line>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="555" height="32" isPrintWhenDetailOverflows="true"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="24" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{shopName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="32" width="555" height="23" isPrintWhenDetailOverflows="true"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="18"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{shopAddress} + " "]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="237" y="55" width="318" height="23" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle">
+					<font size="18"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{phoneNo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="185" y="78" width="370" height="23" isPrintWhenDetailOverflows="true"/>
+				<textElement>
+					<font size="18"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{email}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>
@@ -332,11 +350,11 @@
 				<text><![CDATA[NB: After Sales, Cash Is Not Refundable]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="242" width="555" height="14"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
+				<reportElement x="0" y="242" width="286" height="14"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
-				<text><![CDATA[Thank You For Choosing Terracotta.]]></text>
+				<text><![CDATA[Thank You For Choosing  ]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="164" y="1" width="291" height="28"/>
@@ -499,6 +517,11 @@
 			<line>
 				<reportElement x="344" y="195" width="211" height="1"/>
 			</line>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="297" y="242" width="258" height="14" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{shopName} + " "]]></textFieldExpression>
+			</textField>
 		</band>
 	</summary>
 </jasperReport>

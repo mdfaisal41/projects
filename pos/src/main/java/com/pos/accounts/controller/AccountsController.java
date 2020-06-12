@@ -36,6 +36,7 @@ import com.pos.accounts.model.AdCategoryList;
 import com.pos.accounts.model.EmployeeMonthlyConsumption;
 import com.pos.accounts.model.OwnerConsumptionInfo;
 import com.pos.accounts.model.SalaryProcessModel;
+import com.pos.accounts.model.StockProcess;
 import com.pos.accounts.model.SupplierInfo;
 import com.pos.accounts.service.AccountsService;
 import com.pos.admin.model.UserInfoForm;
@@ -808,6 +809,64 @@ public class AccountsController {
 	}
 	
 	
+	
+	@RequestMapping(value = "stockProcessView", method = RequestMethod.GET)
+	public ModelAndView stockProcessView(@ModelAttribute SupplierInfo supplierInfo, HttpSession session,
+			LookupModel lookupModel, final RedirectAttributes redirectAttributes) {
+
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+
+			String menuId = "M1004";
+			MenuInfo menuInfo = loginService.checkUserAuthorization((String) session.getAttribute("employeeid"),
+					menuId);
+
+			if (menuInfo.getMenuId().equals(menuId)) {
+
+				ModelAndView mav = new ModelAndView();
+
+				mav.setViewName("stockProcessView");
+				return mav;
+			} else {
+				redirectAttributes.addFlashAttribute("message", "You are not authorized for this Page !");
+				redirectAttributes.addFlashAttribute("mCode", "0000");
+				return new ModelAndView("redirect:/");
+			}
+		} else {
+			return new ModelAndView("login");
+
+		}
+	}
+	
+	
+	@RequestMapping(value = "processStock", method = RequestMethod.POST)
+	public ModelAndView processStock(@ModelAttribute StockProcess stockProcess,
+			 HttpSession session, final RedirectAttributes redirectAttributes,
+			HttpServletRequest request) {
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+			
+			try {
+				StockProcess oStockProcess = new StockProcess();
+				stockProcess.setUpdateBy((String) session.getAttribute("employeeid"));
+							
+				System.out.println("stockProcess.getProcessDate() = " + stockProcess.getProcessDate());
+				System.out.println("stockProcess.getUpdateBy() = " + stockProcess.getUpdateBy());
+				
+				oStockProcess = accountsService.processStock(stockProcess);
+
+				redirectAttributes.addFlashAttribute("mCode", oStockProcess.getMessageCode());
+				redirectAttributes.addFlashAttribute("message", oStockProcess.getMessage());
+				
+				}  catch (Exception e) {
+				e.printStackTrace();
+				redirectAttributes.addFlashAttribute("mCode", "0000");
+				redirectAttributes.addFlashAttribute("message", "Error occured in Stock Proces action !!");
+			}
+			return new ModelAndView("redirect:/accounts/stockProcessView");
+
+		} else {
+			return new ModelAndView("redirect:/");
+		}
+	}
 	
 
 }

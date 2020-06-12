@@ -4,9 +4,9 @@
 
 
 				<div class="logo-container">
-					<a href="/pos/" class="logo">
+					<%-- <a href="/pos/" class="logo">
 							<img src="<c:url value="/resources/images/tera_final_logo2.png" />" height="50" alt="Teracotta" style="margin-top:-10px"/>
-					</a>
+					</a> --%>
 					
 					<div class="col-xs-4 hidden-xs">
 						

@@ -32,4 +32,11 @@ public interface ReportService {
 	public JRDataSource customerMoneyReceiptData(ReportModel reportModel);
 	
 	public ReportModel updateItemWiseKitchenQT(ReportModel reportModel);
+	
+	public ReportModel posReportSumData(ReportModel reportModel);
+	
+	public ReportModel getShopInfo(ReportModel reportModel);
+	
+	public JRDataSource stockSummaryReportData(ReportModel reportModel);
+	
 }

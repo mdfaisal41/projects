@@ -5,6 +5,7 @@ import java.util.List;
 import com.pos.accounts.model.EmployeeMonthlyConsumption;
 import com.pos.accounts.model.OwnerConsumptionInfo;
 import com.pos.accounts.model.SalaryProcessModel;
+import com.pos.accounts.model.StockProcess;
 import com.pos.accounts.model.SupplierInfo;
 
 
@@ -43,5 +44,6 @@ public interface AccountsService {
 	
 	public List<OwnerConsumptionInfo> getOwnerConsumptionHistoryList(OwnerConsumptionInfo ownerConsumptionInfo);
 	
+	public StockProcess processStock(StockProcess stockProcess);
 	
 }

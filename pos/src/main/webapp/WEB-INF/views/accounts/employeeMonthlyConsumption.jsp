@@ -260,11 +260,13 @@
 											<td>${list.consumeDate}</td>
 											<td>${list.amount}</td>
 											<td>${list.purpose}</td>
-											<td><a href="#"
+											<td>
+											<c:if test="${list.consumeSysdateYn == 'Y'}">
+											<a href="#"
 												onclick="getConsumeInfo('${list.encConsumeId}')"><button
 														class="btn btn-xs btn-primary" type="button">
 														<i class="fa fa-pencil"></i>
-													</button></a>
+													</button></a></c:if>
 										</tr>
 									</c:forEach>
 

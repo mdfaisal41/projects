@@ -99,4 +99,48 @@ public class PointOfSaleServiceImpl implements PointOfSaleService {
 	public PointOfSale orderProcessComplete(PointOfSale pointOfSale) {
 		return pointOfSaleDao.orderProcessComplete(pointOfSale);
 	}
+
+	public PointOfSale getDuplicteTable(PointOfSale pointOfSale) {
+		return pointOfSaleDao.getDuplicteTable(pointOfSale);
+	}
+
+	public PointOfSale saveDueCustomer(PointOfSale pointOfSale) {
+		return pointOfSaleDao.saveDueCustomer(pointOfSale);
+	}
+
+	public List<PointOfSale> getDueCustomerList(PointOfSale pointOfSale) throws Exception {
+		return pointOfSaleDao.getDueCustomerList(pointOfSale);
+	}
+	public PointOfSale getDueCustomerInfo(PointOfSale pointOfSale) {
+		return pointOfSaleDao.getDueCustomerInfo(pointOfSale);
+	}
+
+	public PointOfSale getDueDepositeAmount(String dueCustomerId) {
+		return pointOfSaleDao.getDueDepositeAmount(dueCustomerId);
+	}
+
+	public PointOfSale saveDueCollection(PointOfSale pointOfSale) {
+		return pointOfSaleDao.saveDueCollection(pointOfSale);
+	}
+	public List<PointOfSale> getDueCollectionHistoryList(PointOfSale pointOfSale) throws Exception {
+		return pointOfSaleDao.getDueCollectionHistoryList(pointOfSale);
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

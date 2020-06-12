@@ -69,6 +69,111 @@ public class PointOfSale {
 	
 	private String billPrintYn;
 	
+	private String countDuplicateTable;
+	
+	private String encDueCustomerId;
+	private String dueCustomerId;
+	private String phoneNo;
+	private String fatherName;
+	private String motherName;
+	private String email;
+	private String customerAddress;
+	
+	
+	private String dueCustomerYn;
+	private String customerName;
+	private String dueAmount;
+	private String paidAmount;
+	private String dueCustomerPaymentId;
+	private String payDate;
+	
+	
+	
+	
+	public String getPayDate() {
+		return payDate;
+	}
+	public void setPayDate(String payDate) {
+		this.payDate = payDate;
+	}
+	public String getDueCustomerPaymentId() {
+		return dueCustomerPaymentId;
+	}
+	public void setDueCustomerPaymentId(String dueCustomerPaymentId) {
+		this.dueCustomerPaymentId = dueCustomerPaymentId;
+	}
+	public String getDueAmount() {
+		return dueAmount;
+	}
+	public void setDueAmount(String dueAmount) {
+		this.dueAmount = dueAmount;
+	}
+	public String getPaidAmount() {
+		return paidAmount;
+	}
+	public void setPaidAmount(String paidAmount) {
+		this.paidAmount = paidAmount;
+	}
+	public String getDueCustomerYn() {
+		return dueCustomerYn;
+	}
+	public void setDueCustomerYn(String dueCustomerYn) {
+		this.dueCustomerYn = dueCustomerYn;
+	}
+	public String getEncDueCustomerId() {
+		return encDueCustomerId;
+	}
+	public void setEncDueCustomerId(String encDueCustomerId) {
+		this.encDueCustomerId = encDueCustomerId;
+	}
+	public String getDueCustomerId() {
+		return dueCustomerId;
+	}
+	public void setDueCustomerId(String dueCustomerId) {
+		this.dueCustomerId = dueCustomerId;
+	}
+	public String getCustomerName() {
+		return customerName;
+	}
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+	public String getPhoneNo() {
+		return phoneNo;
+	}
+	public void setPhoneNo(String phoneNo) {
+		this.phoneNo = phoneNo;
+	}
+	public String getFatherName() {
+		return fatherName;
+	}
+	public void setFatherName(String fatherName) {
+		this.fatherName = fatherName;
+	}
+	public String getMotherName() {
+		return motherName;
+	}
+	public void setMotherName(String motherName) {
+		this.motherName = motherName;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getCustomerAddress() {
+		return customerAddress;
+	}
+	public void setCustomerAddress(String customerAddress) {
+		this.customerAddress = customerAddress;
+	}
+	public String getCountDuplicateTable() {
+		return countDuplicateTable;
+	}
+	public void setCountDuplicateTable(String countDuplicateTable) {
+		this.countDuplicateTable = countDuplicateTable;
+	}
 	public String getOwnerFoodYn() {
 		return ownerFoodYn;
 	}

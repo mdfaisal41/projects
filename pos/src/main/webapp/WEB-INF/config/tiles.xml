@@ -102,9 +102,27 @@
 	</definition>
 	
 	<definition name="storeManagementView" extends="base.definition">
-		<put-attribute name="title" value="Product View" />
+		<put-attribute name="title" value="Store Management View" />
 		<put-attribute name="body"
 			value="/WEB-INF/views/inventory/storeManagementView.jsp" />
+	</definition>
+	
+	<definition name="storeManagement" extends="base.definition">
+		<put-attribute name="title" value="Store Management" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/inventory/storeManagement.jsp" />
+	</definition>
+	
+	<definition name="kitchenManagementView" extends="base.definition">
+		<put-attribute name="title" value="Product View" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/inventory/kitchenManagementView.jsp" />
+	</definition>
+	
+	<definition name="kitchenManagement" extends="base.definition">
+		<put-attribute name="title" value="Product View" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/inventory/kitchenManagement.jsp" />
 	</definition>
 
 	<!-- inventory end -->
@@ -157,6 +175,16 @@
 		<put-attribute name="title" value="Order Reprint" />
 		<put-attribute name="body"
 			value="/WEB-INF/views/pointOfSale/orderReprint.jsp" />
+	</definition>
+	
+	<definition name="dueCustomer" extends="base.definition">
+		<put-attribute name="title" value="Due Customer" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/pointOfSale/dueCustomer.jsp" />
+	</definition>
+	
+	<definition name="dueHistoryList" extends="null.definition">
+		<put-attribute name="body" value="/WEB-INF/views/pointOfSale/dueHistoryList.jsp" />
 	</definition>
 	<!-- point of sale end -->
 	<!-- Report -->
@@ -347,6 +375,19 @@
 		<put-attribute name="title" value="Owner Consumption History" />
 		<put-attribute name="body"
 			value="/WEB-INF/views/accounts/ownerConsumptionHistory.jsp" />
+	</definition>
+	
+	
+	<definition name="stockProcessView" extends="base.definition">
+		<put-attribute name="title" value="Stock Process" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/accounts/stockProcessView.jsp" />
+	</definition>
+	
+	<definition name="stockSummaryReport" extends="base.definition">
+		<put-attribute name="title" value="Stock Summary Report" />
+		<put-attribute name="body"
+			value="/WEB-INF/views/reports/stockSummaryReport.jsp" />
 	</definition>
 	
 

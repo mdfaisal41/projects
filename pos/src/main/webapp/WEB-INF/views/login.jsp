@@ -10,7 +10,7 @@
 <head>
 
 <!-- Basic -->
-<title>::.. Terracotta Restaurant ..::</title>
+<title>::.. Restaurant Management System ..::</title>
 <meta charset="UTF-8">
 
 <meta name="keywords" content="HTML5 Admin Template" />
@@ -60,10 +60,10 @@
 	<section class="body-sign">
 
 		<div class="center-sign">
-			<a href="/pos/" class="logo pull-left"> <img
+			<%-- <a href="/pos/" class="logo pull-left"> <img
 				src="<c:url value="/resources/images/tera_final_logo2.png" />"
 				height="80" alt="Terracotta" style="margin-top: -31px" />
-			</a>
+			</a> --%>
 
 			<div class="panel panel-sign">
 				<div class="panel-title-sign mt-xl text-right">

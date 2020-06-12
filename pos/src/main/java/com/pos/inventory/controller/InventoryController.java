@@ -136,38 +136,38 @@ public class InventoryController {
 	@RequestMapping(value = "storeIngredients", method = RequestMethod.GET)
 	public ModelAndView storeProduct(@ModelAttribute("inventory") Inventory inventory, HttpSession session,
 			LookupModel lookupModel, final RedirectAttributes redirectAttributes) {
-		
+
 		if (session.getAttribute("logonSuccessYN") == "Y") {
-			
+
 			String menuId = "M0103";
 			MenuInfo menuInfo = loginService.checkUserAuthorization((String) session.getAttribute("employeeid"),
 					menuId);
-			
+
 			if (menuInfo.getMenuId().equals(menuId)) {
-			
-			ModelAndView mav = new ModelAndView();
 
-			mav.setViewName("storeProduct");
-			mav.addObject("unitList", lookupService.unitList(lookupModel));
-			mav.addObject("productList", lookupService.productList(lookupModel));
-			mav.addObject("employeeList", lookupService.employeeList(lookupModel));
-			mav.addObject("inventoryTypeList", lookupService.inventoryTypeList(lookupModel));
-			
-			List<Inventory> oInventoryList = inventoryService.getInventoryList(inventory);
+				ModelAndView mav = new ModelAndView();
 
-			if (oInventoryList.size() > 0) {
-				mav.addObject("inventoryList", oInventoryList);
+				mav.setViewName("storeProduct");
+				mav.addObject("unitList", lookupService.unitList(lookupModel));
+				mav.addObject("productList", lookupService.productList(lookupModel));
+				mav.addObject("employeeList", lookupService.employeeList(lookupModel));
+				mav.addObject("inventoryTypeList", lookupService.inventoryTypeList(lookupModel));
+
+				List<Inventory> oInventoryList = inventoryService.getInventoryList(inventory);
+
+				if (oInventoryList.size() > 0) {
+					mav.addObject("inventoryList", oInventoryList);
+				} else {
+					mav.addObject("inventoryListNotFound", "No Data Found!");
+				}
+
+				return mav;
+
 			} else {
-				mav.addObject("inventoryListNotFound", "No Data Found!");
+				redirectAttributes.addFlashAttribute("message", "You are not authorized for this Page !");
+				redirectAttributes.addFlashAttribute("mCode", "0000");
+				return new ModelAndView("redirect:/");
 			}
-			
-			return mav;
-			
-		    } else {
-						redirectAttributes.addFlashAttribute("message", "You are not authorized for this Page !");
-						redirectAttributes.addFlashAttribute("mCode", "0000");
-						return new ModelAndView("redirect:/");
-					}
 		} else {
 			return new ModelAndView("login");
 		}
@@ -195,6 +195,31 @@ public class InventoryController {
 				redirectAttributes.addFlashAttribute("mCode", "0000");
 				redirectAttributes.addFlashAttribute("message", "Error occured");
 				return new ModelAndView("redirect:/inventory/storeIngredients");
+			}
+		} else {
+			return new ModelAndView("login");
+
+		}
+	};
+	
+	
+	@RequestMapping(value = "getStoredIngredientsInfo", method = RequestMethod.GET)
+	public ModelAndView getStoredIngredientsInfo(@ModelAttribute("inventory") Inventory inventory, HttpSession session,
+			LookupModel lookupModel, final RedirectAttributes redirectAttributes) {
+		
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+			try {
+				Inventory oInventory = new Inventory();
+				oInventory = inventoryService.getStoredIngredientsInfo(inventory);
+				
+				redirectAttributes.addFlashAttribute("inventory", oInventory);
+				
+				return new ModelAndView("redirect:/inventory/storeManagement");
+			} catch (Exception e) {
+				e.printStackTrace();
+				redirectAttributes.addFlashAttribute("mCode", "0000");
+				redirectAttributes.addFlashAttribute("message", "Error occured");
+				return new ModelAndView("redirect:/inventory/storeManagement");
 			}
 		} else {
 			return new ModelAndView("login");
@@ -262,7 +287,7 @@ public class InventoryController {
 	}
 	
 	
-	
+	//manage_inventory
 	@RequestMapping(value = "updateStoreProduct", method = RequestMethod.POST)
 	public ModelAndView  updateStoreProduct(@ModelAttribute Inventory inventory, LookupModel lookupModel,
 			HttpSession session, final RedirectAttributes redirectAttributes) {
@@ -337,6 +362,54 @@ public class InventoryController {
 			}
 		}
 		return new ModelAndView("redirect:/inventory/storeIngredients");
+	}
+	
+	//store_management
+	@RequestMapping(value = "updateStoreIngredients", method = RequestMethod.POST)
+	public ModelAndView  updateStoreIngredients(@ModelAttribute Inventory inventory, LookupModel lookupModel,
+			HttpSession session, final RedirectAttributes redirectAttributes) {
+
+		Inventory oInventory = new Inventory();
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+
+			if (inventory.getInventoryTypeId() == null || inventory.getInventoryTypeId() == "") {
+				oInventory.setmCode("0000");
+				oInventory.setMessage("Please Select Inventory type !!");
+				redirectAttributes.addFlashAttribute("mCode",oInventory.getmCode());
+				redirectAttributes.addFlashAttribute("message",oInventory.getMessage());
+				
+			} else if (inventory.getProductId() == null || inventory.getProductId() == "") {
+				oInventory.setmCode("0000");
+				oInventory.setMessage("Please Select Ingredient Name !!");
+				redirectAttributes.addFlashAttribute("mCode",oInventory.getmCode());
+				redirectAttributes.addFlashAttribute("message",oInventory.getMessage());
+				
+			} else if (inventory.getUnitId() == null || inventory.getUnitId() == "") {
+				oInventory.setmCode("0000");
+				oInventory.setMessage("Please Select Unit !!");
+				redirectAttributes.addFlashAttribute("mCode",oInventory.getmCode());
+				redirectAttributes.addFlashAttribute("message",oInventory.getMessage());
+				
+			} else if (inventory.getQuantity() == null || inventory.getQuantity() == "") {
+				oInventory.setmCode("0000");
+				oInventory.setMessage("Please Enter Quantity !!");
+				redirectAttributes.addFlashAttribute("mCode",oInventory.getmCode());
+				redirectAttributes.addFlashAttribute("message",oInventory.getMessage());
+
+			} else {
+
+				inventory.setUpdateBy((String) session.getAttribute("employeeid"));
+				oInventory = inventoryService.saveStoreIngredients(inventory);
+				
+				
+
+				redirectAttributes.addFlashAttribute("mCode",oInventory.getmCode());
+				redirectAttributes.addFlashAttribute("message",oInventory.getMessage());
+				
+				//redirectAttributes.addFlashAttribute("inventory", inventory);
+			}
+		}
+		return new ModelAndView("redirect:/inventory/storeManagement");
 	}
 	
 
@@ -713,6 +786,7 @@ public class InventoryController {
 			mav.addObject("productList", lookupService.productList(lookupModel));
 			mav.addObject("itemList", lookupService.itemList(lookupModel));
 			mav.addObject("unitList", lookupService.unitList(lookupModel));
+			mav.addObject("inventoryTypeList", lookupService.inventoryTypeList(lookupModel));
 			return mav;
 			
 			} else {
@@ -746,6 +820,9 @@ public class InventoryController {
 				} else if (inventory.getPrice() == "" || inventory.getPrice() == null) {
 					redirectAttributes.addFlashAttribute("message", "Please Enter Price !");
 					redirectAttributes.addFlashAttribute("mCode", "0000");
+				} else if (inventory.getInventoryTypeId() == "" || inventory.getInventoryTypeId() == null) {
+					redirectAttributes.addFlashAttribute("message", "Please Select Inventory Type First !");
+					redirectAttributes.addFlashAttribute("mCode", "0000");
 				} else {
 
 					oInventory = inventoryService.saveWastage(inventory);
@@ -753,7 +830,7 @@ public class InventoryController {
 					redirectAttributes.addFlashAttribute("message", oInventory.getMessage());
 					redirectAttributes.addFlashAttribute("mCode", oInventory.getmCode());
 
-					redirectAttributes.addFlashAttribute("inventory", inventory);
+					//redirectAttributes.addFlashAttribute("inventory", inventory);
 					return new ModelAndView("redirect:/inventory/wastage");
 				}
 				redirectAttributes.addFlashAttribute("inventory", inventory);
@@ -836,5 +913,274 @@ public class InventoryController {
 
 		}
 	}
+	
+	@RequestMapping(value = "storeManagement", method = RequestMethod.GET)
+	public ModelAndView storeManagement(@ModelAttribute Inventory inventory, HttpSession session,
+			LookupModel lookupModel, final RedirectAttributes redirectAttributes) {
+		
+		String menuId = "M0106";
+		MenuInfo menuInfo = loginService.checkUserAuthorization((String) session.getAttribute("employeeid"),
+				menuId);
+		
+		if (menuInfo.getMenuId().equals(menuId)) {
+		
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+			ModelAndView mav = new ModelAndView();
 
+			mav.setViewName("storeManagement");
+			mav.addObject("unitList", lookupService.unitList(lookupModel));
+			mav.addObject("productList", lookupService.productList(lookupModel));
+			mav.addObject("employeeList", lookupService.employeeList(lookupModel));
+			mav.addObject("inventoryTypeList", lookupService.inventoryTypeList(lookupModel));
+			
+				List<Inventory> oStoreInventoryList = inventoryService.getStoreInventoryList(inventory);
+				//System.out.println("oStoreInventoryList " + oStoreInventoryList.size());
+				if (oStoreInventoryList.size() > 0) {
+					mav.addObject("storeInventoryList", oStoreInventoryList);
+				} else {
+					mav.addObject("storeInventoryListNotFound", "No Data Found!");
+				}
+			
+			return mav;
+			
+		  } else {
+				redirectAttributes.addFlashAttribute("message", "You are not authorized for this Page !");
+				redirectAttributes.addFlashAttribute("mCode", "0000");
+				return new ModelAndView("redirect:/");
+			}
+		} else {
+			return new ModelAndView("login");
+
+		}
+	}
+	
+	@RequestMapping(value = "saveStoreIngredients", method = RequestMethod.POST)
+	public @ResponseBody Inventory saveStoreIngredients(@ModelAttribute Inventory inventory, LookupModel lookupModel,
+			HttpSession session, final RedirectAttributes redirectAttributes) {
+
+		Inventory oInventory = new Inventory();
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+
+			if (inventory.getInventoryTypeId() == null || inventory.getInventoryTypeId() == "") {
+				oInventory.setmCode("0000");
+				oInventory.setMessage("Please Select Inventory type !!");
+				return oInventory;
+			} else if (inventory.getProductId() == null || inventory.getProductId() == "") {
+				oInventory.setmCode("0000");
+				oInventory.setMessage("Please Select Ingredient Name !!");
+				return oInventory;
+			} else if (inventory.getUnitId() == null || inventory.getUnitId() == "") {
+				oInventory.setmCode("0000");
+				oInventory.setMessage("Please Select Unit !!");
+				return oInventory;
+				
+			} else if (inventory.getQuantity() == null || inventory.getQuantity() == "") {
+				oInventory.setmCode("0000");
+				oInventory.setMessage("Please Enter Quantity !!");
+				return oInventory;
+
+			} else {
+
+				if (inventory.getInventoryTypeId().equals("206")) {
+					if (inventory.getSupplierId() == null || inventory.getSupplierId() == "") {
+						oInventory.setmCode("0000");
+						oInventory.setMessage("Please Select Supplier !!");
+						return oInventory;
+					}
+				}
+
+				inventory.setUpdateBy((String) session.getAttribute("employeeid"));
+				oInventory = inventoryService.saveStoreIngredients(inventory);
+
+			}
+		}
+		return oInventory;
+	}
+	
+	@RequestMapping(value = "getStoreInventoryList", method = RequestMethod.POST)
+	public ModelAndView getStoreInventoryList(@ModelAttribute Inventory inventory, HttpSession session,
+			LookupModel lookupModel, final RedirectAttributes redirectAttributes) {
+
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+			ModelAndView mav = new ModelAndView("inventoryList");
+			try {
+
+				// taskTrackingInfo.setEmployeeId((String)
+				// session.getAttribute("employeeId"));
+
+				List<Inventory> oStoreInventoryList = inventoryService.getStoreInventoryList(inventory);
+				System.out.println("oStoreInventoryList " + oStoreInventoryList.size());
+				if (oStoreInventoryList.size() > 0) {
+					mav.addObject("storeInventoryList", oStoreInventoryList);
+				} else {
+					mav.addObject("storeInventoryListNotFound", "No Data Found!");
+				}
+				// mav.addObject("projectsList",
+				// lookupService.projectsList(lookupModel));
+				// mav.addObject("taskTypeList", lookupService.taskTypeList());
+
+				return mav;
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
+			}
+		} else {
+			return new ModelAndView("redirect:/");
+		}
+	}
+	
+	@RequestMapping(value = "getStoreHistoryList", method = RequestMethod.POST)
+	public ModelAndView getStoreHistoryList(@ModelAttribute Inventory inventory, HttpSession session,
+			LookupModel lookupModel, final RedirectAttributes redirectAttributes) {
+
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+			ModelAndView mav = new ModelAndView("inventoryList");
+			try {
+
+				// taskTrackingInfo.setEmployeeId((String)
+				// session.getAttribute("employeeId"));
+
+				List<Inventory> oStoreHistoryList = inventoryService.getStoreHistoryList(inventory);
+				System.out.println("oStoreHistoryList " + oStoreHistoryList.size());
+				if (oStoreHistoryList.size() > 0) {
+					mav.addObject("storeHistoryList", oStoreHistoryList);
+				} else {
+					mav.addObject("storeHistoryListNotFound", "No Data Found!");
+				}
+				// mav.addObject("projectsList",
+				// lookupService.projectsList(lookupModel));
+				// mav.addObject("taskTypeList", lookupService.taskTypeList());
+
+				return mav;
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
+			}
+		} else {
+			return new ModelAndView("redirect:/");
+		}
+	}
+	
+	
+/*	@RequestMapping(value = "kitchenManagementView", method = RequestMethod.GET)
+	public ModelAndView kitchenManagementView(@ModelAttribute Inventory inventory, HttpSession session,
+			LookupModel lookupModel, final RedirectAttributes redirectAttributes) {
+		
+		String menuId = "M0107";
+		MenuInfo menuInfo = loginService.checkUserAuthorization((String) session.getAttribute("employeeid"),
+				menuId);
+		
+		if (menuInfo.getMenuId().equals(menuId)) {
+		
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+			ModelAndView mav = new ModelAndView();
+
+			mav.setViewName("kitchenManagementView");
+			mav.addObject("unitList", lookupService.unitList(lookupModel));
+			mav.addObject("productList", lookupService.productList(lookupModel));
+			mav.addObject("employeeList", lookupService.employeeList(lookupModel));
+			mav.addObject("inventoryTypeList", lookupService.inventoryTypeList(lookupModel));
+			return mav;
+			
+		  } else {
+				redirectAttributes.addFlashAttribute("message", "You are not authorized for this Page !");
+				redirectAttributes.addFlashAttribute("mCode", "0000");
+				return new ModelAndView("redirect:/");
+			}
+		} else {
+			return new ModelAndView("login");
+
+		}
+	}*/
+/*	
+	@RequestMapping(value = "kitchenManagement", method = RequestMethod.GET)
+	public ModelAndView kitchenManagement(@ModelAttribute Inventory inventory, HttpSession session,
+			LookupModel lookupModel, final RedirectAttributes redirectAttributes) {
+		
+		String menuId = "M0107";
+		MenuInfo menuInfo = loginService.checkUserAuthorization((String) session.getAttribute("employeeid"),
+				menuId);
+		
+		if (menuInfo.getMenuId().equals(menuId)) {
+		
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+			ModelAndView mav = new ModelAndView();
+
+			mav.setViewName("kitchenManagement");
+			mav.addObject("unitList", lookupService.unitList(lookupModel));
+			mav.addObject("productList", lookupService.productList(lookupModel));
+			mav.addObject("employeeList", lookupService.employeeList(lookupModel));
+			mav.addObject("inventoryTypeList", lookupService.inventoryTypeList(lookupModel));
+			return mav;
+			
+		  } else {
+				redirectAttributes.addFlashAttribute("message", "You are not authorized for this Page !");
+				redirectAttributes.addFlashAttribute("mCode", "0000");
+				return new ModelAndView("redirect:/");
+			}
+		} else {
+			return new ModelAndView("login");
+
+		}
+	}
+*/	
+/*	
+	@RequestMapping(value = "saveKitchenIngredients", method = RequestMethod.POST)
+	public @ResponseBody Inventory saveKitchenIngredients(@ModelAttribute Inventory inventory, LookupModel lookupModel,
+			HttpSession session, final RedirectAttributes redirectAttributes) {
+
+		Inventory oInventory = new Inventory();
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+
+			if (inventory.getInventoryTypeId() == null || inventory.getInventoryTypeId() == "") {
+				oInventory.setmCode("0000");
+				oInventory.setMessage("Please Select Inventory type !!");
+				return oInventory;
+			} else if (inventory.getProductId() == null || inventory.getProductId() == "") {
+				oInventory.setmCode("0000");
+				oInventory.setMessage("Please Select Ingredient Name !!");
+				return oInventory;
+			} else if (inventory.getUnitId() == null || inventory.getUnitId() == "") {
+				oInventory.setmCode("0000");
+				oInventory.setMessage("Please Select Unit !!");
+				return oInventory;
+				
+			} else if (inventory.getUnitPrice() == null || inventory.getUnitPrice() == "") {
+				oInventory.setmCode("0000");
+				oInventory.setMessage("Please Enter Unit Price !!");
+				return oInventory;
+				
+			} else if (inventory.getQuantity() == null || inventory.getQuantity() == "") {
+				oInventory.setmCode("0000");
+				oInventory.setMessage("Please Enter Quantity !!");
+				return oInventory;
+			
+			} else if (inventory.getPrice() == null || inventory.getPrice() == "") {
+				oInventory.setmCode("0000");
+				oInventory.setMessage("Please Enter Price !!");
+				return oInventory;
+			} else {
+
+				if (inventory.getInventoryTypeId().equals("206")) {
+					if (inventory.getSupplierId() == null || inventory.getSupplierId() == "") {
+						oInventory.setmCode("0000");
+						oInventory.setMessage("Please Select Supplier !!");
+						return oInventory;
+					}
+				} else {
+					if (inventory.getEmployeeId() == null || inventory.getEmployeeId() == "") {
+						oInventory.setmCode("0000");
+						oInventory.setMessage("Please Select Shop By !!");
+						return oInventory;
+					}
+				}
+
+				inventory.setUpdateBy((String) session.getAttribute("employeeid"));
+				oInventory = inventoryService.saveKitchenIngredients(inventory);
+
+			}
+		}
+		return oInventory;
+	}
+*/
 }

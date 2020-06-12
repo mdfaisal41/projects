@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.aes.protection.CipherUtils;
 import com.pos.accounts.model.OwnerConsumptionInfo;
+import com.pos.admin.model.UserInfoForm;
 import com.pos.inventory.model.Inventory;
 import com.pos.login.model.MenuInfo;
 import com.pos.login.service.LoginService;
@@ -265,6 +266,7 @@ public class PointOfSaleController {
 			mav.addObject("waiterList", lookupService.employeeList(lookupModel));
 			mav.addObject("employeeList", lookupService.employeeList(lookupModel));
 			mav.addObject("itemList", lookupService.itemList(lookupModel));
+			mav.addObject("customerList", lookupService.customerList(lookupModel));
 			
 			List<PointOfSale> oPendingOrderList = pointOfSaleService.getPendingOrderList(pointOfSale);
 
@@ -880,6 +882,180 @@ public class PointOfSaleController {
 		} else {
 			return new ModelAndView("redirect:/login");
 		}
+	}
+	
+	@RequestMapping(value = "getDuplicteTable", method = RequestMethod.POST)
+	public @ResponseBody PointOfSale getDuplicteTable(@ModelAttribute PointOfSale pointOfSale, HttpSession session,
+			final RedirectAttributes redirectAttributes) {
+		
+		
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+			
+			PointOfSale oPointOfSale = new PointOfSale();
+
+			oPointOfSale = pointOfSaleService.getDuplicteTable(pointOfSale);
+			//System.out.println("price " + oPointOfSale.getItemPrice());
+			return oPointOfSale;
+
+		} else {
+			return null;
+		}
+
+	}
+	
+	@RequestMapping(value = "dueCustomer", method = RequestMethod.GET)
+	public ModelAndView dueCustomer(@ModelAttribute PointOfSale pointOfSale, HttpSession session,
+			LookupModel lookupModel, final RedirectAttributes redirectAttributes) throws Exception {
+
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+
+			String menuId = "M0204";
+			MenuInfo menuInfo = loginService.checkUserAuthorization((String) session.getAttribute("employeeid"),
+					menuId);
+
+			if (menuInfo.getMenuId().equals(menuId)) {
+
+				ModelAndView mav = new ModelAndView();
+				List<PointOfSale> oDueCustomerList = pointOfSaleService.getDueCustomerList(pointOfSale);
+
+				if (oDueCustomerList.size() > 0) {
+					// System.out.println("size " + oItemList.size());
+					mav.addObject("dueCustomerList", oDueCustomerList);
+				} else {
+					mav.addObject("dueCustomerListNotFound", "No Item Found!");
+				}
+
+				mav.setViewName("dueCustomer");
+				
+				return mav;
+
+			} else {
+				redirectAttributes.addFlashAttribute("message", "You are not authorized for this Page !");
+				redirectAttributes.addFlashAttribute("mCode", "0000");
+				return new ModelAndView("redirect:/");
+			}
+		} else {
+			return new ModelAndView("login");
+		}
+	}
+	
+	@RequestMapping(value = "dueCustomerSave", method = RequestMethod.POST)
+	public ModelAndView dueCustomerSave(@ModelAttribute PointOfSale pointOfSale, HttpSession session,
+			final RedirectAttributes redirectAttributes, HttpServletRequest request) {
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+			try {
+				pointOfSale.setUpdateBy((String) session.getAttribute("employeeid"));
+				PointOfSale oPointOfSale = new PointOfSale();
+
+				oPointOfSale = pointOfSaleService.saveDueCustomer(pointOfSale);
+
+				redirectAttributes.addFlashAttribute("message", oPointOfSale.getMessage());
+				redirectAttributes.addFlashAttribute("mCode", oPointOfSale.getmCode());
+
+				//redirectAttributes.addFlashAttribute("pointOfSale", pointOfSale);
+				return new ModelAndView("redirect:/pointOfSale/dueCustomer");
+			} catch (Exception e) {
+				e.printStackTrace();
+				redirectAttributes.addFlashAttribute("mCode", "0000");
+				redirectAttributes.addFlashAttribute("message", "Error occured!!");
+				return new ModelAndView("redirect:/pointOfSale/dueCustomer");
+			}
+		} else {
+			return new ModelAndView("redirect:/login");
+		}
+	}
+	
+	
+	@RequestMapping(value = "getDueCustomerInfo", method = RequestMethod.GET)
+	public ModelAndView getDueCustomerInfo(@ModelAttribute PointOfSale pointOfSale, LookupModel lookupModel,
+			HttpSession session, HttpServletRequest request, final RedirectAttributes redirectAttributes)
+			throws Exception {
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+			
+			PointOfSale oPointOfSale = new PointOfSale();
+			oPointOfSale = pointOfSaleService.getDueCustomerInfo(pointOfSale);
+			redirectAttributes.addFlashAttribute("pointOfSale", oPointOfSale);
+		}else {
+			return new ModelAndView("redirect:/login");
+		}
+
+		return new ModelAndView("redirect:/pointOfSale/dueCustomer");
+	}
+	
+	
+	@RequestMapping(value = "getDueDepositeAmount", method = RequestMethod.POST)
+	public @ResponseBody PointOfSale getDueDepositeAmount(@ModelAttribute PointOfSale pointOfSale, HttpSession session,
+			final RedirectAttributes redirectAttributes) {
+		
+		
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+			
+			PointOfSale oPointOfSale = new PointOfSale();
+
+			oPointOfSale = pointOfSaleService.getDueDepositeAmount(pointOfSale.getDueCustomerId());
+			//System.out.println("price " + oPointOfSale.getItemPrice());
+			return oPointOfSale;
+
+		} else {
+			return null;
+		}
+
+	}
+	
+	
+	@RequestMapping(value = "saveDueCollection", method = RequestMethod.POST)
+	public ModelAndView saveDueDepositAmount(@ModelAttribute PointOfSale pointOfSale, HttpSession session,
+			final RedirectAttributes redirectAttributes, HttpServletRequest request) {
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+			try {
+				pointOfSale.setUpdateBy((String) session.getAttribute("employeeid"));
+				PointOfSale oPointOfSale = new PointOfSale();
+				oPointOfSale = pointOfSaleService.saveDueCollection(pointOfSale);
+
+				redirectAttributes.addFlashAttribute("message", oPointOfSale.getMessage());
+				redirectAttributes.addFlashAttribute("mCode", oPointOfSale.getmCode());
+
+				//redirectAttributes.addFlashAttribute("pointOfSale", pointOfSale);
+				return new ModelAndView("redirect:/pointOfSale/dueCustomer");
+			} catch (Exception e) {
+				e.printStackTrace();
+				redirectAttributes.addFlashAttribute("mCode", "0000");
+				redirectAttributes.addFlashAttribute("message", "Error occured!!");
+				return new ModelAndView("redirect:/pointOfSale/dueCustomer");
+			}
+		} else {
+			return new ModelAndView("redirect:/login");
+		}
+	}
+	
+	
+	@RequestMapping(value = "getDueCollectionHistory", method = RequestMethod.POST)
+	public ModelAndView PointOfSale(@ModelAttribute PointOfSale pointOfSale, HttpSession session,
+			final RedirectAttributes redirectAttributes) {
+		
+		
+		if (session.getAttribute("logonSuccessYN") == "Y") {
+			ModelAndView mav = new ModelAndView("dueHistoryList");
+			
+			try {
+
+				List<PointOfSale> oDueHistoryList = pointOfSaleService.getDueCollectionHistoryList(pointOfSale);
+				if (oDueHistoryList.size() > 0) {
+					mav.addObject("dueHistoryList", oDueHistoryList);
+				} else {
+					mav.addObject("dueHistoryListNotFound", "No History Found!");
+				}
+
+				return mav;
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
+			}
+
+		} else {
+			return new ModelAndView("login");
+		}
+
 	}
 
 	

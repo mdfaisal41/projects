@@ -651,6 +651,34 @@ public class LookupDaoImpl implements LookupDao{
 		return oSupplierList;
 	}
 
+	public List<LookupModel> customerList(LookupModel lookupModel) {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+		List<LookupModel> customerList = new ArrayList<LookupModel>();
+
+		try {
+
+			StringBuilder sBuilder = new StringBuilder();
+			sBuilder.append("SELECT DUE_CUSTOMER_ID, CUSTOMER_NAME ");
+			sBuilder.append("FROM DUE_CUSTOMER ");
+			
+			//System.out.println(sBuilder);
+
+			List<Map<String, Object>> rows = jdbcTemplate.queryForList(sBuilder.toString());
+			for (@SuppressWarnings("rawtypes")
+			Map row : rows) {
+				LookupModel oLookupModel = new LookupModel();
+				oLookupModel.setDueCustomerId(String.valueOf(row.get("DUE_CUSTOMER_ID")));
+				oLookupModel.setCustomerName(String.valueOf(row.get("CUSTOMER_NAME")));
+				customerList.add(oLookupModel);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return customerList;
+	}
+
 
 
 }

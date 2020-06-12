@@ -35,6 +35,20 @@ public interface PointOfSaleDao {
 	public PointOfSale getOwnerConsumption(PointOfSale pointOfSale);
 	
 	public PointOfSale orderProcessComplete(PointOfSale pointOfSale);
+	
+	public PointOfSale getDuplicteTable(PointOfSale pointOfSale);
+	
+	public PointOfSale saveDueCustomer(PointOfSale pointOfSale);
+	
+	public List<PointOfSale> getDueCustomerList(PointOfSale pointOfSale) throws Exception;
+	
+	public PointOfSale getDueCustomerInfo(PointOfSale pointOfSale);
+	
+	public PointOfSale getDueDepositeAmount(String dueCustomerId);
+	
+	public PointOfSale saveDueCollection(PointOfSale pointOfSale);
+	
+	public List<PointOfSale> getDueCollectionHistoryList(PointOfSale pointOfSale) throws Exception;
 }
 
 

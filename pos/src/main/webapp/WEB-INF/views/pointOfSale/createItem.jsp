@@ -188,6 +188,7 @@ function getItemInfo(encItemId,itemName,itemPrice) {
 		$("#encItemId").val(encItemId);
 		$("#itemName").val(itemName);
 		$("#itemPrice").val(itemPrice);
+		document.getElementById('itemName').readOnly = true;
 	}
 };
 

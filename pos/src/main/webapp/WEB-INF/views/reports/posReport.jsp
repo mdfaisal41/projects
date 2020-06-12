@@ -103,7 +103,7 @@
 
 					</div>
 
-					<div class="form-group col-md-12">
+					<%-- <div class="form-group col-md-12">
 						<div class="col-sm-6 form-group">
 							<label class="control-label col-md-5 col-sm-5 col-xs-12">Item
 								Name</label>
@@ -117,7 +117,7 @@
 								</select>
 							</div>
 						</div>
-					</div>
+					</div> --%>
 
 				</div>
 

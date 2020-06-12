@@ -36,5 +36,5 @@ public interface LookupService {
 	
 	public List<LookupModel> supplierList(LookupModel lookupModel);
 	
-	
+	public List<LookupModel> customerList(LookupModel lookupModel);
 }

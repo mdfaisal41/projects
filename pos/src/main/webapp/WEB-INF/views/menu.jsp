@@ -102,9 +102,13 @@
 						|| request.getAttribute("javax.servlet.forward.request_uri")
 								.equals("/pos/inventory/wastage")
 						|| request.getAttribute("javax.servlet.forward.request_uri")
-								.equals("/pos/inventory/storeManagementView")
+								.equals("/pos/inventory/storeManagement")
 						|| request.getAttribute("javax.servlet.forward.request_uri")
-								.equals("/pos/inventory/wastage")) {
+								.equals("/pos/inventory/wastage")
+						|| request.getAttribute("javax.servlet.forward.request_uri")
+								.equals("/pos/inventory/kitchenManagementView")
+						|| request.getAttribute("javax.servlet.forward.request_uri")
+								.equals("/pos/inventory/kitchenManagement")) {
 					out.print(" nav-expanded nav-active");
 				}%>">
 					<a> <i class="fa fa-book" aria-hidden="true"></i> <span>Inventory</span>
@@ -158,7 +162,9 @@
 						|| request.getAttribute("javax.servlet.forward.request_uri")
 								.equals("/pos/pointOfSale/discount")
 						|| request.getAttribute("javax.servlet.forward.request_uri")
-								.equals("/pos/pointOfSale/discountView")) {
+								.equals("/pos/pointOfSale/discountView")
+						|| request.getAttribute("javax.servlet.forward.request_uri")
+								.equals("/pos/pointOfSale/dueCustomer")) {
 					out.print(" nav-expanded nav-active");
 				}%>">
 					<a> <i class="fa fa-check-circle" aria-hidden="true"></i> <span>Point
@@ -465,7 +471,9 @@
 								|| request.getAttribute("javax.servlet.forward.request_uri")
 								.equals("/pos/reports/costAnalysisReport")
 								|| request.getAttribute("javax.servlet.forward.request_uri")
-								.equals("/pos/reports/payrollReport")) {
+								.equals("/pos/reports/payrollReport")
+								|| request.getAttribute("javax.servlet.forward.request_uri")
+								.equals("/pos/reports/stockSummaryReport")) {
 					out.print(" nav-expanded nav-active");
 				}%>">
 					<a> <i class="fa fa-file-pdf-o" aria-hidden="true"></i> <span>Reports</span>
@@ -520,7 +528,9 @@
 						|| request.getAttribute("javax.servlet.forward.request_uri")
 								.equals("/pos/accounts/supplierInfo")
 						|| request.getAttribute("javax.servlet.forward.request_uri")
-								.equals("/pos/accounts/supplierInfoView")) {
+								.equals("/pos/accounts/supplierInfoView")
+						|| request.getAttribute("javax.servlet.forward.request_uri")
+								.equals("/pos/accounts/stockProcessView")) {
 					out.print(" nav-expanded nav-active");
 				}%>">
 					<a> <i class="fa fa-cubes" aria-hidden="true"></i> <span>Accounts</span>

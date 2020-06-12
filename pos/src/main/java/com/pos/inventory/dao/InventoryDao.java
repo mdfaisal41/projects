@@ -20,4 +20,10 @@ public interface InventoryDao {
 	public Inventory saveWastage(Inventory inventory);
 	public List<Inventory> getWastageView(Inventory inventory) throws Exception;
 	public Inventory getWastageInfo(Inventory inventory);
+	public Inventory saveStoreIngredients(Inventory inventory);
+	public List<Inventory> getStoreInventoryList(Inventory inventory);
+	
+	public Inventory getStoredIngredientsInfo(Inventory inventory) throws Exception;
+	
+	public List<Inventory> getStoreHistoryList(Inventory inventory) throws Exception;
 }

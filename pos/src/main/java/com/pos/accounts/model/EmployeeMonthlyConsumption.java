@@ -16,7 +16,17 @@ public class EmployeeMonthlyConsumption {
 	
 	private String message;
 	private String messageCode;
+	private String consumeSysdateYn;
 	
+	
+	
+	
+	public String getConsumeSysdateYn() {
+		return consumeSysdateYn;
+	}
+	public void setConsumeSysdateYn(String consumeSysdateYn) {
+		this.consumeSysdateYn = consumeSysdateYn;
+	}
 	public String getEncEmployeeId() {
 		return encEmployeeId;
 	}

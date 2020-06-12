@@ -216,8 +216,8 @@ public class ReportDaoImpl implements ReportDao{
 			sBuilder.append(" FROM ITEM_ORDER OM ");
 			sBuilder.append(" WHERE TRUNC(UPDATE_DATE) BETWEEN TO_DATE(:fromDate,'DD/MM/YYYY') AND TO_DATE(:toDate,'DD/MM/YYYY') ");*/
 			
-			
-			sBuilder.append(" SELECT IO.ORDER_ID, ");
+			// 01/11/2019
+			/*sBuilder.append(" SELECT IO.ORDER_ID, ");
 			sBuilder.append(" (SELECT ITEM_NAME FROM L_ITEM WHERE ITEM_ID = IO.ITEM_ID)ITEM_NAME, ");
 			sBuilder.append(" IO.QUANTITY, ");
 			sBuilder.append(" IO.ITEM_PRICE, ");
@@ -226,16 +226,30 @@ public class ReportDaoImpl implements ReportDao{
 			sBuilder.append(" TO_CHAR (IO.UPDATE_DATE, 'DD/MM/YYYY') UPDATE_DATE ");
 			sBuilder.append(" FROM ITEM_ORDER IO, ORDER_MANAGEMENT OM ");
 			sBuilder.append(" WHERE IO.ORDER_ID = OM.ORDER_ID AND OM.FINALIZED_YN = 'Y' ");
-			sBuilder.append(" AND TRUNC (IO.UPDATE_DATE) BETWEEN TO_DATE (:fromDate, 'DD/MM/YYYY')AND TO_DATE (:toDate, 'DD/MM/YYYY') ");
+			sBuilder.append(" AND TRUNC (IO.UPDATE_DATE) BETWEEN TO_DATE (:fromDate, 'DD/MM/YYYY')AND TO_DATE (:toDate, 'DD/MM/YYYY') ");*/
+			
+			
+			sBuilder.append(" SELECT ITEM_ID, ");
+			sBuilder.append(" (SELECT ITEM_NAME FROM L_ITEM WHERE ITEM_ID = IO.ITEM_ID) ITEM_NAME, ");
+			sBuilder.append(" ITEM_PRICE, ");
+			sBuilder.append(" SUM (QUANTITY) QUANTITY, ");
+			sBuilder.append(" SUM (SUB_TOTAL) SUB_TOTAL ");
+			sBuilder.append(" FROM ITEM_ORDER IO, ORDER_MANAGEMENT OM ");
+			sBuilder.append(" WHERE     IO.ORDER_ID = OM.ORDER_ID ");
+			sBuilder.append(" AND OM.FINALIZED_YN = 'Y' ");
+			sBuilder.append(" AND ORDER_CANCELED_YN IS NULL ");
+			//sBuilder.append(" AND OWNER_FOOD_YN = 'N' ");
+			sBuilder.append(" AND TRUNC (OM.ORDER_DATE) BETWEEN TO_DATE (:fromDate, 'DD/MM/YYYY') AND TO_DATE (:toDate, 'DD/MM/YYYY') ");
+
 
 			MapSqlParameterSource paramSource = new MapSqlParameterSource();
 			
-			if (reportModel.getItemId() != null && reportModel.getItemId() != "") {
+			/*if (reportModel.getItemId() != null && reportModel.getItemId() != "") {
 				sBuilder.append(" AND ITEM_ID = :itemId ");
 				paramSource.addValue("itemId", reportModel.getItemId());
-			}
-
-			sBuilder.append(" ORDER BY ORDER_ID ");
+			}*/
+			sBuilder.append(" GROUP BY ITEM_ID, ITEM_PRICE ");
+			sBuilder.append(" ORDER BY ITEM_ID ");
 
 			paramSource.addValue("fromDate", reportModel.getFromDate());
 			paramSource.addValue("toDate", reportModel.getToDate());
@@ -250,13 +264,13 @@ public class ReportDaoImpl implements ReportDao{
 			for (@SuppressWarnings("rawtypes")
 			Map row : rows) {
 				ReportModel oReportModel = new ReportModel();
-				oReportModel.setOrderId(oRemoveNull.nullRemove(String.valueOf(row.get("ORDER_ID"))));
+				oReportModel.setItemId(oRemoveNull.nullRemove(String.valueOf(row.get("ITEM_ID"))));
 				oReportModel.setItemName(oRemoveNull.nullRemove(String.valueOf(row.get("ITEM_NAME"))));
+				oReportModel.setReportItemPrice(Double.parseDouble((oRemoveNull.nullRemove(String.valueOf(row.get("ITEM_PRICE"))))));
 				oReportModel.setQuantity(oRemoveNull.nullRemove(String.valueOf(row.get("QUANTITY"))));
-				oReportModel.setItemPrice(Integer.parseInt(oRemoveNull.nullRemove(String.valueOf(row.get("ITEM_PRICE")))));
-				oReportModel.setSubTotalCount(Integer.parseInt(oRemoveNull.nullRemove(String.valueOf(row.get("SUB_TOTAL")))));
-				oReportModel.setUpdateBy(oRemoveNull.nullRemove(String.valueOf(row.get("UPDATE_BY"))));
-				oReportModel.setUpdateDate(oRemoveNull.nullRemove(String.valueOf(row.get("UPDATE_DATE"))));
+				oReportModel.setReportSubTotalCount(Double.parseDouble(oRemoveNull.nullRemove(String.valueOf(row.get("SUB_TOTAL")))));
+				//oReportModel.setUpdateBy(oRemoveNull.nullRemove(String.valueOf(row.get("UPDATE_BY"))));
+				//oReportModel.setUpdateDate(oRemoveNull.nullRemove(String.valueOf(row.get("UPDATE_DATE"))));
 				
 				//System.out.println("price " + reportModel.getItemPrice());
 				
@@ -592,6 +606,79 @@ public class ReportDaoImpl implements ReportDao{
 		return oReportModel;
 	}
 
+	public ReportModel posReportSumData(ReportModel reportModel) {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+		ReportModel oReportModel = new ReportModel();
+
+		NamedParameterJdbcTemplate npjt = new NamedParameterJdbcTemplate(jdbcTemplate);
+
+		StringBuilder sBuilder = new StringBuilder();
+
+		sBuilder.append(" SELECT COUNT (ORDER_ID) ORDER_ID, ");
+		sBuilder.append(" NVL (SUM (DISCOUNT_AMOUNT),0) DISCOUNT_AMOUNT, ");
+		sBuilder.append(" NVL (SUM (BKASH_PAYMENT_AMOUNT),0) BKASH_PAYMENT_AMOUNT, ");
+		sBuilder.append(" NVL (SUM (CASH_PAY_AMOUNT),0) CASH_PAY_AMOUNT, ");
+		sBuilder.append(" NVL (SUM (CARD_PAY_AMOUNT),0) CARD_PAY_AMOUNT ");
+		sBuilder.append(" FROM ORDER_MANAGEMENT ");
+		sBuilder.append(" WHERE FINALIZED_YN = 'Y' ");
+		sBuilder.append(" AND TRUNC (ORDER_DATE) BETWEEN TO_DATE (:fromDate, 'DD/MM/YYYY') AND TO_DATE (:toDate, 'DD/MM/YYYY') ");
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource();
+
+		paramSource.addValue("fromDate", reportModel.getFromDate());
+		paramSource.addValue("toDate", reportModel.getToDate());
+
+		 //System.out.println(sBuilder);
+
+		List<Map<String, Object>> rows = npjt.queryForList(sBuilder.toString(), paramSource);
+
+		for (@SuppressWarnings("rawtypes")
+		Map row : rows) {
+			oReportModel.setOrderId(oRemoveNull.nullRemove(String.valueOf(row.get("ORDER_ID"))));
+			oReportModel.setDiscountSum(Double.parseDouble(oRemoveNull.nullRemove(String.valueOf(row.get("DISCOUNT_AMOUNT")))));
+			oReportModel.setBkashPaySum(Double.parseDouble(oRemoveNull.nullRemove(String.valueOf(row.get("BKASH_PAYMENT_AMOUNT")))));
+			oReportModel.setCashPaySum(Double.parseDouble(oRemoveNull.nullRemove(String.valueOf(row.get("CASH_PAY_AMOUNT")))));
+			oReportModel.setCardPaySum(Double.parseDouble(oRemoveNull.nullRemove(String.valueOf(row.get("CARD_PAY_AMOUNT")))));
+		}
+		return oReportModel;
+	}
+
+	@Override
+	public ReportModel getShopInfo(ReportModel reportModel) {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+		ReportModel oReportModel = new ReportModel();
+
+		NamedParameterJdbcTemplate npjt = new NamedParameterJdbcTemplate(jdbcTemplate);
+
+		StringBuilder sBuilder = new StringBuilder();
+
+		sBuilder.append(" SELECT EMPLOYEE_ID, ");
+		sBuilder.append(" SHOP_NAME, ");
+		sBuilder.append(" SHOP_ADDRESS, ");
+		sBuilder.append(" PHONE_NO, ");
+		sBuilder.append(" EMAIL ");
+		sBuilder.append(" FROM USER_INFO ");
+		sBuilder.append(" WHERE EMPLOYEE_ID = :empId ");
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource();
+
+		paramSource.addValue("empId", reportModel.getEmployeeId());
+
+		 //System.out.println(sBuilder);
+
+		List<Map<String, Object>> rows = npjt.queryForList(sBuilder.toString(), paramSource);
+
+		for (@SuppressWarnings("rawtypes")
+		Map row : rows) {
+			oReportModel.setEmployeeId(oRemoveNull.nullRemove(String.valueOf(row.get("EMPLOYEE_ID"))));
+			oReportModel.setShopName(oRemoveNull.nullRemove(String.valueOf(row.get("SHOP_NAME"))));
+			oReportModel.setShopAddress(oRemoveNull.nullRemove(String.valueOf(row.get("SHOP_ADDRESS"))));
+			oReportModel.setPhoneNo(oRemoveNull.nullRemove(String.valueOf(row.get("PHONE_NO"))));
+			oReportModel.setEmail(oRemoveNull.nullRemove(String.valueOf(row.get("EMAIL"))));
+		}
+		return oReportModel;
+	}
+
 /*	public ReportModel updateItemWiseKitchenQT(ReportModel reportModel) {
 		jdbcTemplate = new JdbcTemplate(dataSource);
 		ReportModel oReportModel = new ReportModel();
@@ -614,4 +701,169 @@ public class ReportDaoImpl implements ReportDao{
 		}
 		return oReportModel;
 	}*/
+	
+	
+	/* back up stock summary report report for stock date (only one date) 
+	
+	  public JRDataSource stockSummaryReportData(ReportModel reportModel) {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+		List<ReportModel> list = new ArrayList<ReportModel>();
+		try {
+			NamedParameterJdbcTemplate npjt = new NamedParameterJdbcTemplate(jdbcTemplate);
+			StringBuilder sBuilder = new StringBuilder();
+			sBuilder.append("SELECT DISTINCT ");
+			sBuilder.append("PRODUCT_ID, ");
+			sBuilder.append("PRODUCT_NAME, ");
+			sBuilder.append("TO_CHAR (V.STOCK_DATE, 'DD/MM/YYYY') STOCK_DATE, ");
+			sBuilder.append("V.INVENTORY_TYPE_NAME, ");
+			sBuilder.append("(SELECT MASTER_UNIT || ' - ' || SAME_UNIT_NAME ");
+			sBuilder.append("FROM VIEW_STOCK_SUMMARY ");
+			sBuilder.append("WHERE STOCK_SUMMARY_TYPE_ID = 1 ");
+			sBuilder.append("AND PRODUCT_ID = V.PRODUCT_ID ");
+			sBuilder.append("AND INVENTORY_TYPE_ID = L.INVENTORY_TYPE_ID ");
+			sBuilder.append("AND TO_CHAR(STOCK_DATE, 'DD/MM/YYYY') = :fromDate) ");
+			sBuilder.append("STOCK_IN, ");
+			sBuilder.append("(SELECT MASTER_UNIT || ' - ' || SAME_UNIT_NAME ");
+			sBuilder.append("FROM VIEW_STOCK_SUMMARY ");
+			sBuilder.append("WHERE STOCK_SUMMARY_TYPE_ID = 2 ");
+			sBuilder.append("AND PRODUCT_ID = V.PRODUCT_ID ");
+			sBuilder.append("AND INVENTORY_TYPE_ID = L.INVENTORY_TYPE_ID ");
+			sBuilder.append("AND TO_CHAR(STOCK_DATE, 'DD/MM/YYYY') = :fromDate) ");
+			sBuilder.append("STOCK_OUT, ");
+			sBuilder.append("(SELECT MASTER_UNIT || ' - ' || SAME_UNIT_NAME ");
+			sBuilder.append("FROM VIEW_STOCK_SUMMARY ");
+			sBuilder.append("WHERE STOCK_SUMMARY_TYPE_ID = 3 ");
+			sBuilder.append("AND PRODUCT_ID = V.PRODUCT_ID ");
+			sBuilder.append("AND INVENTORY_TYPE_ID = L.INVENTORY_TYPE_ID ");
+			sBuilder.append("AND TO_CHAR(STOCK_DATE, 'DD/MM/YYYY') = :fromDate) ");
+			sBuilder.append("ITEM_ORDER_PRODUCT, ");
+			sBuilder.append("(SELECT MASTER_UNIT || ' - ' || SAME_UNIT_NAME ");
+			sBuilder.append("FROM VIEW_STOCK_SUMMARY ");
+			sBuilder.append("WHERE STOCK_SUMMARY_TYPE_ID = 4 ");
+			sBuilder.append("AND PRODUCT_ID = V.PRODUCT_ID ");
+			sBuilder.append("AND INVENTORY_TYPE_ID = L.INVENTORY_TYPE_ID ");
+			sBuilder.append("AND TO_CHAR(STOCK_DATE, 'DD/MM/YYYY') = :fromDate) ");
+			sBuilder.append("WASTAGE "); 
+			sBuilder.append("FROM VIEW_STOCK_SUMMARY V, L_INVENTORY_TYPE L ");
+			sBuilder.append("WHERE V.INVENTORY_TYPE_ID = L.INVENTORY_TYPE_ID ");
+			sBuilder.append("AND TO_CHAR(V.STOCK_DATE, 'DD/MM/YYYY') = :fromDate ");
+			sBuilder.append("ORDER BY UPPER (PRODUCT_NAME) ASC ");
+			
+			MapSqlParameterSource paramSource = new MapSqlParameterSource();
+			paramSource.addValue("fromDate", reportModel.getFromDate());
+			System.out.println("fromDate " + reportModel.getFromDate());
+			System.out.println(sBuilder);
+
+			List<Map<String, Object>> rows = npjt.queryForList(sBuilder.toString(), paramSource);
+
+			for (@SuppressWarnings("rawtypes")
+			Map row : rows) {
+				ReportModel oReportModel = new ReportModel();
+				oReportModel.setProductId(oRemoveNull.nullRemove(String.valueOf(row.get("PRODUCT_ID"))));
+				oReportModel.setProductName(oRemoveNull.nullRemove(String.valueOf(row.get("PRODUCT_NAME"))));
+				oReportModel.setStockDate(oRemoveNull.nullRemove(String.valueOf(row.get("STOCK_DATE"))));
+				oReportModel.setInventoryTypeName(oRemoveNull.nullRemove(String.valueOf(row.get("INVENTORY_TYPE_NAME"))));
+				oReportModel.setStockIn(oRemoveNull.nullRemove(String.valueOf(row.get("STOCK_IN"))));
+				oReportModel.setStockOut(oRemoveNull.nullRemove(String.valueOf(row.get("STOCK_OUT"))));
+				oReportModel.setItemOrderProduct(oRemoveNull.nullRemove(String.valueOf(row.get("ITEM_ORDER_PRODUCT"))));
+				oReportModel.setWastage(oRemoveNull.nullRemove(String.valueOf(row.get("WASTAGE"))));
+				list.add(oReportModel);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		JRDataSource ds = new JRBeanCollectionDataSource(list);
+		return ds;
+	}*/
+	
+	
+	public JRDataSource stockSummaryReportData(ReportModel reportModel) {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+		List<ReportModel> list = new ArrayList<ReportModel>();
+		try {
+			NamedParameterJdbcTemplate npjt = new NamedParameterJdbcTemplate(jdbcTemplate);
+			StringBuilder sBuilder = new StringBuilder();
+			sBuilder.append("SELECT DISTINCT V.PRODUCT_ID, ");
+			sBuilder.append("PRODUCT_NAME, ");
+			sBuilder.append("TO_CHAR (V.STOCK_DATE, 'DD/MM/YYYY') STOCK_DATE, ");
+			sBuilder.append("V.INVENTORY_TYPE_NAME, ");
+			sBuilder.append("SI.UNIT STOCK_IN, ");
+			sBuilder.append("SO.UNIT STOCK_OUT, ");
+			sBuilder.append("IOP.UNIT ITEM_ORDER_PRODUCT, ");
+			sBuilder.append("WA.UNIT WASTAGE ");
+			sBuilder.append("FROM VIEW_STOCK_SUMMARY V, ");
+			sBuilder.append("L_INVENTORY_TYPE L, ");
+			sBuilder.append("(SELECT STOCK_DATE, ");
+			sBuilder.append("INVENTORY_TYPE_ID, ");
+			sBuilder.append("PRODUCT_ID, ");
+			sBuilder.append("MASTER_UNIT || ' - ' || SAME_UNIT_NAME UNIT ");
+			sBuilder.append("FROM VIEW_STOCK_SUMMARY ");
+			sBuilder.append("WHERE STOCK_SUMMARY_TYPE_ID = 1) SI, ");
+			sBuilder.append("(SELECT STOCK_DATE, ");
+			sBuilder.append("INVENTORY_TYPE_ID, ");
+			sBuilder.append("PRODUCT_ID, ");
+			sBuilder.append("MASTER_UNIT || ' - ' || SAME_UNIT_NAME UNIT ");
+			sBuilder.append("FROM VIEW_STOCK_SUMMARY ");
+			sBuilder.append("WHERE STOCK_SUMMARY_TYPE_ID = 2) SO, ");
+			sBuilder.append("(SELECT STOCK_DATE, ");
+			sBuilder.append("INVENTORY_TYPE_ID, ");
+			sBuilder.append("PRODUCT_ID, ");
+			sBuilder.append("MASTER_UNIT || ' - ' || SAME_UNIT_NAME UNIT ");
+			sBuilder.append("FROM VIEW_STOCK_SUMMARY ");
+			sBuilder.append("WHERE STOCK_SUMMARY_TYPE_ID = 3) IOP, ");
+			sBuilder.append("(SELECT STOCK_DATE, ");
+			sBuilder.append("INVENTORY_TYPE_ID, ");
+			sBuilder.append("PRODUCT_ID, ");
+			sBuilder.append("MASTER_UNIT || ' - ' || SAME_UNIT_NAME UNIT ");
+			sBuilder.append("FROM VIEW_STOCK_SUMMARY ");
+			sBuilder.append("WHERE STOCK_SUMMARY_TYPE_ID = 4) WA ");
+			sBuilder.append("WHERE V.INVENTORY_TYPE_ID = L.INVENTORY_TYPE_ID ");
+			sBuilder.append("AND V.STOCK_DATE = SI.STOCK_DATE(+) ");
+			sBuilder.append("AND V.PRODUCT_ID = SI.PRODUCT_ID(+) ");
+			sBuilder.append("AND V.INVENTORY_TYPE_ID = SI.INVENTORY_TYPE_ID(+) ");
+			sBuilder.append("AND V.STOCK_DATE = SO.STOCK_DATE(+) ");
+			sBuilder.append("AND V.PRODUCT_ID = SO.PRODUCT_ID(+) ");
+			sBuilder.append("AND V.INVENTORY_TYPE_ID = SO.INVENTORY_TYPE_ID(+) ");
+			sBuilder.append("AND V.STOCK_DATE = IOP.STOCK_DATE(+) ");
+			sBuilder.append("AND V.PRODUCT_ID = IOP.PRODUCT_ID(+) ");
+			sBuilder.append("AND V.INVENTORY_TYPE_ID = IOP.INVENTORY_TYPE_ID(+) ");
+			sBuilder.append("AND V.STOCK_DATE = WA.STOCK_DATE(+) ");
+			sBuilder.append("AND V.PRODUCT_ID = WA.PRODUCT_ID(+) ");
+			sBuilder.append("AND V.INVENTORY_TYPE_ID = WA.INVENTORY_TYPE_ID(+) ");
+			sBuilder.append("AND TO_CHAR (V.STOCK_DATE, 'DD/MM/YYYY') BETWEEN :fromDate  AND :toDate ");
+			sBuilder.append("ORDER BY STOCK_DATE, UPPER (PRODUCT_NAME) ASC ");
+			
+			MapSqlParameterSource paramSource = new MapSqlParameterSource();
+			paramSource.addValue("fromDate", reportModel.getFromDate());
+			paramSource.addValue("toDate", reportModel.getToDate());
+			
+			System.out.println("fromDate " + reportModel.getFromDate());
+			System.out.println("toDate " + reportModel.getToDate());
+			
+			System.out.println(sBuilder);
+
+			List<Map<String, Object>> rows = npjt.queryForList(sBuilder.toString(), paramSource);
+
+			for (@SuppressWarnings("rawtypes")
+			Map row : rows) {
+				ReportModel oReportModel = new ReportModel();
+				oReportModel.setProductId(oRemoveNull.nullRemove(String.valueOf(row.get("PRODUCT_ID"))));
+				oReportModel.setProductName(oRemoveNull.nullRemove(String.valueOf(row.get("PRODUCT_NAME"))));
+				oReportModel.setStockDate(oRemoveNull.nullRemove(String.valueOf(row.get("STOCK_DATE"))));
+				oReportModel.setInventoryTypeName(oRemoveNull.nullRemove(String.valueOf(row.get("INVENTORY_TYPE_NAME"))));
+				oReportModel.setStockIn(oRemoveNull.nullRemove(String.valueOf(row.get("STOCK_IN"))));
+				oReportModel.setStockOut(oRemoveNull.nullRemove(String.valueOf(row.get("STOCK_OUT"))));
+				oReportModel.setItemOrderProduct(oRemoveNull.nullRemove(String.valueOf(row.get("ITEM_ORDER_PRODUCT"))));
+				oReportModel.setWastage(oRemoveNull.nullRemove(String.valueOf(row.get("WASTAGE"))));
+				list.add(oReportModel);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		JRDataSource ds = new JRBeanCollectionDataSource(list);
+		return ds;
+	}
+	
+	
+	
 }

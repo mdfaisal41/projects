@@ -59,8 +59,21 @@ public class InventoryServiceImpl implements InventoryService{
 		return inventoryDao.getWastageInfo(inventory);
 	}
 
+	public Inventory saveStoreIngredients(Inventory inventory) {
+		return inventoryDao.saveStoreIngredients(inventory);
+	}
 
+	public List<Inventory> getStoreInventoryList(Inventory inventory) {
+		return inventoryDao.getStoreInventoryList(inventory);
+	}
 
+	public Inventory getStoredIngredientsInfo(Inventory inventory) throws Exception {
+		return inventoryDao.getStoredIngredientsInfo(inventory);
+	}
+
+	public List<Inventory> getStoreHistoryList(Inventory inventory) throws Exception {
+		return inventoryDao.getStoreHistoryList(inventory);
+	}
 
 
 }

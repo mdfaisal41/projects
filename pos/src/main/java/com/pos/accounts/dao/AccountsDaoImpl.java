@@ -21,6 +21,7 @@ import com.pos.accounts.model.AdCategoryList;
 import com.pos.accounts.model.EmployeeMonthlyConsumption;
 import com.pos.accounts.model.OwnerConsumptionInfo;
 import com.pos.accounts.model.SalaryProcessModel;
+import com.pos.accounts.model.StockProcess;
 import com.pos.accounts.model.SupplierInfo;
 import com.pos.common.RemoveNull;
 import com.pos.hr.model.EmployeeInformation;
@@ -69,7 +70,8 @@ public class AccountsDaoImpl implements AccountsDao {
 		sBuilder.append("AD_CATEGORY_NAME, ");
 		sBuilder.append("PURPOSE, ");
 		sBuilder.append("AMOUNT, ");
-		sBuilder.append("TO_CHAR (CONSUME_DATE, 'DD-MON-YYYY') CON_DATE ");
+		sBuilder.append("TO_CHAR (CONSUME_DATE, 'DD-MON-YYYY') CON_DATE, ");
+		sBuilder.append("CASE WHEN TRUNC(CONSUME_DATE) < TRUNC(SYSDATE) THEN 'N' ELSE 'Y' END CONSUME_SYSDATE_YN ");
 		sBuilder.append("FROM EMPLOYEE_MONTHLY_CONSUMPTION EMC ");
 		sBuilder.append("WHERE EMPLOYEE_ID = :empId ");
 		sBuilder.append("ORDER BY CONSUME_DATE DESC ");
@@ -96,6 +98,7 @@ public class AccountsDaoImpl implements AccountsDao {
 			oEmployeeMonthlyConsumption.setPurpose(oRemoveNull.nullRemove(String.valueOf(row.get("PURPOSE"))));
 			oEmployeeMonthlyConsumption.setAmount(oRemoveNull.nullRemove(String.valueOf(row.get("AMOUNT"))));
 			oEmployeeMonthlyConsumption.setConsumeDate(oRemoveNull.nullRemove(String.valueOf(row.get("CON_DATE"))));
+			oEmployeeMonthlyConsumption.setConsumeSysdateYn(oRemoveNull.nullRemove(String.valueOf(row.get("CONSUME_SYSDATE_YN"))));
 			oEmployeeMonthlyConsumptionList.add(oEmployeeMonthlyConsumption);
 		}
 		return oEmployeeMonthlyConsumptionList;
@@ -784,6 +787,39 @@ public class AccountsDaoImpl implements AccountsDao {
 			oConsumptionHistoryList.add(oOwnerConsumptionHistory);
 		}
 		return oConsumptionHistoryList;
+	}
+	
+	
+	public StockProcess processStock(StockProcess stockProcess) {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+		StockProcess oStockProcess = new StockProcess();
+		try {
+			simpleJdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("PRO_STOCK_SUMMARY_PROCESS");
+
+			Map<String, Object> inParamMap = new HashMap<String, Object>();
+			
+			inParamMap.put("P_STOCK_DATE", stockProcess.getProcessDate());
+			inParamMap.put("P_UPDATE_BY", stockProcess.getUpdateBy());
+			
+			System.out.println("dao stockProcess.getProcessDate() = " + stockProcess.getProcessDate());
+			System.out.println("dao stockProcess.getUpdateBy() = " + stockProcess.getUpdateBy());
+			
+			Map<String, Object> outParamMap = simpleJdbcCall.execute(new MapSqlParameterSource().addValues(inParamMap));
+
+			oStockProcess.setMessage(oRemoveNull.nullRemove((String) outParamMap.get("P_MESSAGE")));
+			oStockProcess.setMessageCode(oRemoveNull.nullRemove((String) outParamMap.get("P_MESSAGE_CODE")));
+			
+			System.out.println("dao oStockProcess.getMessage() = " + oStockProcess.getMessage());
+			System.out.println("dao oStockProcess.getMessageCode() = " + oStockProcess.getMessageCode());
+			
+		//	System.out.println("ownerConsumptionInfo.getEncConsumeId() " + oCipherUtils.decrypt(oRemoveNull.nullRemove(ownerConsumptionInfo.getEncConsumeId())));
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			oStockProcess.setMessage("Error Occured!!!");
+			oStockProcess.setMessageCode("0000");
+		}
+		return oStockProcess;
 	}
 		
 

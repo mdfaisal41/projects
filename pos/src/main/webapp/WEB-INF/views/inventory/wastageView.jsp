@@ -215,9 +215,11 @@
 												<td style="border-style: inset;">${list.updateDate}</td>
 												<td style="border-style: inset;">${list.employeeId}</td>
 												<td style="border-style: inset;">
+													<c:if test="${list.wastageSysdateYn == 'Y'}">
 													<button onclick="getWastageInfo('${list.encWastageId}')"
 															class="btn btn-xs btn-primary" type="button">Edit
-														</button></td>
+														</button>
+														</c:if></td>
 											</tr>
 										</c:forEach>
 									</c:if>

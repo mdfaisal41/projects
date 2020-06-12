@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 
 import com.aes.protection.CipherUtils;
 import com.pos.accounts.model.OwnerConsumptionInfo;
+import com.pos.admin.model.UserInfoForm;
 import com.pos.common.RemoveNull;
 import com.pos.pointOfSale.model.OrderModel;
 import com.pos.pointOfSale.model.PointOfSale;
@@ -403,11 +404,11 @@ public class PointOfSaleDaoImpl implements PointOfSaleDao {
 				return oPointOfSale;
 			}
 			
-			if (orderArraySize > 10) {
+			/*if (orderArraySize > 10) {
 				oPointOfSale.setMessage("Maximum 10 Orders Can Be Generated In One Receipt !!");
 				oPointOfSale.setmCode("0000");
 				return oPointOfSale;
-			}
+			}*/
 
 			System.out.println("orderArraySize = " + orderArraySize);
 
@@ -987,8 +988,34 @@ public class PointOfSaleDaoImpl implements PointOfSaleDao {
 			inParamMap.put("P_DISCOUNT_REFERENCE_BY", pointOfSale.getDiscountReferenceBy());
 			inParamMap.put("P_BILL_PRINT_YN", pointOfSale.getBillPrintYn());
 			inParamMap.put("P_UPDATE_BY", pointOfSale.getUpdateBy());
+			inParamMap.put("P_DUE_CUSTOMER_YN", pointOfSale.getDueCustomerYn());
+			inParamMap.put("P_DUE_CUSTOMER_ID", pointOfSale.getDueCustomerId());
+			//inParamMap.put("P_DUE_DEPOSITE_AMOUNT", pointOfSale.getDueAmount());
+			
+			//pointOfSale.setPaidAmount("200");
+			if (pointOfSale.getPaidAmount() == null || pointOfSale.getPaidAmount() == "") {
+				pointOfSale.setPaidAmount("0");
+			}
+			inParamMap.put("P_PAID_AMOUNT", pointOfSale.getPaidAmount());
 			
 			System.out.println("ORDER iD : " + oCipherUtils.decrypt(oRemoveNull.nullRemove(pointOfSale.getEncOrderId())));
+			
+			System.out.println("P_PAYABLE_AMOUNT"+ pointOfSale.getOrderTotalAmount());
+			System.out.println("P_NET_PAY_AMOUNT"+ pointOfSale.getNetPayableAmount());
+			System.out.println("P_RECEIVED_AMOUNT"+ pointOfSale.getReceivedAmount());
+			System.out.println("P_CHANGE_AMOUNT"+ pointOfSale.getChangeAmount());
+			System.out.println("P_CASH_PAY_AMOUNT"+ pointOfSale.getCashPayAmount());
+			System.out.println("P_CARD_PAY_AMOUNT"+ pointOfSale.getCardPayAmount());
+			System.out.println("P_BKASH_PAYMENT_AMOUNT"+ pointOfSale.getBkashPaymentAmount());
+			System.out.println("P_BKASH_TRAN_NO"+ pointOfSale.getBkashTranNo());
+			System.out.println("P_DISCOUNT_AMOUNT"+ pointOfSale.getDiscountAmount());
+			System.out.println("P_DISCOUNT_REFERENCE_BY"+ pointOfSale.getDiscountReferenceBy());
+			System.out.println("P_BILL_PRINT_YN"+ pointOfSale.getBillPrintYn());
+			System.out.println("P_UPDATE_BY"+ pointOfSale.getUpdateBy());
+			
+			System.out.println("P_DUE_CUSTOMER_YN: " + pointOfSale.getDueCustomerYn());
+			System.out.println("P_DUE_CUSTOMER_ID : " + pointOfSale.getDueCustomerId());
+			System.out.println("P_PAID_AMOUNT : " + pointOfSale.getPaidAmount());
 
 			Map<String, Object> outParamMap = simpleJdbcCall.execute(new MapSqlParameterSource().addValues(inParamMap));
 
@@ -996,7 +1023,7 @@ public class PointOfSaleDaoImpl implements PointOfSaleDao {
 			oPointOfSale.setmCode((String) outParamMap.get("P_MESSAGE_CODE"));
 			// System.out.println("studentId " + oStudent.getStudentId());
 		} catch (Exception ex) {
-			oPointOfSale.setMessage("Error Saving Record !!!");
+			oPointOfSale.setMessage("Error Saving Record !!! " + ex);
 			oPointOfSale.setmCode("0000");
 			ex.printStackTrace();
 		}
@@ -1150,6 +1177,238 @@ public class PointOfSaleDaoImpl implements PointOfSaleDao {
 			ex.printStackTrace();
 		}
 		return oPointOfSale;
+	}
+
+	public PointOfSale getDuplicteTable(PointOfSale pointOfSale) {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+		PointOfSale oPointOfSale = new PointOfSale();
+
+		NamedParameterJdbcTemplate npjt = new NamedParameterJdbcTemplate(jdbcTemplate);
+
+		StringBuilder sBuilder = new StringBuilder();
+
+		sBuilder.append(" SELECT COUNT (TABLE_NO) DEPLICATE_TABLE ");
+		sBuilder.append(" FROM ORDER_MANAGEMENT ");
+		sBuilder.append(" WHERE FINALIZED_YN = 'N' AND TRUNC (ORDER_DATE) = TRUNC (SYSDATE) AND TABLE_NO = :tableNo ");
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource();
+
+		paramSource.addValue("tableNo", pointOfSale.getTableNo());
+
+		 //System.out.println(sBuilder);
+
+		List<Map<String, Object>> rows = npjt.queryForList(sBuilder.toString(), paramSource);
+
+		for (@SuppressWarnings("rawtypes")
+		Map row : rows) {
+			oPointOfSale.setCountDuplicateTable(oRemoveNull.nullRemove(String.valueOf(row.get("DEPLICATE_TABLE"))));
+		}
+		return oPointOfSale;
+	}
+
+	public PointOfSale saveDueCustomer(PointOfSale pointOfSale) {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+		PointOfSale oPointOfSale = new PointOfSale();
+		try {
+			simpleJdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("PRO_DUE_CUSTOMER_SAVE");
+			Map<String, Object> inParamMap = new HashMap<String, Object>();
+
+			inParamMap.put("P_DUE_CUSTOMER_ID", oCipherUtils.decrypt(pointOfSale.getEncDueCustomerId()));
+			inParamMap.put("P_CUSTOMER_NAME", pointOfSale.getCustomerName());
+			inParamMap.put("P_PHONE_NO", pointOfSale.getPhoneNo());
+			inParamMap.put("P_FATHER_NAME", pointOfSale.getFatherName());
+			inParamMap.put("P_MOTHER_NAME", pointOfSale.getMotherName());
+			inParamMap.put("P_EMAIL", pointOfSale.getEmail());
+			inParamMap.put("P_CUSTOMER_ADDRESS", pointOfSale.getCustomerAddress());
+			inParamMap.put("P_UPDATE_BY", pointOfSale.getUpdateBy());
+
+			// inParamMap.put("P_UPDATE_DATE", student.getUpdateDate());
+
+			Map<String, Object> outParamMap = simpleJdbcCall.execute(new MapSqlParameterSource().addValues(inParamMap));
+
+			oPointOfSale.setMessage((String) outParamMap.get("P_MESSAGE"));
+			oPointOfSale.setmCode((String) outParamMap.get("P_MESSAGE_CODE"));
+			// System.out.println("studentId " + oStudent.getStudentId());
+		} catch (Exception ex) {
+			oPointOfSale.setMessage("Error Saving Record !!!");
+			oPointOfSale.setmCode("0000");
+			ex.printStackTrace();
+		}
+		return oPointOfSale;
+	}
+
+	public List<PointOfSale> getDueCustomerList(PointOfSale pointOfSale) throws Exception {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+		List<PointOfSale> oDueCustomerList = new ArrayList<PointOfSale>();
+
+		NamedParameterJdbcTemplate npjt = new NamedParameterJdbcTemplate(jdbcTemplate);
+
+		StringBuilder sBuilder = new StringBuilder();
+		sBuilder.append(" SELECT DUE_CUSTOMER_ID, ");
+		sBuilder.append(" CUSTOMER_NAME, ");
+		sBuilder.append(" FATHER_NAME, ");
+		sBuilder.append(" MOTHER_NAME, ");
+		sBuilder.append(" PHONE_NO, ");
+		sBuilder.append(" EMAIL, ");
+		sBuilder.append(" ADDRESS ");
+		sBuilder.append(" FROM DUE_CUSTOMER ");
+		//sBuilder.append(" WHERE DUE_CUSTOMER_ID = :encDueCustomerId ");
+		MapSqlParameterSource paramSource = new MapSqlParameterSource();
+
+		//System.out.println("bbb" + sBuilder);
+
+		List<Map<String, Object>> rows = npjt.queryForList(sBuilder.toString(), paramSource);
+
+		for (@SuppressWarnings("rawtypes")
+		Map row : rows) {
+			PointOfSale oPointOfSale = new PointOfSale();
+			oPointOfSale.setEncDueCustomerId(oCipherUtils.encrypt(String.valueOf(row.get("DUE_CUSTOMER_ID"))));
+			oPointOfSale.setDueCustomerId(oRemoveNull.nullRemove(String.valueOf(row.get("DUE_CUSTOMER_ID"))));
+			oPointOfSale.setCustomerName(oRemoveNull.nullRemove(String.valueOf(row.get("CUSTOMER_NAME"))));
+			oPointOfSale.setFatherName(oRemoveNull.nullRemove(String.valueOf(row.get("FATHER_NAME"))));
+			oPointOfSale.setMotherName(oRemoveNull.nullRemove(String.valueOf(row.get("MOTHER_NAME"))));
+			oPointOfSale.setPhoneNo(oRemoveNull.nullRemove(String.valueOf(row.get("PHONE_NO"))));
+			oPointOfSale.setEmail(oRemoveNull.nullRemove(String.valueOf(row.get("EMAIL"))));
+			oPointOfSale.setCustomerAddress(oRemoveNull.nullRemove(String.valueOf(row.get("ADDRESS"))));
+			oDueCustomerList.add(oPointOfSale);
+
+			// System.out.println("abc"+
+			// oCipherUtils.encrypt(String.valueOf(row.get("EMPLOYEE_ID"))));
+
+		}
+
+		return oDueCustomerList;
+	}
+
+	public PointOfSale getDueCustomerInfo(PointOfSale pointOfSale) {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+		PointOfSale oPointOfSale = new PointOfSale();
+		NamedParameterJdbcTemplate npjt = new NamedParameterJdbcTemplate(jdbcTemplate);
+
+		StringBuilder sBuilder = new StringBuilder();
+
+		sBuilder.append(" SELECT DUE_CUSTOMER_ID, ");
+		sBuilder.append(" CUSTOMER_NAME, ");
+		sBuilder.append(" FATHER_NAME, ");
+		sBuilder.append(" MOTHER_NAME, ");
+		sBuilder.append(" PHONE_NO, ");
+		sBuilder.append(" EMAIL, ");
+		sBuilder.append(" ADDRESS ");
+		sBuilder.append(" FROM DUE_CUSTOMER ");
+		sBuilder.append(" WHERE DUE_CUSTOMER_ID = :encDueCustomerId ");
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource();
+		paramSource.addValue("encDueCustomerId", oCipherUtils.decrypt(pointOfSale.getEncDueCustomerId()));
+
+		List<Map<String, Object>> rows = npjt.queryForList(sBuilder.toString(), paramSource);
+
+		for (@SuppressWarnings("rawtypes")
+		Map row : rows) {
+			oPointOfSale.setEncDueCustomerId(oCipherUtils.encrypt(String.valueOf(row.get("DUE_CUSTOMER_ID"))));
+			oPointOfSale.setDueCustomerId(oRemoveNull.nullRemove(String.valueOf(row.get("DUE_CUSTOMER_ID"))));
+			oPointOfSale.setCustomerName(oRemoveNull.nullRemove(String.valueOf(row.get("CUSTOMER_NAME"))));
+			oPointOfSale.setFatherName(oRemoveNull.nullRemove(String.valueOf(row.get("FATHER_NAME"))));
+			oPointOfSale.setMotherName(oRemoveNull.nullRemove(String.valueOf(row.get("MOTHER_NAME"))));
+			oPointOfSale.setPhoneNo(oRemoveNull.nullRemove(String.valueOf(row.get("PHONE_NO"))));
+			oPointOfSale.setEmail(oRemoveNull.nullRemove(String.valueOf(row.get("EMAIL"))));
+			oPointOfSale.setCustomerAddress(oRemoveNull.nullRemove(String.valueOf(row.get("ADDRESS"))));
+		}
+
+		return oPointOfSale;
+	}
+
+	public PointOfSale getDueDepositeAmount(String dueCustomerId) {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+		PointOfSale oPointOfSale = new PointOfSale();
+		NamedParameterJdbcTemplate npjt = new NamedParameterJdbcTemplate(jdbcTemplate);
+
+		StringBuilder sBuilder = new StringBuilder();
+
+		sBuilder.append(" SELECT DC.DUE_CUSTOMER_ID, ");
+		sBuilder.append(" NVL (DCP.DUE_DEPOSITE_AMOUNT, 0) DUE_DEPOSITE_AMOUNT, ");
+		sBuilder.append(" DC.CUSTOMER_NAME ");
+		sBuilder.append(" FROM DUE_CUSTOMER_PAYMENT DCP, DUE_CUSTOMER DC ");
+		sBuilder.append(" WHERE DCP.DUE_CUSTOMER_ID = DC.DUE_CUSTOMER_ID ");
+		sBuilder.append(" AND DC.DUE_CUSTOMER_ID = :dueCustomerId ");
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource();
+		paramSource.addValue("dueCustomerId", dueCustomerId);
+
+		List<Map<String, Object>> rows = npjt.queryForList(sBuilder.toString(), paramSource);
+
+		for (@SuppressWarnings("rawtypes")
+		Map row : rows) {
+			oPointOfSale.setDueAmount(oRemoveNull.nullRemove(String.valueOf(row.get("DUE_DEPOSITE_AMOUNT"))));
+			oPointOfSale.setDueCustomerId(oRemoveNull.nullRemove(String.valueOf(row.get("DUE_CUSTOMER_ID"))));
+			oPointOfSale.setCustomerName(oRemoveNull.nullRemove(String.valueOf(row.get("CUSTOMER_NAME"))));
+		}
+
+		return oPointOfSale;
+	}
+
+	public PointOfSale saveDueCollection(PointOfSale pointOfSale) {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+		PointOfSale oPointOfSale = new PointOfSale();
+		try {
+			simpleJdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("PRO_DUE_COLLECTION_SAVE");
+			Map<String, Object> inParamMap = new HashMap<String, Object>();
+
+			inParamMap.put("P_DUE_CUSTOMER_ID", pointOfSale.getDueCustomerId());
+			inParamMap.put("P_DUE_DEPOSITE_AMOUNT", pointOfSale.getDueAmount());
+			inParamMap.put("P_PAID_AMOUNT", pointOfSale.getPaidAmount());
+			inParamMap.put("P_UPDATE_BY", pointOfSale.getUpdateBy());
+
+			// inParamMap.put("P_UPDATE_DATE", student.getUpdateDate());
+
+			Map<String, Object> outParamMap = simpleJdbcCall.execute(new MapSqlParameterSource().addValues(inParamMap));
+
+			oPointOfSale.setMessage((String) outParamMap.get("P_MESSAGE"));
+			oPointOfSale.setmCode((String) outParamMap.get("P_MESSAGE_CODE"));
+			// System.out.println("studentId " + oStudent.getStudentId());
+		} catch (Exception ex) {
+			oPointOfSale.setMessage("Error Saving Record !!!");
+			oPointOfSale.setmCode("0000");
+			ex.printStackTrace();
+		}
+		return oPointOfSale;
+	}
+
+	public List<PointOfSale> getDueCollectionHistoryList(PointOfSale pointOfSale) throws Exception {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+		List<PointOfSale> oDueCollectionHistoryList = new ArrayList<PointOfSale>();
+
+		NamedParameterJdbcTemplate npjt = new NamedParameterJdbcTemplate(jdbcTemplate);
+
+		StringBuilder sBuilder = new StringBuilder();
+		sBuilder.append(" SELECT DUE_CUSTOMER_PAYMENT_ID, ");
+		sBuilder.append(" DUE_DEPOSITE_AMOUNT, ");
+		sBuilder.append(" PAID_AMOUNT, ");
+		sBuilder.append(" TO_CHAR(PAY_DATE, 'DD/MM/YYYY')PAY_DATE ");
+		sBuilder.append(" FROM DUE_CUSTOMER_PAYMENT_HISTORY ");
+		sBuilder.append(" WHERE TRUNC (PAY_DATE) BETWEEN TO_DATE (:fromDate, 'dd/mm/yyyy') ");
+		sBuilder.append(" AND TO_DATE (:toDate, 'dd/mm/yyyy') ");
+		sBuilder.append(" AND DUE_CUSTOMER_ID = :dueCustomerId ");
+
+		MapSqlParameterSource paramSource = new MapSqlParameterSource();
+		paramSource.addValue("dueCustomerId", pointOfSale.getDueCustomerId());
+		paramSource.addValue("fromDate", pointOfSale.getFromDate());
+		paramSource.addValue("toDate", pointOfSale.getToDate());
+		
+		// System.out.println(sBuilder);
+
+		List<Map<String, Object>> rows = npjt.queryForList(sBuilder.toString(), paramSource);
+
+		for (@SuppressWarnings("rawtypes")
+		Map row : rows) {
+			PointOfSale oPointOfSale = new PointOfSale();
+			oPointOfSale.setDueCustomerPaymentId(oCipherUtils.encrypt(String.valueOf(row.get("DUE_CUSTOMER_PAYMENT_ID"))));
+			oPointOfSale.setDueAmount(oRemoveNull.nullRemove(String.valueOf(row.get("DUE_DEPOSITE_AMOUNT"))));
+			oPointOfSale.setPaidAmount(oRemoveNull.nullRemove(String.valueOf(row.get("PAID_AMOUNT"))));
+			oPointOfSale.setPayDate(oRemoveNull.nullRemove(String.valueOf(row.get("PAY_DATE"))));
+			oDueCollectionHistoryList.add(oPointOfSale);
+		}
+
+		return oDueCollectionHistoryList;
 	}
 
 }

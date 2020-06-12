@@ -83,5 +83,9 @@ public class LookupServiceImpl implements LookupService{
 		return lookupDao.supplierList(lookupModel);
 	}
 
+	public List<LookupModel> customerList(LookupModel lookupModel) {
+		return lookupDao.customerList(lookupModel);
+	}
+
 
 }
